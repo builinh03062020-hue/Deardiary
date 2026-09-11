@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nhật Ký 3D Siêu Cấp Víp Pro</title>
+  <style>
+    :root {
+      --bg-color: #f4f4f9;
+      --text-color: #333;
+      --primary: #ffb3ba;
+    }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { margin: 0; padding: 0; background: var(--bg-color); color: var(--text-color); overflow-x: hidden; }
+    
+    /* Các màn hình chính */
+    .screen { display: none; min-height: 100vh; padding: 20px; }
+    .screen.active { display: block; }
+
+    /* Màn hình khóa */
+    /* Đã sửa lỗi: */
+#lock-screen { flex-direction: column; align-items: center; justify-content: center; background: #fff; position: fixed; top:0; left:0; width: 100%; height: 100%; z-index: 999; }
+#lock-screen.active { display: flex; }
+    .pin-input { font-size: 2rem; padding: 10px; width: 200px; text-align: center; border: 2px solid #ddd; border-radius: 10px; margin-bottom: 20px; letter-spacing: 5px; }
+    .btn { padding: 10px 20px; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; background: var(--primary); color: #fff; font-weight: bold; transition: 0.3s; }
+    .btn:hover { opacity: 0.8; }
+
+    /* Dashboard & Thư viện sách */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .books-grid { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; padding: 20px; perspective: 1000px; }
+    
+    /* Hiệu ứng sách 3D */
+    .book { width: 180px; height: 250px; position: relative; transform-style: preserve-3d; transition: transform 0.5s; cursor: pointer; transform: rotateY(-20deg); }
+    .book:hover { transform: rotateY(0deg) scale(1.05); }
+    .book-cover { position: absolute; width: 100%; height: 100%; border-radius: 5px 15px 15px 5px; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px; font-weight: bold; font-size: 1.2rem; color: #444; backface-visibility: hidden; z-index: 2; border-left: 5px solid rgba(0,0,0,0.1); }
+    .book-pages { position: absolute; width: 95%; height: 96%; top: 2%; left: 5%; background: #fff; border-radius: 0 10px 10px 0; z-index: 1; box-shadow: inset 4px 0 10px rgba(0,0,0,0.1); }
+
+    /* Modal chọn sách */
+    #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
+    .book-list-modal { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; max-height: 200px; overflow-y: auto; }
+    .book-option { padding: 10px; background: #f0f0f0; border-radius: 8px; cursor: pointer; }
+    .book-option:hover { background: #e0e0e0; }
+    .input-book-name { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; }
+
+    /* Trình soạn thảo (Editor) */
+    .editor-toolbar { display: flex; gap: 10px; margin-bottom: 15px; background: #fff; padding: 10px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    #editor-title { font-size: 1.5rem; border: none; outline: none; width: 100%; margin-bottom: 10px; background: transparent; font-weight: bold; }
+    #editor-content { min-height: 60vh; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); outline: none; font-size: 1.1rem; line-height: 1.6; }
+    #editor-content img { max-width: 100%; border-radius: 8px; margin: 10px 0; }
+    .save-status { font-size: 0.8rem; color: #888; margin-left: auto; align-self: center; }
+    
+    /* Danh sách trang trong sách */
+    .page-list { max-width: 600px; margin: 0 auto; }
+    .page-item { background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; }
+    .page-item:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+    .page-date { color: #888; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <!-- MÀN HÌNH KHÓA -->
+  <div id="lock-screen" class="screen active">
+    <h2 id="lock-title">Nhập Mật Khẩu Khóa Nhật Ký</h2>
+    <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••">
+    <button class="btn" onclick="checkPin()">Mở Khóa</button>
+  </div>
+
+  <!-- DASHBOARD: DANH SÁCH SÁCH -->
+  <div id="dashboard" class="screen">
+    <div class="header">
+      <h2>Thư Viện Của Tui</h2>
+      <button class="btn" onclick="openEditor(null)">+ Viết Nhật Ký Mới</button>
+    </div>
+    <div class="books-grid" id="books-container">
+      <!-- Sách sẽ được render bằng JS -->
+    </div>
+  </div>
+
+  <!-- MÀN HÌNH XEM TRANG TRONG SÁCH -->
+  <div id="book-view" class="screen">
+    <div class="header">
+      <h2 id="current-book-title">Tên Sách</h2>
+      <button class="btn" style="background: #ccc;" onclick="switchScreen('dashboard')">Quay lại</button>
+    </div>
+    <div class="page-list" id="pages-container">
+      <!-- Danh sách trang -->
+    </div>
+  </div>
+
+  <!-- MÀN HÌNH SOẠN THẢO -->
+  <div id="editor-screen" class="screen">
+    <div class="header">
+      <button class="btn" style="background: #ccc;" onclick="switchScreen('dashboard')">Hủy / Về Home</button>
+      <button class="btn" onclick="showSaveModal()">Lưu vào Sách</button>
+    </div>
+    
+    <div class="editor-toolbar">
+      <input type="file" id="image-upload" accept="image/*" style="display: none;" onchange="insertImage(event)">
+      <button class="btn" style="background: #a8e6cf; color: #333;" onclick="document.getElementById('image-upload').click()">🖼️ Thêm Ảnh</button>
+      <span class="save-status" id="save-status">Đã lưu tự động</span>
+    </div>
+
+    <input type="text" id="editor-title" placeholder="Tiêu đề ngày hôm nay...">
+    <div id="editor-content" contenteditable="true" placeholder="Hôm nay có gì vui kể nghe coi..."></div>
+  </div>
+
+  <!-- MODAL CHỌN/TẠO SÁCH -->
+  <div id="modal">
+    <div class="modal-content">
+      <h3>Chọn nhà cho trang nhật ký này</h3>
+      <div class="book-list-modal" id="modal-book-list"></div>
+      <p style="margin: 10px 0;">HOẶC</p>
+      <input type="text" id="new-book-name" class="input-book-name" placeholder="Tên sách mới...">
+      <button class="btn" style="width: 100%;" onclick="saveToBook()">Lưu Lại</button>
+      <button class="btn" style="width: 100%; margin-top: 10px; background: #ccc;" onclick="document.getElementById('modal').style.display = 'none'">Đóng</button>
+    </div>
+  </div>
+
+  <script>
+    // --- KHỞI TẠO DỮ LIỆU ---
+    let db = JSON.parse(localStorage.getItem('diary_db')) || { books: [], pages: [], passcode: null };
+    let currentPageId = null;
+    let typingTimer;
+    const pastelColors = ['#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF', '#E2CBF7'];
+
+    // --- LOGIC MÀN HÌNH KHÓA ---
+    if (!db.passcode) {
+      document.getElementById('lock-title').innerText = "Tạo mã PIN (4 số) lần đầu tiên";
+    }
+
+    function checkPin() {
+      const input = document.getElementById('pin-input').value;
+      if (!input) return alert("Nhập pass đi bà!");
+      
+      if (!db.passcode) {
+        db.passcode = input;
+        saveDB();
+        alert("Đã lưu mã PIN! Nhớ kỹ nha.");
+        switchScreen('dashboard');
+        renderBooks();
+      } else {
+        if (input === db.passcode) {
+          switchScreen('dashboard');
+          renderBooks();
+        } else {
+          alert("Sai pass rồi má ơi!");
+        }
+      }
+    }
+
+    // --- QUẢN LÝ GIAO DIỆN ---
+    function switchScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    // --- LOGIC THƯ VIỆN SÁCH ---
+    function renderBooks() {
+      const container = document.getElementById('books-container');
+      container.innerHTML = '';
+      db.books.forEach(book => {
+        container.innerHTML += `
+          <div class="book" onclick="openBook('${book.id}')">
+            <div class="book-pages"></div>
+            <div class="book-cover" style="background: ${book.color}">${book.name}</div>
+          </div>
+        `;
+      });
+    }
+
+    function openBook(bookId) {
+      const book = db.books.find(b => b.id === bookId);
+      document.getElementById('current-book-title').innerText = book.name;
+      
+      const container = document.getElementById('pages-container');
+      container.innerHTML = '';
+      
+      const pages = db.pages.filter(p => p.bookId === bookId).sort((a,b) => b.timestamp - a.timestamp);
+      if (pages.length === 0) container.innerHTML = '<p style="text-align:center;">Sách chưa có trang nào á!</p>';
+      
+      pages.forEach(page => {
+        const dateStr = new Date(page.timestamp).toLocaleString('vi-VN');
+        container.innerHTML += `
+          <div class="page-item" onclick="openEditor('${page.id}')">
+            <b>${page.title || 'Không tiêu đề'}</b>
+            <span class="page-date">${dateStr}</span>
+          </div>
+        `;
+      });
+      switchScreen('book-view');
+    }
+
+    // --- LOGIC SOẠN THẢO & AUTO-SYNC (DEBOUNCE) ---
+    function openEditor(pageId = null) {
+      currentPageId = pageId;
+      const titleEl = document.getElementById('editor-title');
+      const contentEl = document.getElementById('editor-content');
+      
+      if (pageId) { // Đọc/Sửa trang cũ
+        const page = db.pages.find(p => p.id === pageId);
+        titleEl.value = page.title;
+        contentEl.innerHTML = page.content;
+      } else { // Viết mới
+        titleEl.value = '';
+        contentEl.innerHTML = '';
+      }
+      switchScreen('editor-screen');
+    }
+
+    // Lắng nghe sự kiện gõ phím để Auto-save ngầm
+    document.getElementById('editor-content').addEventListener('input', () => {
+      document.getElementById('save-status').innerText = 'Đang lưu...';
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(() => {
+        // Tạm lưu nháp vào LocalStorage
+        localStorage.setItem('diary_draft', JSON.stringify({
+          title: document.getElementById('editor-title').value,
+          content: document.getElementById('editor-content').innerHTML
+        }));
+        document.getElementById('save-status').innerText = 'Đã lưu tự động';
+      }, 1500); // Ngừng gõ 1.5s là lưu
+    });
+
+    // --- CHÈN ẢNH VÀO NHẬT KÝ ---
+    function insertImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imgHtml = `<img src="${e.target.result}" alt="anh-nhat-ky">`;
+          document.getElementById('editor-content').focus();
+          document.execCommand('insertHTML', false, imgHtml);
+        };
+        reader.readAsDataURL(file); // Chuyển ảnh thành chuỗi Base64
+      }
+    }
+
+    // --- LƯU VÀO SÁCH CHÍNH THỨC ---
+    function showSaveModal() {
+      document.getElementById('modal').style.display = 'flex';
+      const list = document.getElementById('modal-book-list');
+      list.innerHTML = '';
+      db.books.forEach(book => {
+        list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`;
+      });
+      document.getElementById('new-book-name').value = ''; // Reset input
+    }
+
+    function saveToBook() {
+      const title = document.getElementById('editor-title').value;
+      const content = document.getElementById('editor-content').innerHTML;
+      const bookInput = document.getElementById('new-book-name').value;
+
+      if (!bookInput) return alert("Bà phải chọn sách hoặc nhập tên sách mới chứ!");
+
+      let targetBookId = bookInput;
+      // Nếu nhập tên sách mới (không trùng ID cũ)
+      const existingBook = db.books.find(b => b.id === bookInput);
+      if (!existingBook) {
+        targetBookId = 'book_' + Date.now();
+        db.books.push({
+          id: targetBookId,
+          name: bookInput,
+          color: pastelColors[Math.floor(Math.random() * pastelColors.length)] // Random màu pastel
+        });
+      }
+
+      if (currentPageId) {
+        // Update trang cũ
+        const page = db.pages.find(p => p.id === currentPageId);
+        page.title = title;
+        page.content = content;
+      } else {
+        // Tạo trang mới
+        db.pages.push({
+          id: 'page_' + Date.now(),
+          bookId: targetBookId,
+          title: title,
+          content: content,
+          timestamp: Date.now()
+        });
+      }
+
+      saveDB();
+      document.getElementById('modal').style.display = 'none';
+      alert("Đã lưu vô sách thành công!");
+      switchScreen('dashboard');
+      renderBooks();
+    }
+
+    // Hàm tiện ích lưu Database
+    function saveDB() {
+      localStorage.setItem('diary_db', JSON.stringify(db));
+    }
+  </script>
+</body>
+</html>
