@@ -3,141 +3,203 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hệ Thống Nhật Ký Đa Phương Tiện</title>
+  <title>Aesthetic Vintage Diary</title>
+  <!-- Nhúng phông chữ Cổ điển từ Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #f4f4f9;
-      --text-color: #333;
-      --primary: #ffb3ba;
+      --bg-color: #eae6db; /* Màu nền web: Trắng xám cổ điển */
+      --book-bg: #F4EFE6; /* Màu bìa sách: Trắng ngà/Beige */
+      --text-color: #3e3a35;
+      --primary: #cba885; /* Màu điểm nhấn: Nâu nhạt */
     }
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { margin: 0; padding: 0; background: var(--bg-color); color: var(--text-color); overflow-x: hidden; }
+    * { box-sizing: border-box; }
+    body { 
+      margin: 0; padding: 0; 
+      background: var(--bg-color); 
+      color: var(--text-color); 
+      font-family: 'Segoe UI', Tahoma, sans-serif; 
+      overflow-x: hidden; 
+    }
     
     .screen { display: none; min-height: 100vh; padding: 20px; }
     .screen.active { display: block; }
 
-    #lock-screen { flex-direction: column; align-items: center; justify-content: center; background: #fff; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; }
+    /* --- Màn hình Khóa --- */
+    #lock-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; }
     #lock-screen.active { display: flex; }
-    .pin-input { font-size: 2rem; padding: 10px; width: 200px; text-align: center; border: 2px solid #ddd; border-radius: 10px; margin-bottom: 20px; letter-spacing: 5px; }
-    .btn { padding: 10px 20px; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; background: var(--primary); color: #fff; font-weight: bold; transition: 0.3s; }
-    .btn:hover { opacity: 0.8; }
+    #lock-title { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 20px; color: #4a4238; }
+    .pin-input { font-size: 2rem; padding: 10px; width: 200px; text-align: center; border: 2px solid #cba885; border-radius: 8px; margin-bottom: 20px; letter-spacing: 5px; background: transparent; color: #4a4238; outline: none; }
+    .btn { padding: 10px 25px; font-size: 1rem; border: none; border-radius: 5px; cursor: pointer; background: var(--primary); color: #fff; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .btn:hover { opacity: 0.8; transform: translateY(-2px); }
 
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .books-grid { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; padding: 20px; perspective: 1000px; }
+    /* --- Giao diện Quản lý (Dashboard) --- */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid #d4cdc1; padding-bottom: 10px; }
+    .header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin: 0; }
+    .books-grid { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; padding: 20px; perspective: 1200px; }
     
-    .book { width: 180px; height: 250px; position: relative; transform-style: preserve-3d; transition: transform 0.5s; cursor: pointer; transform: rotateY(-20deg); }
-    .book:hover { transform: rotateY(0deg) scale(1.05); }
-    .book-cover { position: absolute; width: 100%; height: 100%; border-radius: 5px 15px 15px 5px; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px; font-weight: bold; font-size: 1.2rem; color: #444; backface-visibility: hidden; z-index: 2; border-left: 5px solid rgba(0,0,0,0.1); }
-    .book-pages { position: absolute; width: 95%; height: 96%; top: 2%; left: 5%; background: #fff; border-radius: 0 10px 10px 0; z-index: 1; box-shadow: inset 4px 0 10px rgba(0,0,0,0.1); }
+    /* --- Thiết kế Bìa sách Aesthetic --- */
+    .book { 
+      width: 200px; height: 280px; 
+      background: var(--book-bg); 
+      padding: 12px; 
+      border-radius: 2px 8px 8px 2px; 
+      box-shadow: 5px 10px 20px rgba(0,0,0,0.15), inset 4px 0 10px rgba(0,0,0,0.05); 
+      display: flex; flex-direction: column; 
+      position: relative; 
+      transform-style: preserve-3d; 
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); 
+      cursor: pointer; 
+      transform: rotateY(-15deg); 
+      border-left: 6px solid #d3c7b2; /* Gáy sách */
+    }
+    .book:hover { transform: rotateY(0deg) scale(1.05) translateY(-5px); }
+    .book-cover-img { 
+      width: 100%; height: 75%; 
+      background-size: cover; background-position: center; 
+      border: 1px solid rgba(0,0,0,0.1); 
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.2); 
+    }
+    .book-title { 
+      font-family: 'Cormorant Garamond', serif; 
+      font-size: 1.3rem; font-weight: 600; 
+      color: #3e3a35; text-align: center; margin-top: auto; 
+      padding-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+    }
 
-    .page-list { max-width: 600px; margin: 0 auto; perspective: 1200px; display: flex; flex-direction: column; gap: 10px; }
-    .page-item { background: #fff; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; transform-style: preserve-3d; transform-origin: left center; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); box-shadow: 0 4px 8px rgba(0,0,0,0.1); cursor: pointer; }
-    .page-item:hover { transform: rotateY(-15deg); box-shadow: 10px 10px 20px rgba(0,0,0,0.15); }
-    .page-date { color: #888; font-size: 0.9rem; }
+    /* --- Giao diện bên trong Sách (Xếp trang 3D) --- */
+    .book-view-stack { 
+      position: relative; width: 300px; height: 420px; 
+      margin: 40px auto; perspective: 1500px; 
+    }
+    .page-sheet { 
+      position: absolute; width: 100%; height: 100%; 
+      border-radius: 2px 8px 8px 2px; 
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1); 
+      border-left: 2px solid rgba(0,0,0,0.05);
+      transform-origin: left center; 
+      transition: all 0.5s cubic-bezier(0.4, 0.2, 0.2, 1); 
+      padding: 30px; display: flex; flex-direction: column; 
+      align-items: center; cursor: pointer; 
+    }
+    .page-sheet:hover { 
+      transform: rotateY(-20deg) translateX(-15px) !important; 
+      box-shadow: 8px 10px 20px rgba(0,0,0,0.15); 
+    }
+    .page-sheet-date { 
+      font-family: 'Cormorant Garamond', serif; 
+      font-size: 1.5rem; color: #555; 
+      border-bottom: 1px solid rgba(0,0,0,0.1); 
+      padding-bottom: 10px; width: 90%; text-align: center; 
+    }
 
-    #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
-    .modal-content { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
-    .book-list-modal { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; max-height: 200px; overflow-y: auto; }
-    .book-option { padding: 10px; background: #f0f0f0; border-radius: 8px; cursor: pointer; }
-    .book-option:hover { background: #e0e0e0; }
-    .input-book-name { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; }
+    /* --- Giao diện Trình soạn thảo --- */
+    .editor-toolbar { display: flex; gap: 10px; margin-bottom: 15px; background: var(--book-bg); padding: 10px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #d4cdc1; }
+    #editor-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; border: none; outline: none; width: 100%; margin-bottom: 15px; background: transparent; font-weight: 600; color: #3e3a35; }
+    #editor-content { min-height: 60vh; background: var(--book-bg); padding: 30px; border-radius: 8px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); outline: none; font-size: 1.1rem; line-height: 1.8; color: #4a4238; border: 1px solid #d4cdc1; }
+    #editor-content img { max-width: 100%; border-radius: 4px; margin: 15px 0; border: 5px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .save-status { font-size: 0.85rem; color: #888; margin-left: auto; align-self: center; font-style: italic; }
 
-    .editor-toolbar { display: flex; gap: 10px; margin-bottom: 15px; background: #fff; padding: 10px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    #editor-title { font-size: 1.5rem; border: none; outline: none; width: 100%; margin-bottom: 10px; background: transparent; font-weight: bold; }
-    #editor-content { min-height: 60vh; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); outline: none; font-size: 1.1rem; line-height: 1.6; }
-    #editor-content img { max-width: 100%; border-radius: 8px; margin: 10px 0; }
-    .save-status { font-size: 0.8rem; color: #888; margin-left: auto; align-self: center; }
+    /* --- Hộp thoại Cấu hình (Modal) --- */
+    #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
+    .modal-content { background: var(--book-bg); padding: 30px; border-radius: 8px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #d4cdc1; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .modal-content h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-top: 0; }
+    .book-list-modal { display: flex; flex-direction: column; gap: 10px; margin: 15px 0; max-height: 200px; overflow-y: auto; }
+    .book-option { padding: 10px; background: #eae6db; border-radius: 5px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; }
+    .book-option:hover { background: #d4cdc1; }
+    .input-book-name { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #cba885; border-radius: 5px; background: #fff; outline: none; font-family: 'Segoe UI', sans-serif; }
   </style>
 </head>
 <body>
 
-  <!-- Giao diện Khóa bảo mật -->
+  <!-- Hệ thống Xác thực Bảo mật -->
   <div id="lock-screen" class="screen active">
-    <h2 id="lock-title">Thiết lập Mật mã hệ thống</h2>
+    <h2 id="lock-title">Mật mã Nhật ký</h2>
     <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••">
-    <button class="btn" onclick="checkPin()">Mở Khóa</button>
+    <button class="btn" onclick="checkPin()">Mở Khóa Không Gian</button>
   </div>
 
-  <!-- Giao diện Quản lý thư viện -->
+  <!-- Giao diện Thư viện Tổng quan -->
   <div id="dashboard" class="screen">
     <div class="header">
-      <h2>Thư Viện Dữ Liệu</h2>
-      <button class="btn" onclick="openEditor(null)">+ Khởi tạo Trang mới</button>
+      <h2>Thư Viện Ký Ức</h2>
+      <button class="btn" onclick="openEditor(null)">+ Chắp bút Trang mới</button>
     </div>
     <div class="books-grid" id="books-container"></div>
   </div>
 
-  <!-- Giao diện Hiển thị nội dung sách -->
+  <!-- Giao diện Chi tiết Không gian Sách (Mô phỏng Xếp lớp) -->
   <div id="book-view" class="screen">
     <div class="header">
-      <h2 id="current-book-title">Đang tải...</h2>
-      <button class="btn" style="background: #ccc;" onclick="switchScreen('dashboard')">Quay lại</button>
+      <h2 id="current-book-title">Đang kết xuất...</h2>
+      <div>
+        <button class="btn" style="background: #a39b8f; margin-right: 10px;" onclick="openEditor(null, true)">+ Thêm Trang</button>
+        <button class="btn" style="background: #d4cdc1; color: #333;" onclick="switchScreen('dashboard')">Trở về Thư viện</button>
+      </div>
     </div>
-    <div class="page-list" id="pages-container"></div>
+    <div class="book-view-stack" id="pages-container"></div>
   </div>
 
-  <!-- Trình soạn thảo văn bản -->
+  <!-- Trình Soạn thảo Văn bản -->
   <div id="editor-screen" class="screen">
     <div class="header">
-      <button class="btn" style="background: #ccc;" onclick="switchScreen('dashboard')">Hủy thao tác</button>
-      <button class="btn" onclick="showSaveModal()">Lưu trữ Dữ liệu</button>
+      <button class="btn" style="background: #d4cdc1; color: #333;" onclick="switchScreen('dashboard')">Hủy thao tác</button>
+      <button class="btn" onclick="showSaveModal()">Lưu trữ Trang viết</button>
     </div>
     
     <div class="editor-toolbar">
       <input type="file" id="image-upload" accept="image/*" style="display: none;" onchange="insertImage(event)">
-      <button class="btn" style="background: var(--primary); color: #fff;" onclick="document.getElementById('image-upload').click()">✨ Thêm Ảnh</button>
-      <span class="save-status" id="save-status">Trạng thái: Đã lưu</span>
+      <button class="btn" style="background: var(--primary); padding: 8px 15px;" onclick="document.getElementById('image-upload').click()">✨ Đính kèm Ảnh</button>
+      <span class="save-status" id="save-status">Trạng thái: Đã lưu cục bộ</span>
     </div>
 
-    <input type="text" id="editor-title" placeholder="Nhập tiêu đề...">
-    <div id="editor-content" contenteditable="true" placeholder="Bắt đầu nhập nội dung tại đây..."></div>
+    <input type="text" id="editor-title" placeholder="Tiêu đề ngày hôm nay (Tùy chọn)...">
+    <div id="editor-content" contenteditable="true" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
   </div>
 
-  <!-- Hộp thoại cấu hình lưu trữ -->
+  <!-- Hộp thoại Phân loại Lưu trữ -->
   <div id="modal">
     <div class="modal-content">
-      <h3>Cấu hình Vị trí Lưu trữ</h3>
+      <h3>Chọn Sách Lưu Trữ</h3>
       <div class="book-list-modal" id="modal-book-list"></div>
-      <p style="margin: 10px 0; font-weight: bold; font-size: 0.9rem; color: #555;">HOẶC TẠO SÁCH MỚI</p>
-      <input type="text" id="new-book-name" class="input-book-name" placeholder="Tên sách khởi tạo...">
+      <p style="margin: 10px 0; font-style: italic; color: #777;">Hoặc khởi tạo miền ký ức mới</p>
+      <input type="text" id="new-book-name" class="input-book-name" placeholder="Tên cuốn sách mới...">
       
-      <label for="cover-upload" style="display:block; margin-bottom: 15px; font-weight: bold; cursor: pointer; color: var(--primary);">
-        [+] Đính kèm tệp ảnh bìa (Tùy chọn)
+      <label for="cover-upload" style="display:block; margin-bottom: 20px; font-weight: bold; cursor: pointer; color: var(--primary);">
+        [+] Tải lên Ảnh Bìa Bắt Buộc
       </label>
       <input type="file" id="cover-upload" accept="image/*" style="display: none;">
       
-      <button class="btn" style="width: 100%;" onclick="saveToBook()">Xác nhận Lưu</button>
-      <button class="btn" style="width: 100%; margin-top: 10px; background: #ccc;" onclick="document.getElementById('modal').style.display = 'none'">Đóng cửa sổ</button>
+      <button class="btn" style="width: 100%;" onclick="saveToBook()">Hoàn tất Đóng dấu</button>
+      <button class="btn" style="width: 100%; margin-top: 10px; background: #d4cdc1; color: #333;" onclick="document.getElementById('modal').style.display = 'none'">Hủy lệnh</button>
     </div>
   </div>
 
   <script>
+    // 1. Quản lý Trạng thái Cơ sở dữ liệu cục bộ
     let db = JSON.parse(localStorage.getItem('diary_db')) || { books: [], pages: [], passcode: null };
     let currentPageId = null;
+    let preSelectedBookId = null; 
     let typingTimer;
-    const pastelColors = ['#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF', '#E2CBF7'];
+    
+    // Dải màu dự phòng (Fallback Pastel Palette)
+    const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
     if (!db.passcode) {
-      document.getElementById('lock-title').innerText = "Thiết lập Mật mã hệ thống (4 ký tự)";
+      document.getElementById('lock-title').innerText = "Thiết lập Mật mã Khởi tạo";
     }
 
-    // Tích hợp sự kiện bàn phím (Enter) cho trường Mật mã
+    // Tích hợp Lắng nghe Sự kiện Bàn phím
     document.getElementById('pin-input').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        checkPin();
-      }
+      if (e.key === 'Enter') checkPin();
     });
 
     function checkPin() {
       const input = document.getElementById('pin-input').value;
-      if (!input) {
-        alert("Vui lòng cung cấp mật mã truy cập.");
-        return;
-      }
+      if (!input) return alert("Vui lòng cung cấp khóa định danh.");
       if (!db.passcode) {
         db.passcode = input;
         saveDB();
-        alert("Khởi tạo Mật mã thành công.");
         switchScreen('dashboard');
         renderBooks();
       } else {
@@ -145,7 +207,7 @@
           switchScreen('dashboard');
           renderBooks();
         } else {
-          alert("Lỗi xác thực: Mật mã không hợp lệ.");
+          alert("Lỗi xác thực: Khóa định danh không hợp lệ.");
         }
       }
     }
@@ -155,23 +217,24 @@
       document.getElementById(screenId).classList.add('active');
     }
 
+    // 2. Kết xuất Giao diện Bìa sách Aesthetic
     function renderBooks() {
       const container = document.getElementById('books-container');
       container.innerHTML = '';
       db.books.forEach(book => {
-        const bgStyle = book.cover ? `background: url('${book.cover}') center/cover;` : `background: ${book.color};`;
+        const bgImg = book.cover ? `background-image: url('${book.cover}');` : `background-color: #d4cdc1;`;
         container.innerHTML += `
           <div class="book" onclick="openBook('${book.id}')">
-            <div class="book-pages"></div>
-            <div class="book-cover" style="${bgStyle}">
-              ${book.cover ? '' : book.name}
-            </div>
+            <div class="book-cover-img" style="${bgImg}"></div>
+            <div class="book-title">${book.name}</div>
           </div>
         `;
       });
     }
 
+    // 3. Kết xuất Xếp lớp Trang 3D (Physical Page Stack)
     function openBook(bookId) {
+      preSelectedBookId = bookId; // Lưu vết sách hiện tại
       const book = db.books.find(b => b.id === bookId);
       document.getElementById('current-book-title').innerText = book.name;
       const container = document.getElementById('pages-container');
@@ -179,23 +242,41 @@
       
       const pages = db.pages.filter(p => p.bookId === bookId).sort((a,b) => b.timestamp - a.timestamp);
       if (pages.length === 0) {
-        container.innerHTML = '<p style="text-align:center;">Dữ liệu trống.</p>';
+        container.innerHTML = '<p style="text-align:center; font-style:italic;">Cuốn sách này chưa có vết mực nào.</p>';
       }
       
-      pages.forEach(page => {
-        const dateStr = new Date(page.timestamp).toLocaleString('vi-VN');
-        container.innerHTML += `
-          <div class="page-item" onclick="openEditor('${page.id}')">
-            <b>${page.title || 'Không có tiêu đề'}</b>
-            <span class="page-date">${dateStr}</span>
+      // Khởi tạo thuật toán xếp chồng tọa độ (Stack Transformation)
+      pages.forEach((page, index) => {
+        const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        
+        // Trích xuất màu sắc tuần hoàn từ Bảng màu động của sách
+        const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors;
+        const pageColor = palette[index % palette.length];
+
+        // Tính toán thông số vật lý: Độ sâu (Z) và Độ xô (X, Y)
+        const zIndex = pages.length - index;
+        const offsetZ = index * -2;
+        const offsetX = index * 3;
+        const offsetY = index * 2;
+
+        const pageEl = document.createElement('div');
+        pageEl.className = 'page-item-3d';
+        pageEl.innerHTML = `
+          <div class="page-sheet" style="background-color: ${pageColor}; z-index: ${zIndex}; transform: translate3d(${offsetX}px, ${offsetY}px, ${offsetZ}px);" onclick="openEditor('${page.id}')">
+            <div class="page-sheet-date">${dateStr}<br><span style="font-size: 1rem;">${timeStr}</span></div>
           </div>
         `;
+        container.appendChild(pageEl);
       });
       switchScreen('book-view');
     }
 
-    function openEditor(pageId = null) {
+    // 4. Trình Soạn thảo và Cơ chế Debounce
+    function openEditor(pageId = null, fromBook = false) {
       currentPageId = pageId;
+      if (!fromBook && !pageId) preSelectedBookId = null; 
+
       const titleEl = document.getElementById('editor-title');
       const contentEl = document.getElementById('editor-content');
       
@@ -211,7 +292,7 @@
     }
 
     document.getElementById('editor-content').addEventListener('input', () => {
-      document.getElementById('save-status').innerText = 'Trạng thái: Đang tiến hành lưu...';
+      document.getElementById('save-status').innerText = 'Đang đồng bộ...';
       clearTimeout(typingTimer);
       typingTimer = setTimeout(() => {
         try {
@@ -219,13 +300,14 @@
             title: document.getElementById('editor-title').value,
             content: document.getElementById('editor-content').innerHTML
           }));
-          document.getElementById('save-status').innerText = 'Trạng thái: Đã lưu cục bộ';
+          document.getElementById('save-status').innerText = 'Trạng thái: Đã lưu nháp';
         } catch (e) {
-          document.getElementById('save-status').innerText = 'Lỗi: Tràn bộ nhớ tạm!';
+          document.getElementById('save-status').innerText = 'Lỗi: Tràn bộ nhớ cục bộ!';
         }
       }, 1500);
     });
 
+    // 5. Nén Dữ liệu Đa phương tiện
     function insertImage(event) {
       const file = event.target.files[0];
       if (file) {
@@ -240,7 +322,7 @@
             canvas.height = img.height * scaleSize;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
             
             const imgHtml = `<img src="${compressedDataUrl}" alt="media-attachment">`;
             document.getElementById('editor-content').focus();
@@ -252,6 +334,7 @@
       }
     }
 
+    // 6. Xử lý Trích xuất Bảng màu và Phân loại
     function showSaveModal() {
       document.getElementById('modal').style.display = 'flex';
       const list = document.getElementById('modal-book-list');
@@ -259,8 +342,24 @@
       db.books.forEach(book => {
         list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`;
       });
-      document.getElementById('new-book-name').value = '';
+      document.getElementById('new-book-name').value = preSelectedBookId || '';
       document.getElementById('cover-upload').value = '';
+    }
+
+    // Hàm Nội suy Mảng màu (Làm sáng màu trích xuất thành Pastel)
+    function generatePastelPalette(canvas, ctx, count) {
+      let palette = [];
+      for (let i = 0; i < count; i++) {
+        let x = Math.floor(Math.random() * canvas.width);
+        let y = Math.floor(Math.random() * canvas.height);
+        let pixel = ctx.getImageData(x, y, 1, 1).data;
+        // Pha trộn điểm ảnh gốc với 2 phần màu trắng để tạo sắc độ Pastel
+        let r = Math.floor((pixel[0] + 255 * 2) / 3);
+        let g = Math.floor((pixel[1] + 255 * 2) / 3);
+        let b = Math.floor((pixel[2] + 255 * 2) / 3);
+        palette.push(`rgb(${r}, ${g}, ${b})`);
+      }
+      return palette;
     }
 
     function saveToBook() {
@@ -269,42 +368,35 @@
       const bookInput = document.getElementById('new-book-name').value;
       const coverFile = document.getElementById('cover-upload').files[0];
 
-      if (!bookInput) {
-        alert("Lỗi thao tác: Yêu cầu định danh phân loại sách.");
-        return;
-      }
+      if (!bookInput) return alert("Yêu cầu định danh phân loại sách.");
 
       let targetBookId = bookInput;
       const existingBook = db.books.find(b => b.id === bookInput);
       
-      const finalizeSave = (coverDataUrl) => {
+      const finalizeSave = (coverDataUrl, dynamicPalette) => {
         if (!existingBook) {
           targetBookId = 'book_' + Date.now();
           db.books.push({
             id: targetBookId,
             name: bookInput,
-            color: pastelColors[Math.floor(Math.random() * pastelColors.length)],
-            cover: coverDataUrl || null
+            cover: coverDataUrl || null,
+            palette: dynamicPalette || fallbackColors // Gán bảng màu vào CSDL Sách
           });
         }
 
         if (currentPageId) {
           const page = db.pages.find(p => p.id === currentPageId);
-          page.title = title; 
-          page.content = content;
+          page.title = title; page.content = content;
         } else {
           db.pages.push({
             id: 'page_' + Date.now(),
             bookId: targetBookId,
-            title: title, 
-            content: content, 
-            timestamp: Date.now()
+            title: title, content: content, timestamp: Date.now()
           });
         }
         
         if (saveDB()) {
           document.getElementById('modal').style.display = 'none';
-          alert("Thông báo: Tiến trình lưu trữ dữ liệu hoàn tất.");
           switchScreen('dashboard');
           renderBooks();
         }
@@ -316,20 +408,23 @@
           const img = new Image();
           img.onload = function() {
             const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 600;
+            const MAX_WIDTH = 400; // Resize bìa nhỏ hơn để tối ưu hiệu năng
             const scaleSize = MAX_WIDTH / img.width;
-            canvas.width = MAX_WIDTH;
-            canvas.height = img.height * scaleSize;
+            canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-            finalizeSave(compressedDataUrl);
+            
+            // Trích xuất 5 mã màu động từ ảnh vừa tải lên
+            const dynamicPalette = generatePastelPalette(canvas, ctx, 5);
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            
+            finalizeSave(compressedDataUrl, dynamicPalette);
           };
           img.src = e.target.result;
         };
         reader.readAsDataURL(coverFile);
       } else {
-        finalizeSave(null);
+        finalizeSave(null, null);
       }
     }
 
@@ -338,7 +433,7 @@
         localStorage.setItem('diary_db', JSON.stringify(db));
         return true;
       } catch (e) {
-        alert("Lỗi hệ thống: Bộ nhớ cục bộ đã vượt quá giới hạn. Vui lòng giải phóng dung lượng.");
+        alert("Lỗi phân vùng hệ thống: Vượt quá giới hạn lưu trữ trình duyệt.");
         return false;
       }
     }
