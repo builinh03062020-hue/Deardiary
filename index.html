@@ -121,6 +121,13 @@
       document.getElementById('lock-title').innerText = "Thiết lập Mật mã hệ thống (4 ký tự)";
     }
 
+    // Tích hợp sự kiện bàn phím (Enter) cho trường Mật mã
+    document.getElementById('pin-input').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        checkPin();
+      }
+    });
+
     function checkPin() {
       const input = document.getElementById('pin-input').value;
       if (!input) {
@@ -219,7 +226,6 @@
       }, 1500);
     });
 
-    // Thuật toán nén ảnh nội dung (Image Compression)
     function insertImage(event) {
       const file = event.target.files[0];
       if (file) {
@@ -304,7 +310,6 @@
         }
       };
 
-      // Thuật toán nén ảnh bìa (Cover Image Compression)
       if (coverFile && !existingBook) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -328,7 +333,6 @@
       }
     }
 
-    // Hàm tiện ích có kiểm soát ngoại lệ
     function saveDB() {
       try {
         localStorage.setItem('diary_db', JSON.stringify(db));
