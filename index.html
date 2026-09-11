@@ -108,6 +108,31 @@
     .book-option { padding: 10px; background: #eae6db; border-radius: 5px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; }
     .book-option:hover { background: #d4cdc1; }
     .input-book-name { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #cba885; border-radius: 5px; background: #fff; outline: none; font-family: 'Segoe UI', sans-serif; }
+
+    /* --- TRUY VẤN PHƯƠNG TIỆN (MEDIA QUERIES) --- */
+    
+    /* Thiết bị Máy tính bảng và Màn hình nhỏ (Kích thước dưới 768px) */
+    @media screen and (max-width: 768px) {
+      .header h2 { font-size: 1.8rem; }
+      .books-grid { gap: 25px; padding: 10px; }
+      .book { width: 160px; height: 230px; }
+      .book-view-stack { width: 260px; height: 360px; margin: 20px auto; }
+      .page-sheet { padding: 20px; }
+      .page-sheet-date { font-size: 1.3rem; }
+      #editor-content { padding: 15px; font-size: 1rem; }
+    }
+
+    /* Thiết bị Điện thoại di động (Kích thước dưới 480px) */
+    @media screen and (max-width: 480px) {
+      .header { flex-direction: column; gap: 15px; align-items: flex-start; }
+      .header h2 { font-size: 1.6rem; }
+      .btn { padding: 8px 15px; font-size: 0.9rem; }
+      .book { width: 140px; height: 200px; }
+      .book-title { font-size: 1.1rem; }
+      .book-view-stack { width: 220px; height: 310px; }
+      .page-sheet-date { font-size: 1.1rem; }
+      .pin-input { width: 150px; font-size: 1.5rem; }
+    }
   </style>
 </head>
 <body>
@@ -353,7 +378,6 @@
         let x = Math.floor(Math.random() * canvas.width);
         let y = Math.floor(Math.random() * canvas.height);
         let pixel = ctx.getImageData(x, y, 1, 1).data;
-        // Pha trộn điểm ảnh gốc với 2 phần màu trắng để tạo sắc độ Pastel
         let r = Math.floor((pixel[0] + 255 * 2) / 3);
         let g = Math.floor((pixel[1] + 255 * 2) / 3);
         let b = Math.floor((pixel[2] + 255 * 2) / 3);
@@ -380,7 +404,7 @@
             id: targetBookId,
             name: bookInput,
             cover: coverDataUrl || null,
-            palette: dynamicPalette || fallbackColors // Gán bảng màu vào CSDL Sách
+            palette: dynamicPalette || fallbackColors
           });
         }
 
@@ -408,13 +432,12 @@
           const img = new Image();
           img.onload = function() {
             const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 400; // Resize bìa nhỏ hơn để tối ưu hiệu năng
+            const MAX_WIDTH = 400;
             const scaleSize = MAX_WIDTH / img.width;
             canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             
-            // Trích xuất 5 mã màu động từ ảnh vừa tải lên
             const dynamicPalette = generatePastelPalette(canvas, ctx, 5);
             const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
             
