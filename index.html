@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aesthetic Vintage Diary - Minimalist</title>
+  <title>Aesthetic Vintage Diary - Pro Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-color: #eae6db; 
       --book-bg: #F4EFE6; 
       --text-color: #3e3a35;
-      --primary: #8c7b6c; /* Chuyển sang tone nâu trầm thanh lịch */
+      --primary: #8c7b6c; 
       --danger: #c47b6a;
     }
     * { box-sizing: border-box; }
@@ -31,7 +31,7 @@
     #lock-title { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 20px; color: #4a4238; }
     .pin-input { font-size: 2rem; padding: 10px; width: 200px; text-align: center; border: 1px solid var(--primary); border-radius: 4px; margin-bottom: 20px; letter-spacing: 5px; background: transparent; color: #4a4238; outline: none; }
     
-    /* --- Thiết kế Nút Tối giản (Minimalist Buttons) --- */
+    /* --- Thiết kế Nút Tối giản --- */
     .btn { padding: 8px 18px; font-size: 0.95rem; border: 1px solid var(--primary); border-radius: 4px; cursor: pointer; background: transparent; color: var(--primary); font-weight: 600; transition: all 0.3s ease; }
     .btn:hover { background: var(--primary); color: #fff; }
     .btn-text { border: none; background: transparent; color: var(--primary); padding: 8px 12px; }
@@ -49,11 +49,16 @@
     .header-actions { display: flex; gap: 10px; }
     .books-grid { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; padding: 20px; perspective: 1200px; }
     
-    /* --- Bìa sách Aesthetic --- */
-    .book { width: 200px; height: 280px; background: var(--book-bg); padding: 12px; border-radius: 2px 8px 8px 2px; box-shadow: 5px 10px 20px rgba(0,0,0,0.15), inset 4px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); cursor: pointer; transform: rotateY(-15deg); border-left: 6px solid #d3c7b2; }
+    /* --- Bìa sách Aesthetic & Kéo Thả (Drag & Drop) --- */
+    .book { width: 200px; height: 280px; background: var(--book-bg); padding: 12px; border-radius: 2px 8px 8px 2px; box-shadow: 5px 10px 20px rgba(0,0,0,0.15), inset 4px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); cursor: grab; transform: rotateY(-15deg); border-left: 6px solid #d3c7b2; }
     .book:hover { transform: rotateY(0deg) scale(1.05) translateY(-5px); }
-    .book-cover-img { width: 100%; height: 75%; background-size: cover; background-position: center; border: 1px solid rgba(0,0,0,0.1); box-shadow: inset 0 0 5px rgba(0,0,0,0.2); }
-    .book-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: #3e3a35; text-align: center; margin-top: auto; padding-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .book:active { cursor: grabbing; }
+    .book.dragging { opacity: 0.5; transform: scale(0.95); }
+    
+    .book-cover-img { width: 100%; height: 75%; background-size: cover; background-position: center; border: 1px solid rgba(0,0,0,0.1); box-shadow: inset 0 0 5px rgba(0,0,0,0.2); pointer-events: none; }
+    .book-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: #3e3a35; text-align: center; margin-top: auto; padding-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+    
+    /* Tránh xung đột sự kiện kéo thả với nút xóa */
     .book-delete-btn { position: absolute; top: -10px; right: -10px; background: var(--book-bg); color: var(--danger); border: 1px solid var(--danger); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 10px; cursor: pointer; z-index: 10; transition: 0.2s; }
     .book-delete-btn:hover { background: var(--danger); color: white; transform: scale(1.1); }
 
@@ -71,7 +76,6 @@
     #editor-content img { max-width: 100%; border-radius: 2px; margin: 20px 0; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
     .save-status { font-size: 0.85rem; color: #888; margin-left: auto; align-self: center; font-style: italic; }
     
-    /* Lớp phủ khi ở chế độ Chỉ đọc (Read-only) */
     .read-only-mode #editor-title { color: #5c554d; }
     .read-only-mode #editor-content { color: #5c554d; }
 
@@ -84,6 +88,9 @@
     .book-option:hover { background: #eae6db; border-color: var(--primary); color: var(--primary); }
     .input-book-name { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #d4cdc1; border-radius: 4px; background: transparent; outline: none; font-family: 'Segoe UI', sans-serif; color: #3e3a35; }
     .input-book-name:focus { border-color: var(--primary); }
+    
+    /* Trạng thái xác nhận khi Copy-Paste thành công */
+    .paste-success-msg { display: none; font-size: 0.85rem; color: #6a9c78; font-weight: bold; margin-bottom: 15px; font-style: italic; }
 
     /* --- Responsive --- */
     @media screen and (max-width: 768px) {
@@ -113,7 +120,7 @@
     <div class="header">
       <h2>Thư Viện Ký Ức</h2>
       <div class="header-actions">
-        <button class="btn" onclick="document.getElementById('modal-create-book').style.display = 'flex'">Tạo Sách Mới</button>
+        <button class="btn" onclick="openCreateBookModal()">Tạo Sách Mới</button>
         <button class="btn btn-primary-filled" onclick="openEditor(null)">Chắp Bút</button>
       </div>
     </div>
@@ -137,7 +144,6 @@
     <div class="header">
       <div class="editor-header-group">
         <button class="btn btn-text" onclick="goBackFromEditor()">← Trở về</button>
-        <!-- Nút Trạng thái Động (Toggle Button) -->
         <button class="btn btn-primary-filled" id="btn-toggle-edit" onclick="handleEditToggle()">Chỉnh Sửa</button>
       </div>
       <div class="editor-header-group" id="editor-secondary-actions">
@@ -164,13 +170,16 @@
       <p style="margin: 10px 0; font-style: italic; font-size: 0.9rem; color: #777;">Hoặc đưa vào miền ký ức mới</p>
       <input type="text" id="new-book-name" class="input-book-name" placeholder="Tên cuốn sách mới...">
       
-      <label for="cover-upload" style="display:block; margin-bottom: 20px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.9rem;">
-        [+] Đính kèm Ảnh Bìa
+      <label for="cover-upload" style="display:block; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">
+        [+] Chọn Tệp tin
       </label>
+      <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p>
+      
+      <div id="save-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div>
       <input type="file" id="cover-upload" accept="image/*" style="display: none;">
       
       <button class="btn btn-primary-filled" style="width: 100%;" onclick="executeSaveAction()">Xác nhận Vị trí</button>
-      <button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="document.getElementById('modal-save').style.display = 'none'">Hủy lệnh</button>
+      <button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button>
     </div>
   </div>
 
@@ -179,12 +188,17 @@
     <div class="modal-content">
       <h3>Khởi Tạo Sách Mới</h3>
       <input type="text" id="only-new-book-name" class="input-book-name" placeholder="Tên cuốn sách...">
-      <label for="only-cover-upload" style="display:block; margin-bottom: 20px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.9rem;">
-        [+] Tải lên Ảnh Bìa (Tùy chọn)
+      
+      <label for="only-cover-upload" style="display:block; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">
+        [+] Chọn Tệp tin Bìa (Tùy chọn)
       </label>
+      <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p>
+      
+      <div id="create-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div>
       <input type="file" id="only-cover-upload" accept="image/*" style="display: none;">
+      
       <button class="btn btn-primary-filled" style="width: 100%;" onclick="executeCreateBook()">Tạo Sách</button>
-      <button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="document.getElementById('modal-create-book').style.display = 'none'">Hủy lệnh</button>
+      <button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button>
     </div>
   </div>
 
@@ -193,12 +207,14 @@
     let currentPageId = null;
     let preSelectedBookId = null; 
     let typingTimer;
-    let isEditMode = true; // Biến trạng thái quản lý Đọc/Ghi
+    let isEditMode = true; 
+    let dragStartIndex = null; // Quản lý trạng thái Kéo/Thả
     
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
     if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã Khởi tạo";
 
+    // Mật mã
     document.getElementById('pin-input').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') checkPin();
     });
@@ -226,18 +242,58 @@
       document.getElementById(screenId).classList.add('active');
     }
 
+    // --- Thuật toán Kéo Thả (Drag & Drop Reordering) ---
+    function handleDragStart(e, index) {
+      dragStartIndex = index;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => e.target.classList.add('dragging'), 0);
+    }
+    
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+    }
+    
+    function handleDragOver(e) {
+      e.preventDefault(); 
+      e.dataTransfer.dropEffect = 'move';
+    }
+    
+    function handleDrop(e, dropIndex) {
+      e.preventDefault();
+      if (dragStartIndex !== null && dragStartIndex !== dropIndex) {
+        const movedBook = db.books.splice(dragStartIndex, 1)[0];
+        db.books.splice(dropIndex, 0, movedBook);
+        saveDB();
+        renderBooks();
+      }
+      dragStartIndex = null;
+    }
+
+    // Kết xuất Tổng quan Sách
     function renderBooks() {
       const container = document.getElementById('books-container');
       container.innerHTML = '';
-      db.books.forEach(book => {
+      db.books.forEach((book, index) => {
         const bgImg = book.cover ? `background-image: url('${book.cover}');` : `background-color: #d4cdc1;`;
-        container.innerHTML += `
-          <div class="book" onclick="openBook('${book.id}')">
-            <div class="book-delete-btn" onclick="deleteBook('${book.id}', event)">✖</div>
-            <div class="book-cover-img" style="${bgImg}"></div>
-            <div class="book-title">${book.name}</div>
-          </div>
+        
+        // Khởi tạo phần tử DOM để đính kèm Event Listeners Kéo thả
+        const bookEl = document.createElement('div');
+        bookEl.className = 'book';
+        bookEl.draggable = true;
+        
+        // Event Listeners cho Drag & Drop
+        bookEl.addEventListener('dragstart', (e) => handleDragStart(e, index));
+        bookEl.addEventListener('dragend', handleDragEnd);
+        bookEl.addEventListener('dragover', handleDragOver);
+        bookEl.addEventListener('drop', (e) => handleDrop(e, index));
+        bookEl.addEventListener('click', () => openBook(book.id));
+        
+        bookEl.innerHTML = `
+          <div class="book-delete-btn" onclick="deleteBook('${book.id}', event)">✖</div>
+          <div class="book-cover-img" style="${bgImg}"></div>
+          <div class="book-title">${book.name}</div>
         `;
+        container.appendChild(bookEl);
       });
     }
 
@@ -288,7 +344,7 @@
       switchScreen('book-view');
     }
 
-    // --- Quản lý Trạng thái Đọc/Ghi (Toggle Mode Logic) ---
+    // --- Quản lý Chế độ Đọc/Ghi ---
     function setEditorMode(editMode) {
       isEditMode = editMode;
       const titleEl = document.getElementById('editor-title');
@@ -298,41 +354,31 @@
       const editorScreen = document.getElementById('editor-screen');
 
       if (isEditMode) {
-        // Mở khóa nhập liệu
         titleEl.readOnly = false;
         contentEl.setAttribute('contenteditable', 'true');
         toolbarEl.style.display = 'flex';
         editorScreen.classList.remove('read-only-mode');
-        // Đổi giao diện nút thành "Lưu Lại"
         toggleBtn.innerText = 'Lưu Nội Dung';
         toggleBtn.className = 'btn btn-primary-filled';
         contentEl.focus();
       } else {
-        // Khóa nhập liệu (Chỉ đọc)
         titleEl.readOnly = true;
         contentEl.setAttribute('contenteditable', 'false');
         toolbarEl.style.display = 'none';
         editorScreen.classList.add('read-only-mode');
-        // Đổi giao diện nút thành "Chỉnh Sửa"
         toggleBtn.innerText = 'Chỉnh Sửa';
         toggleBtn.className = 'btn btn-text';
       }
     }
 
     function handleEditToggle() {
-      if (isEditMode) {
-        // Nếu đang gõ -> Bấm Lưu
-        savePageDirectly(false); 
-      } else {
-        // Nếu đang xem -> Bấm Mở Sửa
-        setEditorMode(true);
-      }
+      if (isEditMode) savePageDirectly(false); 
+      else setEditorMode(true);
     }
 
     function openEditor(pageId = null, fromBook = false) {
       currentPageId = pageId;
       if (!fromBook && !pageId) preSelectedBookId = null; 
-      
       document.getElementById('editor-secondary-actions').style.display = pageId ? 'flex' : 'none';
 
       const titleEl = document.getElementById('editor-title');
@@ -342,25 +388,19 @@
         const page = db.pages.find(p => p.id === pageId);
         titleEl.value = page.title;
         contentEl.innerHTML = page.content;
-        // Trạng thái mặc định: Đọc
         setEditorMode(false);
       } else {
         titleEl.value = '';
         contentEl.innerHTML = '';
         document.getElementById('save-status').innerText = '';
-        // Trạng thái mặc định: Viết
         setEditorMode(true);
       }
       switchScreen('editor-screen');
     }
 
     function goBackFromEditor() {
-      if (preSelectedBookId) {
-        openBook(preSelectedBookId);
-      } else {
-        switchScreen('dashboard');
-        renderBooks();
-      }
+      if (preSelectedBookId) openBook(preSelectedBookId);
+      else { switchScreen('dashboard'); renderBooks(); }
     }
 
     function deleteCurrentPage() {
@@ -380,20 +420,15 @@
 
       if (currentPageId) {
         const page = db.pages.find(p => p.id === currentPageId);
-        page.title = title;
-        page.content = content;
+        page.title = title; page.content = content;
         saveDB();
-        setEditorMode(false); // Lưu xong chuyển về chế độ Đọc
+        setEditorMode(false); 
         if (goBack) goBackFromEditor();
       } else if (preSelectedBookId) {
         const newPageId = 'page_' + Date.now();
-        db.pages.push({
-          id: newPageId,
-          bookId: preSelectedBookId,
-          title: title, content: content, timestamp: Date.now()
-        });
+        db.pages.push({ id: newPageId, bookId: preSelectedBookId, title: title, content: content, timestamp: Date.now() });
         saveDB();
-        currentPageId = newPageId; // Cập nhật ID để không tạo trang đúp
+        currentPageId = newPageId; 
         document.getElementById('editor-secondary-actions').style.display = 'flex';
         setEditorMode(false);
         if (goBack) goBackFromEditor();
@@ -402,8 +437,57 @@
       }
     }
 
+    // --- Quản lý Khay nhớ tạm (Clipboard / Copy-Paste) cho Ảnh Bìa ---
+    document.addEventListener('paste', function(e) {
+      const modalSaveVisible = document.getElementById('modal-save').style.display === 'flex';
+      const modalCreateVisible = document.getElementById('modal-create-book').style.display === 'flex';
+
+      // Chỉ kích hoạt xử lý khi 1 trong 2 Hộp thoại đang mở
+      if (!modalSaveVisible && !modalCreateVisible) return;
+
+      const clipboardData = e.clipboardData || window.clipboardData;
+      if (!clipboardData) return;
+
+      const items = clipboardData.items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          
+          // Khởi tạo đối tượng DataTransfer để đẩy dữ liệu vào Input File
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+
+          if (modalSaveVisible) {
+            document.getElementById('cover-upload').files = dataTransfer.files;
+            document.getElementById('save-paste-msg').style.display = 'block';
+          } else if (modalCreateVisible) {
+            document.getElementById('only-cover-upload').files = dataTransfer.files;
+            document.getElementById('create-paste-msg').style.display = 'block';
+          }
+          
+          e.preventDefault(); // Hủy sự kiện mặc định
+          break;
+        }
+      }
+    });
+
+    function closeModals() {
+      document.getElementById('modal-save').style.display = 'none';
+      document.getElementById('modal-create-book').style.display = 'none';
+      // Reset thông báo dán ảnh
+      document.getElementById('save-paste-msg').style.display = 'none';
+      document.getElementById('create-paste-msg').style.display = 'none';
+    }
+
+    function openCreateBookModal() {
+      document.getElementById('modal-create-book').style.display = 'flex';
+      document.getElementById('create-paste-msg').style.display = 'none';
+      document.getElementById('only-cover-upload').value = '';
+    }
+
     function showSaveModal() {
       document.getElementById('modal-save').style.display = 'flex';
+      document.getElementById('save-paste-msg').style.display = 'none';
       document.getElementById('modal-save-title').innerText = currentPageId ? "Đổi Vị Trí Lưu Trữ" : "Chọn Vị Trí Lưu Trữ";
       const list = document.getElementById('modal-book-list');
       list.innerHTML = '';
@@ -414,6 +498,7 @@
       document.getElementById('cover-upload').value = '';
     }
 
+    // Tự động lưu Nội dung Editor (Auto-save)
     document.getElementById('editor-content').addEventListener('input', () => {
       if(!isEditMode) return;
       document.getElementById('save-status').innerText = 'Đang ghi...';
@@ -431,14 +516,10 @@
           const img = new Image();
           img.onload = function() {
             const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 800;
-            const scaleSize = MAX_WIDTH / img.width;
-            canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
+            canvas.width = 800; canvas.height = img.height * (800 / img.width);
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
-            
-            const imgHtml = `<img src="${compressedDataUrl}" alt="media-attachment">`;
+            const imgHtml = `<img src="${canvas.toDataURL('image/jpeg', 0.8)}" alt="media">`;
             document.getElementById('editor-content').focus();
             document.execCommand('insertHTML', false, imgHtml);
           };
@@ -487,9 +568,9 @@
         }
         
         saveDB();
-        document.getElementById('modal-save').style.display = 'none';
+        closeModals();
         document.getElementById('editor-secondary-actions').style.display = 'flex';
-        setEditorMode(false); // Đổi Vị trí hoặc Lưu mới thành công -> Khóa thành Chỉ đọc
+        setEditorMode(false); 
       };
 
       if (coverFile && !existingBook) {
@@ -519,7 +600,7 @@
       const finalizeCreate = (coverDataUrl, dynamicPalette) => {
         db.books.push({ id: 'book_' + Date.now(), name: bookName, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors });
         saveDB();
-        document.getElementById('modal-create-book').style.display = 'none';
+        closeModals();
         document.getElementById('only-new-book-name').value = '';
         renderBooks();
       };
