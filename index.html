@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aesthetic Vintage Diary - Pro Edition</title>
+  <title>Aesthetic Vintage Diary - Secure Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -49,18 +49,20 @@
     .header-actions { display: flex; gap: 10px; }
     .books-grid { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; padding: 20px; perspective: 1200px; }
     
-    /* --- Bìa sách Aesthetic & Kéo Thả (Drag & Drop) --- */
+    /* --- Bìa sách Aesthetic & Hành động --- */
     .book { width: 200px; height: 280px; background: var(--book-bg); padding: 12px; border-radius: 2px 8px 8px 2px; box-shadow: 5px 10px 20px rgba(0,0,0,0.15), inset 4px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); cursor: grab; transform: rotateY(-15deg); border-left: 6px solid #d3c7b2; }
     .book:hover { transform: rotateY(0deg) scale(1.05) translateY(-5px); }
     .book:active { cursor: grabbing; }
     .book.dragging { opacity: 0.5; transform: scale(0.95); }
     
-    .book-cover-img { width: 100%; height: 75%; background-size: cover; background-position: center; border: 1px solid rgba(0,0,0,0.1); box-shadow: inset 0 0 5px rgba(0,0,0,0.2); pointer-events: none; }
+    .book-cover-img { width: 100%; height: 75%; background-size: cover; background-position: center; pointer-events: none; border-radius: 2px; }
     .book-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: #3e3a35; text-align: center; margin-top: auto; padding-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
     
-    /* Tránh xung đột sự kiện kéo thả với nút xóa */
-    .book-delete-btn { position: absolute; top: -10px; right: -10px; background: var(--book-bg); color: var(--danger); border: 1px solid var(--danger); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 10px; cursor: pointer; z-index: 10; transition: 0.2s; }
-    .book-delete-btn:hover { background: var(--danger); color: white; transform: scale(1.1); }
+    .book-actions { position: absolute; top: -10px; right: -10px; display: flex; gap: 6px; z-index: 10; }
+    .book-action-btn { background: var(--book-bg); color: var(--primary); border: 1px solid var(--primary); width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .book-action-btn:hover { background: var(--primary); color: white; transform: scale(1.1); }
+    .book-action-btn.delete { color: var(--danger); border-color: var(--danger); }
+    .book-action-btn.delete:hover { background: var(--danger); color: white; }
 
     /* --- Xếp trang 3D --- */
     .book-view-stack { position: relative; width: 300px; height: 420px; margin: 40px auto; perspective: 1500px; }
@@ -81,15 +83,14 @@
 
     /* --- Hệ thống Hộp thoại (Modals) --- */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
-    .modal-content { background: var(--book-bg); padding: 30px; border-radius: 4px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #d4cdc1; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-    .modal-content h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; margin-top: 0; margin-bottom: 15px; color: #3e3a35;}
-    .book-list-modal { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; max-height: 200px; overflow-y: auto; }
+    .modal-content { background: var(--book-bg); padding: 30px; border-radius: 4px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #d4cdc1; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center;}
+    .modal-content h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; margin-top: 0; margin-bottom: 15px; color: #3e3a35; width: 100%;}
+    .book-list-modal { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; max-height: 200px; overflow-y: auto; width: 100%;}
     .book-option { padding: 10px; background: transparent; border: 1px solid #d4cdc1; border-radius: 4px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: #5c554d; }
     .book-option:hover { background: #eae6db; border-color: var(--primary); color: var(--primary); }
     .input-book-name { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #d4cdc1; border-radius: 4px; background: transparent; outline: none; font-family: 'Segoe UI', sans-serif; color: #3e3a35; }
     .input-book-name:focus { border-color: var(--primary); }
     
-    /* Trạng thái xác nhận khi Copy-Paste thành công */
     .paste-success-msg { display: none; font-size: 0.85rem; color: #6a9c78; font-weight: bold; margin-bottom: 15px; font-style: italic; }
 
     /* --- Responsive --- */
@@ -108,7 +109,7 @@
 </head>
 <body>
 
-  <!-- Hệ thống Xác thực -->
+  <!-- Hệ thống Xác thực Khởi tạo -->
   <div id="lock-screen" class="screen active">
     <h2 id="lock-title">Mật mã Nhật ký</h2>
     <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••">
@@ -167,13 +168,13 @@
     <div class="modal-content">
       <h3 id="modal-save-title">Chọn Vị trí Lưu trữ</h3>
       <div class="book-list-modal" id="modal-book-list"></div>
-      <p style="margin: 10px 0; font-style: italic; font-size: 0.9rem; color: #777;">Hoặc đưa vào miền ký ức mới</p>
+      <p style="margin: 10px 0; font-style: italic; font-size: 0.9rem; color: #777; width: 100%;">Hoặc đưa vào miền ký ức mới</p>
       <input type="text" id="new-book-name" class="input-book-name" placeholder="Tên cuốn sách mới...">
       
-      <label for="cover-upload" style="display:block; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">
-        [+] Chọn Tệp tin
+      <label for="cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">
+        [+] Chọn Tệp tin Bìa
       </label>
-      <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p>
+      <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p>
       
       <div id="save-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div>
       <input type="file" id="cover-upload" accept="image/*" style="display: none;">
@@ -189,10 +190,10 @@
       <h3>Khởi Tạo Sách Mới</h3>
       <input type="text" id="only-new-book-name" class="input-book-name" placeholder="Tên cuốn sách...">
       
-      <label for="only-cover-upload" style="display:block; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">
-        [+] Chọn Tệp tin Bìa (Tùy chọn)
+      <label for="only-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">
+        [+] Tải lên Ảnh Bìa (Tùy chọn)
       </label>
-      <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p>
+      <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p>
       
       <div id="create-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div>
       <input type="file" id="only-cover-upload" accept="image/*" style="display: none;">
@@ -202,19 +203,57 @@
     </div>
   </div>
 
+  <!-- Hộp thoại Chỉnh sửa Sách -->
+  <div id="modal-edit-book" class="modal">
+    <div class="modal-content">
+      <h3>Chỉnh Sửa Sách</h3>
+      <input type="text" id="edit-book-name" class="input-book-name" placeholder="Tên cuốn sách...">
+      
+      <label for="edit-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">
+        [+] Đổi Ảnh Bìa Khác
+      </label>
+      <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh mới</p>
+      
+      <div id="edit-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div>
+      <input type="file" id="edit-cover-upload" accept="image/*" style="display: none;">
+      
+      <button class="btn btn-danger-text" style="width: 100%; margin-bottom: 15px; font-size: 0.9rem;" onclick="removeBookCover()">Xóa Ảnh Bìa (Trở về Bìa Trơn)</button>
+      
+      <button class="btn btn-primary-filled" style="width: 100%;" onclick="executeEditBook()">Lưu Thay Đổi</button>
+      <button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button>
+    </div>
+  </div>
+
+  <!-- Hộp thoại Yêu cầu Xác thực Bảo mật (Cập nhật Mới) -->
+  <div id="modal-passcode" class="modal">
+    <div class="modal-content">
+      <h3 id="modal-passcode-title">Xác Thực Thao Tác</h3>
+      <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống để tiếp tục.</p>
+      
+      <input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••">
+      
+      <button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác Nhận</button>
+      <button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy Thao Tác</button>
+    </div>
+  </div>
+
   <script>
     let db = JSON.parse(localStorage.getItem('diary_db')) || { books: [], pages: [], passcode: null };
     let currentPageId = null;
     let preSelectedBookId = null; 
+    let editingBookId = null; 
     let typingTimer;
     let isEditMode = true; 
-    let dragStartIndex = null; // Quản lý trạng thái Kéo/Thả
+    let dragStartIndex = null; 
+    
+    // Biến lưu trữ hàm thực thi sau khi xác thực thành công
+    let pendingSecureAction = null;
     
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
     if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã Khởi tạo";
 
-    // Mật mã
+    // --- Xác thực Truy cập Tổng (Login) ---
     document.getElementById('pin-input').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') checkPin();
     });
@@ -237,27 +276,47 @@
       }
     }
 
+    // --- Mô-đun Xác thực Thao tác (Secure Action Modal) ---
+    document.getElementById('action-pin-input').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') verifyActionPin();
+    });
+
+    function requestPasscode(actionTitle, callback) {
+      pendingSecureAction = callback;
+      document.getElementById('modal-passcode-title').innerText = actionTitle;
+      document.getElementById('action-pin-input').value = '';
+      document.getElementById('modal-passcode').style.display = 'flex';
+      setTimeout(() => document.getElementById('action-pin-input').focus(), 100);
+    }
+
+    function verifyActionPin() {
+      const input = document.getElementById('action-pin-input').value;
+      if (input === db.passcode) {
+        closePasscodeModal();
+        if (pendingSecureAction) pendingSecureAction();
+      } else {
+        alert("Lỗi xác thực: Mật mã không hợp lệ.");
+      }
+    }
+
+    function closePasscodeModal() {
+      document.getElementById('modal-passcode').style.display = 'none';
+      pendingSecureAction = null;
+    }
+
     function switchScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(screenId).classList.add('active');
     }
 
-    // --- Thuật toán Kéo Thả (Drag & Drop Reordering) ---
+    // --- Xử lý Kéo Thả (Drag & Drop) ---
     function handleDragStart(e, index) {
       dragStartIndex = index;
       e.dataTransfer.effectAllowed = 'move';
       setTimeout(() => e.target.classList.add('dragging'), 0);
     }
-    
-    function handleDragEnd(e) {
-      e.target.classList.remove('dragging');
-    }
-    
-    function handleDragOver(e) {
-      e.preventDefault(); 
-      e.dataTransfer.dropEffect = 'move';
-    }
-    
+    function handleDragEnd(e) { e.target.classList.remove('dragging'); }
+    function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
     function handleDrop(e, dropIndex) {
       e.preventDefault();
       if (dragStartIndex !== null && dragStartIndex !== dropIndex) {
@@ -269,19 +328,19 @@
       dragStartIndex = null;
     }
 
-    // Kết xuất Tổng quan Sách
+    // --- Kết xuất Tổng quan ---
     function renderBooks() {
       const container = document.getElementById('books-container');
       container.innerHTML = '';
       db.books.forEach((book, index) => {
-        const bgImg = book.cover ? `background-image: url('${book.cover}');` : `background-color: #d4cdc1;`;
+        const bgStyle = book.cover 
+          ? `background-image: url('${book.cover}'); border: 1px solid rgba(0,0,0,0.1); box-shadow: inset 0 0 5px rgba(0,0,0,0.2);` 
+          : `background-color: transparent; border: none; box-shadow: none;`;
         
-        // Khởi tạo phần tử DOM để đính kèm Event Listeners Kéo thả
         const bookEl = document.createElement('div');
         bookEl.className = 'book';
         bookEl.draggable = true;
         
-        // Event Listeners cho Drag & Drop
         bookEl.addEventListener('dragstart', (e) => handleDragStart(e, index));
         bookEl.addEventListener('dragend', handleDragEnd);
         bookEl.addEventListener('dragover', handleDragOver);
@@ -289,24 +348,82 @@
         bookEl.addEventListener('click', () => openBook(book.id));
         
         bookEl.innerHTML = `
-          <div class="book-delete-btn" onclick="deleteBook('${book.id}', event)">✖</div>
-          <div class="book-cover-img" style="${bgImg}"></div>
+          <div class="book-actions">
+            <div class="book-action-btn edit" onclick="openEditBookModal('${book.id}', event)">✎</div>
+            <div class="book-action-btn delete" onclick="deleteBook('${book.id}', event)">✖</div>
+          </div>
+          <div class="book-cover-img" style="${bgStyle}"></div>
           <div class="book-title">${book.name}</div>
         `;
         container.appendChild(bookEl);
       });
     }
 
+    // Cập nhật hàm Xóa Sách với requestPasscode
     function deleteBook(bookId, event) {
       event.stopPropagation();
-      const pass = prompt("CẢNH BÁO: Thao tác này sẽ xóa toàn bộ nội dung bên trong. Nhập mật mã để xác nhận:");
-      if (pass === db.passcode) {
+      requestPasscode("Xác Thực Xóa Sách", () => {
         db.books = db.books.filter(b => b.id !== bookId);
         db.pages = db.pages.filter(p => p.bookId !== bookId);
         saveDB();
         renderBooks();
-      } else if (pass !== null) {
-        alert("Lỗi xác thực: Thao tác bị hủy bỏ.");
+      });
+    }
+
+    // Cập nhật hàm Mở Hộp thoại Chỉnh sửa với requestPasscode
+    function openEditBookModal(bookId, event) {
+      event.stopPropagation(); 
+      requestPasscode("Xác Thực Chỉnh Sửa", () => {
+        editingBookId = bookId;
+        const book = db.books.find(b => b.id === bookId);
+        document.getElementById('edit-book-name').value = book.name;
+        document.getElementById('edit-cover-upload').value = '';
+        document.getElementById('edit-paste-msg').style.display = 'none';
+        document.getElementById('modal-edit-book').style.display = 'flex';
+      });
+    }
+
+    function removeBookCover() {
+      const book = db.books.find(b => b.id === editingBookId);
+      if(book) {
+        book.cover = null;
+        book.palette = fallbackColors; 
+      }
+      document.getElementById('edit-cover-upload').value = '';
+      document.getElementById('edit-paste-msg').style.display = 'none';
+      alert("Thông báo: Đã thiết lập trạng thái Bìa Trơn. Vui lòng bấm 'Lưu Thay Đổi'.");
+    }
+
+    function executeEditBook() {
+      const book = db.books.find(b => b.id === editingBookId);
+      const newName = document.getElementById('edit-book-name').value;
+      const coverFile = document.getElementById('edit-cover-upload').files[0];
+
+      if (!newName) return alert("Yêu cầu nhập tên sách.");
+      book.name = newName;
+
+      if (coverFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 400; canvas.height = img.height * (400 / img.width);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            book.cover = canvas.toDataURL('image/jpeg', 0.8);
+            book.palette = generatePastelPalette(canvas, ctx, 5);
+            saveDB();
+            closeModals();
+            renderBooks();
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(coverFile);
+      } else {
+        saveDB();
+        closeModals();
+        renderBooks();
       }
     }
 
@@ -403,15 +520,13 @@
       else { switchScreen('dashboard'); renderBooks(); }
     }
 
+    // Cập nhật hàm Xóa Trang với requestPasscode
     function deleteCurrentPage() {
-      const pass = prompt("Yêu cầu nhập mật mã để xác thực lệnh XÓA TRANG:");
-      if (pass === db.passcode) {
+      requestPasscode("Xác Thực Xóa Trang", () => {
         db.pages = db.pages.filter(p => p.id !== currentPageId);
         saveDB();
         goBackFromEditor();
-      } else if (pass !== null) {
-        alert("Lỗi xác thực: Thao tác bị hủy bỏ.");
-      }
+      });
     }
 
     function savePageDirectly(goBack = false) {
@@ -437,13 +552,13 @@
       }
     }
 
-    // --- Quản lý Khay nhớ tạm (Clipboard / Copy-Paste) cho Ảnh Bìa ---
+    // --- Quản lý Khay nhớ tạm (Clipboard / Copy-Paste) ---
     document.addEventListener('paste', function(e) {
       const modalSaveVisible = document.getElementById('modal-save').style.display === 'flex';
       const modalCreateVisible = document.getElementById('modal-create-book').style.display === 'flex';
+      const modalEditVisible = document.getElementById('modal-edit-book').style.display === 'flex';
 
-      // Chỉ kích hoạt xử lý khi 1 trong 2 Hộp thoại đang mở
-      if (!modalSaveVisible && !modalCreateVisible) return;
+      if (!modalSaveVisible && !modalCreateVisible && !modalEditVisible) return;
 
       const clipboardData = e.clipboardData || window.clipboardData;
       if (!clipboardData) return;
@@ -452,8 +567,6 @@
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           const file = items[i].getAsFile();
-          
-          // Khởi tạo đối tượng DataTransfer để đẩy dữ liệu vào Input File
           const dataTransfer = new DataTransfer();
           dataTransfer.items.add(file);
 
@@ -463,9 +576,12 @@
           } else if (modalCreateVisible) {
             document.getElementById('only-cover-upload').files = dataTransfer.files;
             document.getElementById('create-paste-msg').style.display = 'block';
+          } else if (modalEditVisible) {
+            document.getElementById('edit-cover-upload').files = dataTransfer.files;
+            document.getElementById('edit-paste-msg').style.display = 'block';
           }
           
-          e.preventDefault(); // Hủy sự kiện mặc định
+          e.preventDefault(); 
           break;
         }
       }
@@ -474,15 +590,18 @@
     function closeModals() {
       document.getElementById('modal-save').style.display = 'none';
       document.getElementById('modal-create-book').style.display = 'none';
-      // Reset thông báo dán ảnh
+      document.getElementById('modal-edit-book').style.display = 'none';
+      
       document.getElementById('save-paste-msg').style.display = 'none';
       document.getElementById('create-paste-msg').style.display = 'none';
+      document.getElementById('edit-paste-msg').style.display = 'none';
     }
 
     function openCreateBookModal() {
       document.getElementById('modal-create-book').style.display = 'flex';
-      document.getElementById('create-paste-msg').style.display = 'none';
+      document.getElementById('only-new-book-name').value = '';
       document.getElementById('only-cover-upload').value = '';
+      document.getElementById('create-paste-msg').style.display = 'none';
     }
 
     function showSaveModal() {
@@ -498,7 +617,6 @@
       document.getElementById('cover-upload').value = '';
     }
 
-    // Tự động lưu Nội dung Editor (Auto-save)
     document.getElementById('editor-content').addEventListener('input', () => {
       if(!isEditMode) return;
       document.getElementById('save-status').innerText = 'Đang ghi...';
