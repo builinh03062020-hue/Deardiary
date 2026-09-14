@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aesthetic Vintage Diary - Cover Flow Edition</title>
+  <title>Aesthetic Vintage Diary - Global Search Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -37,12 +37,20 @@
     .btn-primary-filled { background: var(--primary); color: #fff; }
     .btn-primary-filled:hover { opacity: 0.8; }
 
-    /* --- Dashboard --- */
+    /* --- Dashboard & Global Search --- */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid #d4cdc1; padding-bottom: 15px; flex-wrap: wrap; gap: 15px; }
     .header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin: 0; font-weight: 600; }
     .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .books-grid { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; padding: 20px; perspective: 1200px; }
     
+    .search-input { padding: 8px 12px; font-size: 0.95rem; border: 1px solid #d4cdc1; border-radius: 4px; background: transparent; color: var(--text-color); outline: none; font-family: 'Segoe UI', sans-serif; min-width: 250px; }
+    .search-input:focus { border-color: var(--primary); }
+
+    .global-search-grid { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; padding: 20px; width: 100%; }
+    .global-page-card { flex: 0 0 200px; height: 280px; border-radius: 2px 8px 8px 2px; box-shadow: 2px 5px 15px rgba(0,0,0,0.1); border-left: 4px solid rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 10px; text-align: center; }
+    .global-page-card:hover { transform: translateY(-5px); box-shadow: 2px 10px 20px rgba(0,0,0,0.15); }
+    .global-book-label { font-size: 0.85rem; font-style: italic; color: #555; background: rgba(255,255,255,0.4); padding: 4px 8px; border-radius: 4px; margin-bottom: 15px; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
     /* --- Bìa sách --- */
     .book { width: 200px; height: 280px; background: var(--book-bg); padding: 12px; border-radius: 2px 8px 8px 2px; box-shadow: 5px 10px 20px rgba(0,0,0,0.15), inset 4px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); cursor: grab; transform: rotateY(-15deg); border-left: 6px solid #d3c7b2; }
     .book:hover { transform: rotateY(0deg) scale(1.05) translateY(-5px); }
@@ -57,59 +65,16 @@
     .book-action-btn.delete:hover { background: var(--danger); color: white; }
 
     /* --- Không gian Sách: Horizontal Cover Flow --- */
-    .search-input { padding: 8px 12px; font-size: 0.95rem; border: 1px solid #d4cdc1; border-radius: 4px; background: transparent; color: var(--text-color); outline: none; font-family: 'Segoe UI', sans-serif; min-width: 250px; }
-    .search-input:focus { border-color: var(--primary); }
-    
-    .pages-carousel { 
-      display: flex; 
-      overflow-x: auto; 
-      padding: 60px 40px; 
-      margin: 20px auto; 
-      align-items: center; 
-      width: 100%; 
-      max-width: 1000px;
-      scrollbar-width: thin; 
-      scrollbar-color: var(--primary) transparent; 
-    }
+    .pages-carousel { display: flex; overflow-x: auto; padding: 60px 40px; margin: 20px auto; align-items: center; width: 100%; max-width: 1000px; scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
     .pages-carousel::-webkit-scrollbar { height: 8px; }
     .pages-carousel::-webkit-scrollbar-track { background: transparent; }
     .pages-carousel::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
-    .pages-carousel::after { content: ''; flex: 0 0 150px; } /* Khoảng đệm cuộn cuối */
+    .pages-carousel::after { content: ''; flex: 0 0 150px; } 
 
-    .page-sheet { 
-      position: relative; 
-      flex: 0 0 220px; 
-      height: 320px; 
-      margin-left: -120px; 
-      border-radius: 2px 8px 8px 2px; 
-      box-shadow: -5px 0 15px rgba(0,0,0,0.15); 
-      border-left: 2px solid rgba(0,0,0,0.05); 
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-      transform: perspective(1000px) rotateY(15deg); 
-      cursor: pointer; 
-      padding: 30px 15px; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-    }
+    .page-sheet { position: relative; flex: 0 0 220px; height: 320px; margin-left: -120px; border-radius: 2px 8px 8px 2px; box-shadow: -5px 0 15px rgba(0,0,0,0.15); border-left: 2px solid rgba(0,0,0,0.05); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: perspective(1000px) rotateY(15deg); cursor: pointer; padding: 30px 15px; display: flex; flex-direction: column; align-items: center; }
     .page-sheet:first-child { margin-left: 0; }
-    .page-sheet:hover { 
-      transform: perspective(1000px) rotateY(0deg) translateY(-25px) scale(1.05); 
-      z-index: 9999 !important; 
-      box-shadow: 0 15px 30px rgba(0,0,0,0.25); 
-    }
-    .page-sheet-date { 
-      font-family: 'Cormorant Garamond', serif; 
-      font-size: 1.3rem; 
-      color: #555; 
-      border-bottom: 1px solid rgba(0,0,0,0.1); 
-      padding-bottom: 10px; 
-      width: 100%; 
-      text-align: center; 
-      background: rgba(255, 255, 255, 0.4);
-      border-radius: 4px;
-      padding: 5px;
-    }
+    .page-sheet:hover { transform: perspective(1000px) rotateY(0deg) translateY(-25px) scale(1.05); z-index: 9999 !important; box-shadow: 0 15px 30px rgba(0,0,0,0.25); }
+    .page-sheet-date { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #555; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 10px; width: 100%; text-align: center; background: rgba(255, 255, 255, 0.4); border-radius: 4px; padding: 5px; }
 
     /* --- Trình Soạn thảo --- */
     .editor-header-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
@@ -134,8 +99,8 @@
 
     /* --- Responsive --- */
     @media screen and (max-width: 768px) {
-      .books-grid { gap: 25px; padding: 10px; }
-      .book { width: 160px; height: 230px; }
+      .books-grid, .global-search-grid { gap: 25px; padding: 10px; }
+      .book, .global-page-card { width: 160px; height: 230px; }
       .pages-carousel { padding: 40px 10px; }
       .page-sheet { flex: 0 0 180px; height: 260px; margin-left: -90px; }
       .search-input { min-width: 100%; margin-bottom: 10px; }
@@ -143,7 +108,7 @@
     @media screen and (max-width: 480px) {
       .header { flex-direction: column; align-items: flex-start; }
       .header-actions, .editor-header-group { width: 100%; justify-content: flex-start; }
-      .book { width: 140px; height: 200px; }
+      .book, .global-page-card { width: 140px; height: 200px; }
       .page-sheet { flex: 0 0 150px; height: 220px; margin-left: -80px; }
     }
   </style>
@@ -157,29 +122,30 @@
     <button class="btn btn-primary-filled" onclick="checkPin()">Mở Khóa Không Gian</button>
   </div>
 
-  <!-- Thư viện Tổng quan -->
+  <!-- Thư viện Tổng quan (Đã bổ sung Tìm kiếm Toàn cục) -->
   <div id="dashboard" class="screen">
     <div class="header">
       <h2>Thư Viện Ký Ức</h2>
       <div class="header-actions">
+        <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm toàn hệ thống..." onkeyup="handleGlobalSearch()">
         <button class="btn" onclick="openCreateBookModal()">Tạo Sách Mới</button>
         <button class="btn btn-primary-filled" onclick="openEditor(null)">Chắp Bút</button>
       </div>
     </div>
     <div class="books-grid" id="books-container"></div>
+    <div class="global-search-grid" id="global-search-results" style="display: none;"></div>
   </div>
 
-  <!-- Không gian Sách (Cover Flow Carousel) -->
+  <!-- Không gian Sách -->
   <div id="book-view" class="screen">
     <div class="header">
       <h2 id="current-book-title">Đang kết xuất...</h2>
       <div class="header-actions">
-        <input type="text" id="search-page-input" class="search-input" placeholder="Tìm theo ngày, tiêu đề..." onkeyup="handleSearch()">
+        <input type="text" id="search-page-input" class="search-input" placeholder="Lọc nội dung cuốn sách..." onkeyup="handleSearch()">
         <button class="btn btn-text" onclick="switchScreen('dashboard')">← Trở về</button>
         <button class="btn btn-primary-filled" onclick="openEditor(null, true)">Thêm Trang</button>
       </div>
     </div>
-    <!-- Vùng chứa đã được nâng cấp sang cấu trúc dải cuộn ngang -->
     <div id="pages-container" class="pages-carousel"></div>
   </div>
 
@@ -329,6 +295,12 @@
     function switchScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(screenId).classList.add('active');
+      // Tự động làm sạch trạng thái tìm kiếm toàn cục khi chuyển màn hình
+      if(screenId === 'dashboard') {
+        document.getElementById('global-search-input').value = '';
+        document.getElementById('books-container').style.display = 'flex';
+        document.getElementById('global-search-results').style.display = 'none';
+      }
     }
 
     function handleDragStart(e, index) { dragStartIndex = index; e.dataTransfer.effectAllowed = 'move'; setTimeout(() => e.target.classList.add('dragging'), 0); }
@@ -426,6 +398,69 @@
       }
     }
 
+    // --- Cập nhật Thuật toán Tìm kiếm Toàn cục (Global Search) ---
+    function handleGlobalSearch() {
+      const query = document.getElementById('global-search-input').value.toLowerCase();
+      const booksContainer = document.getElementById('books-container');
+      const resultsContainer = document.getElementById('global-search-results');
+
+      if (!query) {
+        booksContainer.style.display = 'flex';
+        resultsContainer.style.display = 'none';
+        return;
+      }
+
+      booksContainer.style.display = 'none';
+      resultsContainer.style.display = 'flex';
+      resultsContainer.innerHTML = '';
+
+      let results = db.pages.filter(p => {
+        const dateObj = new Date(p.timestamp);
+        const dateStr1 = dateObj.toLocaleDateString('vi-VN').toLowerCase();
+        const dateStr2 = dateObj.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase();
+        return (p.title && p.title.toLowerCase().includes(query)) ||
+               (p.content && p.content.toLowerCase().includes(query)) ||
+               dateStr1.includes(query) ||
+               dateStr2.includes(query);
+      });
+
+      if (results.length === 0) {
+        resultsContainer.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy trang thư liệu nào trên toàn hệ thống.</p>';
+        return;
+      }
+
+      // Sắp xếp tương tự tìm kiếm cục bộ (Pin > Time)
+      results.sort((a, b) => {
+        const pinA = a.isPinned ? 1 : 0;
+        const pinB = b.isPinned ? 1 : 0;
+        if (pinA !== pinB) return pinB - pinA;
+        return b.timestamp - a.timestamp;
+      });
+
+      results.forEach((page, index) => {
+        const book = db.books.find(b => b.id === page.bookId) || { name: 'Sách đã xóa', palette: fallbackColors };
+        const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' });
+        const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors;
+        const pageColor = palette[index % palette.length];
+        const pinIndicator = page.isPinned ? '<span style="font-size: 1.1rem; margin-right: 5px;">📌</span>' : '';
+
+        const pageEl = document.createElement('div');
+        pageEl.className = 'global-page-card';
+        pageEl.style.backgroundColor = pageColor;
+        pageEl.onclick = () => {
+          preSelectedBookId = page.bookId; // Gán bookId để lệnh Quay lại trỏ về đúng sách
+          openEditor(page.id, true);
+        };
+
+        pageEl.innerHTML = `
+          <div class="global-book-label">Thuộc về: <b>${book.name}</b></div>
+          <div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>
+        `;
+        resultsContainer.appendChild(pageEl);
+      });
+    }
+
     function openBook(bookId) {
       preSelectedBookId = bookId; 
       const book = db.books.find(b => b.id === bookId);
@@ -440,7 +475,6 @@
       renderPagesInBook(preSelectedBookId, query);
     }
 
-    // --- Cập nhật Thuật toán Render theo kiến trúc Cover Flow ---
     function renderPagesInBook(bookId, searchQuery) {
       const book = db.books.find(b => b.id === bookId);
       const container = document.getElementById('pages-container');
@@ -479,7 +513,6 @@
         const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors;
         const pageColor = palette[index % palette.length];
         
-        // Quản lý thứ tự nổi bọt Z-index để tạo hiệu ứng xếp lớp hoàn hảo
         const zIndex = pages.length - index; 
         const pinIndicator = page.isPinned ? '<span style="font-size: 1.1rem; margin-right: 5px;">📌</span>' : '';
 
@@ -574,6 +607,7 @@
 
     function goBackFromEditor() {
       if (preSelectedBookId) {
+        // Bảo lưu trạng thái tìm kiếm cục bộ nếu có
         renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); 
         switchScreen('book-view');
       }
