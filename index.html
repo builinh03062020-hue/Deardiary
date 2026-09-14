@@ -24,19 +24,19 @@
     .screen { display: none; min-height: 100vh; padding: 20px; }
     .screen.active { display: block; }
 
-    /* --- Màn hình Tải Dữ Liệu Chuyên dụng --- */
+    /* Màn hình Tải Dữ liệu */
     #loading-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
     #loading-screen.active { display: flex; }
     #loading-screen h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--primary); animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
-    /* --- Màn hình Khóa --- */
+    /* Màn hình Khóa */
     #lock-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; }
     #lock-screen.active { display: flex; }
     #lock-title { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 20px; color: #4a4238; }
     .pin-input { font-size: 2rem; padding: 10px; width: 200px; text-align: center; border: 1px solid var(--primary); border-radius: 4px; margin-bottom: 20px; letter-spacing: 5px; background: transparent; color: #4a4238; outline: none; }
     
-    /* --- Nút Tối giản --- */
+    /* Nút Thao tác */
     .btn { padding: 8px 18px; font-size: 0.95rem; border: 1px solid var(--primary); border-radius: 4px; cursor: pointer; background: transparent; color: var(--primary); font-weight: 600; transition: all 0.3s ease; }
     .btn:hover { background: var(--primary); color: #fff; }
     .btn-text { border: none; background: transparent; color: var(--primary); padding: 8px 12px; }
@@ -48,7 +48,7 @@
     .btn-primary-filled { background: var(--primary); color: #fff; }
     .btn-primary-filled:hover { opacity: 0.8; }
 
-    /* --- Dashboard & Tìm kiếm Toàn cục --- */
+    /* Dashboard & Tìm kiếm Toàn cục */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid #d4cdc1; padding-bottom: 15px; flex-wrap: wrap; gap: 15px; }
     .header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin: 0; font-weight: 600; }
     .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -61,7 +61,7 @@
     .global-page-card:hover { transform: translateY(-5px); box-shadow: 2px 10px 20px rgba(0,0,0,0.15); }
     .global-book-label { font-size: 0.85rem; font-style: italic; color: #555; background: rgba(255,255,255,0.4); padding: 4px 8px; border-radius: 4px; margin-bottom: 15px; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* --- Bìa sách --- */
+    /* Thực thể Sách */
     .book { width: 200px; height: 280px; background: var(--book-bg); padding: 12px; border-radius: 2px 8px 8px 2px; box-shadow: 5px 10px 20px rgba(0,0,0,0.15), inset 4px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); cursor: grab; transform: rotateY(-15deg); border-left: 6px solid #d3c7b2; }
     .book:hover { transform: rotateY(0deg) scale(1.05) translateY(-5px); }
     .book:active { cursor: grabbing; }
@@ -74,7 +74,7 @@
     .book-action-btn.delete { color: var(--danger); border-color: var(--danger); }
     .book-action-btn.delete:hover { background: var(--danger); color: white; }
 
-    /* --- Không gian Sách --- */
+    /* Không gian Sách: Cover Flow */
     .pages-carousel { display: flex; overflow-x: auto; padding: 60px 40px; margin: 20px auto; align-items: center; width: 100%; max-width: 1000px; scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
     .pages-carousel::-webkit-scrollbar { height: 8px; }
     .pages-carousel::-webkit-scrollbar-track { background: transparent; }
@@ -86,7 +86,7 @@
     .page-sheet:hover { transform: perspective(1000px) rotateY(0deg) translateY(-25px) scale(1.05); z-index: 9999 !important; box-shadow: 0 15px 30px rgba(0,0,0,0.25); }
     .page-sheet-date { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #555; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 10px; width: 100%; text-align: center; background: rgba(255, 255, 255, 0.4); border-radius: 4px; padding: 5px; }
 
-    /* --- Trình Soạn thảo --- */
+    /* Trình Soạn thảo */
     .editor-header-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .editor-toolbar { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #d4cdc1; transition: opacity 0.3s ease; }
     #editor-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; border: none; outline: none; width: 100%; margin-bottom: 10px; background: transparent; font-weight: 600; color: #3e3a35; }
@@ -96,7 +96,7 @@
     .read-only-mode #editor-title { color: #5c554d; }
     .read-only-mode #editor-content { color: #5c554d; }
 
-    /* --- Hệ thống Hộp thoại --- */
+    /* Hệ thống Hộp thoại */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
     .modal-content { background: var(--book-bg); padding: 30px; border-radius: 4px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #d4cdc1; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center;}
     .modal-content h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; margin-top: 0; margin-bottom: 15px; color: #3e3a35; width: 100%;}
@@ -107,7 +107,7 @@
     .input-book-name:focus { border-color: var(--primary); }
     .paste-success-msg { display: none; font-size: 0.85rem; color: #6a9c78; font-weight: bold; margin-bottom: 15px; font-style: italic; }
 
-    /* --- Responsive --- */
+    /* Media Queries */
     @media screen and (max-width: 768px) {
       .books-grid, .global-search-grid { gap: 25px; padding: 10px; }
       .book, .global-page-card { width: 160px; height: 230px; }
@@ -127,7 +127,7 @@
 
   <!-- Màn hình Tải Dữ liệu -->
   <div id="loading-screen" class="screen active">
-    <h2>Đang kết nối mây...</h2>
+    <h2>Đang khởi tạo kết nối đám mây...</h2>
   </div>
 
   <!-- Xác thực Khởi tạo -->
@@ -188,7 +188,7 @@
     <div id="editor-content" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
   </div>
 
-  <!-- Các Hộp thoại Modal... -->
+  <!-- Hộp thoại Phân loại Lưu trữ / Đổi vị trí -->
   <div id="modal-save" class="modal">
     <div class="modal-content">
       <h3 id="modal-save-title">Chọn Vị trí Lưu trữ</h3>
@@ -234,7 +234,7 @@
   <div id="modal-passcode" class="modal">
     <div class="modal-content">
       <h3 id="modal-passcode-title">Xác Thực Thao Tác</h3>
-      <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p>
+      <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống để tiếp tục.</p>
       <input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••">
       <button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác Nhận</button>
       <button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy Thao Tác</button>
@@ -242,18 +242,16 @@
   </div>
 
   <script>
-    // --- CẤU HÌNH FIREBASE KẾT NỐI ĐÁM MÂY ---
-    // !!! QUAN TRỌNG: COPY TOÀN BỘ ĐOẠN FIREBASECONFIG CỦA BÀ VÀ DÁN ĐÈ VÀO ĐÂY !!!
+    // Cấu hình Firebase SDK dựa trên tham số quản trị viên
     const firebaseConfig = {
-      apiKey: "PASTE_API_KEY_CUA_BA_VAO_DAY",
-      authDomain: "PASTE_AUTH_DOMAIN_CUA_BA_VAO_DAY",
-      projectId: "PASTE_PROJECT_ID_CUA_BA_VAO_DAY",
-      storageBucket: "PASTE_STORAGE_BUCKET_CUA_BA_VAO_DAY",
-      messagingSenderId: "PASTE_SENDER_ID_CUA_BA_VAO_DAY",
-      appId: "PASTE_APP_ID_CUA_BA_VAO_DAY"
+      apiKey: "AIzaSyAlzn4AT4M4AOSMADjMnEn5OiL8_8-7hKs",
+      authDomain: "dear-diary-28b19.firebaseapp.com",
+      projectId: "dear-diary-28b19",
+      storageBucket: "dear-diary-28b19.firebasestorage.app",
+      messagingSenderId: "185780215702",
+      appId: "1:185780215702:web:457437f9cd3f3b9bf887b7"
     };
     
-    // Khởi tạo Firebase SDK
     firebase.initializeApp(firebaseConfig);
     const firestore = firebase.firestore();
     const docRef = firestore.collection("diaryData").doc("my_vintage_diary");
@@ -268,7 +266,7 @@
     let pendingSecureAction = null;
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
-    // Lắng nghe và Tải dữ liệu từ mây khi khởi động
+    // Khởi tạo tiến trình tải dữ liệu bất đồng bộ
     window.onload = () => {
       docRef.get().then((doc) => {
         if (doc.exists) {
@@ -276,8 +274,7 @@
         }
         initAppUI();
       }).catch((error) => {
-        alert("Lỗi kết nối máy chủ: " + error.message);
-        // Fallback về giao diện trống nếu chưa có config đúng
+        console.error("Firebase Connection Error:", error);
         initAppUI(); 
       });
     };
@@ -287,17 +284,16 @@
       if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã Khởi tạo";
     }
 
-    // --- HÀM LƯU DỮ LIỆU LÊN MÂY (Thay thế LocalStorage) ---
+    // Thủ tục ghi đè dữ liệu toàn cục
     function saveDB() {
       docRef.set(db).then(() => {
-        document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️';
+        document.getElementById('save-status').innerText = 'Đã đồng bộ máy chủ';
       }).catch((error) => {
-        alert("Lỗi đồng bộ dữ liệu đám mây: " + error.message);
+        console.error("Firebase Sync Error:", error);
       });
       return true;
     }
 
-    // (Phần Logic UI bên dưới giữ nguyên kiến trúc chuẩn)
     document.getElementById('pin-input').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') checkPin();
     });
@@ -421,7 +417,7 @@
       const book = db.books.find(b => b.id === editingBookId);
       const newName = document.getElementById('edit-book-name').value;
       const coverFile = document.getElementById('edit-cover-upload').files[0];
-      if (!newName) return alert("Yêu cầu nhập tên sách.");
+      if (!newName) return alert("Yêu cầu nhập định danh sách.");
       book.name = newName;
 
       if (coverFile) {
@@ -464,7 +460,7 @@
       });
 
       if (results.length === 0) {
-        resultsContainer.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy trang thư liệu.</p>';
+        resultsContainer.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy dữ liệu đối chiếu.</p>';
         return;
       }
 
@@ -474,7 +470,7 @@
       });
 
       results.forEach((page, index) => {
-        const book = db.books.find(b => b.id === page.bookId) || { name: 'Sách đã xóa', palette: fallbackColors };
+        const book = db.books.find(b => b.id === page.bookId) || { name: 'Dữ liệu vô danh', palette: fallbackColors };
         const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' });
         const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
         const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors;
@@ -485,7 +481,7 @@
         pageEl.className = 'global-page-card';
         pageEl.style.backgroundColor = pageColor;
         pageEl.onclick = () => { preSelectedBookId = page.bookId; openEditor(page.id, true); };
-        pageEl.innerHTML = `<div class="global-book-label">Thuộc về: <b>${book.name}</b></div><div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`;
+        pageEl.innerHTML = `<div class="global-book-label">Định dạng: <b>${book.name}</b></div><div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`;
         resultsContainer.appendChild(pageEl);
       });
     }
@@ -525,7 +521,7 @@
       });
 
       if (pages.length === 0) {
-        container.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy kết quả phù hợp.</p>';
+        container.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không có dữ liệu đối chiếu.</p>';
         return;
       }
       
@@ -548,7 +544,7 @@
     }
 
     function togglePinPage() {
-      if (!currentPageId) return alert("Hệ thống yêu cầu lưu trữ trang trước khi thực hiện Ghim.");
+      if (!currentPageId) return alert("Hệ thống yêu cầu xác thực lưu trữ trước.");
       const page = db.pages.find(p => p.id === currentPageId);
       page.isPinned = !page.isPinned;
       saveDB(); updatePinButtonState(page.isPinned);
@@ -675,9 +671,7 @@
       if(!isEditMode) return;
       document.getElementById('save-status').innerText = 'Đang đồng bộ...';
       clearTimeout(typingTimer);
-      typingTimer = setTimeout(() => { 
-        saveDB(); // Tự động đồng bộ lên Firebase sau khi ngừng gõ 1.5s
-      }, 1500);
+      typingTimer = setTimeout(() => { saveDB(); }, 1500);
     });
 
     function insertFile(event) {
@@ -763,7 +757,7 @@
     function executeCreateBook() {
       const bookName = document.getElementById('only-new-book-name').value;
       const coverFile = document.getElementById('only-cover-upload').files[0];
-      if (!bookName) return alert("Yêu cầu nhập tên sách.");
+      if (!bookName) return alert("Yêu cầu cung cấp định danh sách.");
       
       const finalizeCreate = (coverDataUrl, dynamicPalette) => {
         db.books.push({ id: 'book_' + Date.now(), name: bookName, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors });
