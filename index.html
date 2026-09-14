@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aesthetic Vintage Diary - Auto Migration Edition</title>
+  <title>Aesthetic Vintage Diary - Emergency Rescue Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   
   <!-- Tích hợp Firebase SDK -->
@@ -127,7 +127,7 @@
 
   <!-- Màn hình Tải Dữ liệu -->
   <div id="loading-screen" class="screen active">
-    <h2 id="loading-text">Đang kết nối mây...</h2>
+    <h2 id="loading-text">Đang kiểm tra kết nối...</h2>
   </div>
 
   <!-- Xác thực Khởi tạo -->
@@ -242,7 +242,7 @@
   </div>
 
   <script>
-    // --- CẤU HÌNH FIREBASE KẾT NỐI ĐÁM MÂY ĐÃ ĐƯỢC NHÚNG SẴN ---
+    // CẤU HÌNH FIREBASE KẾT NỐI ĐÁM MÂY
     const firebaseConfig = {
       apiKey: "AIzaSyAlzn4AT4M4AOSMADjMnEn5OiL8_8-7hKs",
       authDomain: "dear-diary-28b19.firebaseapp.com",
@@ -266,40 +266,48 @@
     let pendingSecureAction = null;
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
-    // --- THUẬT TOÁN CHUYỂN NHÀ TỰ ĐỘNG (AUTO-MIGRATION LOGIC) ---
+    // THUẬT TOÁN CỨU HỘ DỮ LIỆU ĐẶC BIỆT (FORCE MIGRATION)
     window.onload = () => {
-      document.getElementById('loading-text').innerText = "Đang kiểm tra kết nối...";
+      document.getElementById('loading-text').innerText = "Đang kiểm tra kết nối đám mây...";
       
       docRef.get().then((doc) => {
         let cloudData = doc.exists ? doc.data() : null;
         let localData = JSON.parse(localStorage.getItem('diary_db'));
 
-        // Kiểm tra xem Mây có trống trơn và Local có dữ liệu không
-        if ((!cloudData || !cloudData.passcode) && (localData && localData.passcode)) {
-          document.getElementById('loading-text').innerText = "Đang chuyển dữ liệu lên mây...";
-          db = localData;
+        // Logic 1: Kiểm tra xem máy cục bộ có dữ liệu thực tế (books) không
+        let hasLocalBooks = localData && localData.books && localData.books.length > 0;
+        // Logic 2: Kiểm tra xem mây rỗng sách không (Bỏ qua việc mây đã có passcode hay chưa)
+        let cloudHasNoBooks = !cloudData || !cloudData.books || cloudData.books.length === 0;
+
+        // Nếu máy có sách mà mây không có sách -> Ép buộc chuyển nhà
+        if (hasLocalBooks && cloudHasNoBooks) {
+          document.getElementById('loading-text').innerText = "Đang cứu hộ toàn bộ nhật ký lên mây...";
+          db = localData; 
           
-          // Đẩy dữ liệu cũ lên mây
+          // Giữ lại Passcode mới nhất mà người dùng vừa đặt trên mây (nếu có)
+          if (cloudData && cloudData.passcode) {
+            db.passcode = cloudData.passcode;
+          }
+          
           docRef.set(db).then(() => {
-            console.log("Di chuyển dữ liệu thành công!");
+            console.log("Cứu hộ dữ liệu thành công!");
             initAppUI();
           }).catch((error) => {
-            alert("Lỗi chuyển dữ liệu: " + error.message);
+            alert("Lỗi cứu hộ dữ liệu: " + error.message);
             initAppUI();
           });
         } 
-        // Mây đã có dữ liệu -> Tải dữ liệu từ mây xuống
+        // Trạng thái bình thường: Đã có sách trên mây
         else if (cloudData && cloudData.passcode) {
           db = cloudData;
           initAppUI();
         } 
-        // Vừa không có Local vừa không có Mây -> Người dùng mới tinh
+        // Khởi tạo hoàn toàn mới
         else {
           initAppUI();
         }
       }).catch((error) => {
-        alert("Lỗi kết nối máy chủ: Vui lòng kiểm tra mạng lưới.");
-        // Dự phòng: Mất mạng thì tải tạm dữ liệu từ máy lên xài
+        alert("Lỗi kết nối máy chủ. Đang tải dữ liệu tạm...");
         let localData = JSON.parse(localStorage.getItem('diary_db'));
         if(localData) db = localData;
         initAppUI(); 
