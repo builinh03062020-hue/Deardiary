@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aesthetic Vintage Diary - Cloud Sync Edition</title>
+  <title>Aesthetic Vintage Diary - Auto Migration Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   
   <!-- Tích hợp Firebase SDK -->
@@ -127,7 +127,7 @@
 
   <!-- Màn hình Tải Dữ liệu -->
   <div id="loading-screen" class="screen active">
-    <h2>Đang khởi tạo kết nối đám mây...</h2>
+    <h2 id="loading-text">Đang kết nối mây...</h2>
   </div>
 
   <!-- Xác thực Khởi tạo -->
@@ -188,7 +188,7 @@
     <div id="editor-content" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
   </div>
 
-  <!-- Hộp thoại Phân loại Lưu trữ / Đổi vị trí -->
+  <!-- Các Hộp thoại Modal -->
   <div id="modal-save" class="modal">
     <div class="modal-content">
       <h3 id="modal-save-title">Chọn Vị trí Lưu trữ</h3>
@@ -234,7 +234,7 @@
   <div id="modal-passcode" class="modal">
     <div class="modal-content">
       <h3 id="modal-passcode-title">Xác Thực Thao Tác</h3>
-      <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống để tiếp tục.</p>
+      <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p>
       <input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••">
       <button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác Nhận</button>
       <button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy Thao Tác</button>
@@ -242,7 +242,7 @@
   </div>
 
   <script>
-    // Cấu hình Firebase SDK dựa trên tham số quản trị viên
+    // --- CẤU HÌNH FIREBASE KẾT NỐI ĐÁM MÂY ĐÃ ĐƯỢC NHÚNG SẴN ---
     const firebaseConfig = {
       apiKey: "AIzaSyAlzn4AT4M4AOSMADjMnEn5OiL8_8-7hKs",
       authDomain: "dear-diary-28b19.firebaseapp.com",
@@ -266,15 +266,42 @@
     let pendingSecureAction = null;
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
-    // Khởi tạo tiến trình tải dữ liệu bất đồng bộ
+    // --- THUẬT TOÁN CHUYỂN NHÀ TỰ ĐỘNG (AUTO-MIGRATION LOGIC) ---
     window.onload = () => {
+      document.getElementById('loading-text').innerText = "Đang kiểm tra kết nối...";
+      
       docRef.get().then((doc) => {
-        if (doc.exists) {
-          db = doc.data();
+        let cloudData = doc.exists ? doc.data() : null;
+        let localData = JSON.parse(localStorage.getItem('diary_db'));
+
+        // Kiểm tra xem Mây có trống trơn và Local có dữ liệu không
+        if ((!cloudData || !cloudData.passcode) && (localData && localData.passcode)) {
+          document.getElementById('loading-text').innerText = "Đang chuyển dữ liệu lên mây...";
+          db = localData;
+          
+          // Đẩy dữ liệu cũ lên mây
+          docRef.set(db).then(() => {
+            console.log("Di chuyển dữ liệu thành công!");
+            initAppUI();
+          }).catch((error) => {
+            alert("Lỗi chuyển dữ liệu: " + error.message);
+            initAppUI();
+          });
+        } 
+        // Mây đã có dữ liệu -> Tải dữ liệu từ mây xuống
+        else if (cloudData && cloudData.passcode) {
+          db = cloudData;
+          initAppUI();
+        } 
+        // Vừa không có Local vừa không có Mây -> Người dùng mới tinh
+        else {
+          initAppUI();
         }
-        initAppUI();
       }).catch((error) => {
-        console.error("Firebase Connection Error:", error);
+        alert("Lỗi kết nối máy chủ: Vui lòng kiểm tra mạng lưới.");
+        // Dự phòng: Mất mạng thì tải tạm dữ liệu từ máy lên xài
+        let localData = JSON.parse(localStorage.getItem('diary_db'));
+        if(localData) db = localData;
         initAppUI(); 
       });
     };
@@ -284,12 +311,11 @@
       if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã Khởi tạo";
     }
 
-    // Thủ tục ghi đè dữ liệu toàn cục
     function saveDB() {
       docRef.set(db).then(() => {
-        document.getElementById('save-status').innerText = 'Đã đồng bộ máy chủ';
+        document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️';
       }).catch((error) => {
-        console.error("Firebase Sync Error:", error);
+        console.error("Lỗi đồng bộ dữ liệu đám mây: " + error.message);
       });
       return true;
     }
@@ -417,7 +443,7 @@
       const book = db.books.find(b => b.id === editingBookId);
       const newName = document.getElementById('edit-book-name').value;
       const coverFile = document.getElementById('edit-cover-upload').files[0];
-      if (!newName) return alert("Yêu cầu nhập định danh sách.");
+      if (!newName) return alert("Yêu cầu nhập tên sách.");
       book.name = newName;
 
       if (coverFile) {
@@ -470,7 +496,7 @@
       });
 
       results.forEach((page, index) => {
-        const book = db.books.find(b => b.id === page.bookId) || { name: 'Dữ liệu vô danh', palette: fallbackColors };
+        const book = db.books.find(b => b.id === page.bookId) || { name: 'Sách vô danh', palette: fallbackColors };
         const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' });
         const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
         const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors;
