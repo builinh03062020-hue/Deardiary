@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aesthetic Vintage Diary - Global Search Edition</title>
+  <title>Aesthetic Vintage Diary - Cloud Sync Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Tích hợp Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
   <style>
     :root {
       --bg-color: #eae6db; 
@@ -18,6 +23,12 @@
     body { margin: 0; padding: 0; background: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', Tahoma, sans-serif; overflow-x: hidden; }
     .screen { display: none; min-height: 100vh; padding: 20px; }
     .screen.active { display: block; }
+
+    /* --- Màn hình Tải Dữ Liệu Chuyên dụng --- */
+    #loading-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
+    #loading-screen.active { display: flex; }
+    #loading-screen h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--primary); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
     /* --- Màn hình Khóa --- */
     #lock-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; }
@@ -37,7 +48,7 @@
     .btn-primary-filled { background: var(--primary); color: #fff; }
     .btn-primary-filled:hover { opacity: 0.8; }
 
-    /* --- Dashboard & Global Search --- */
+    /* --- Dashboard & Tìm kiếm Toàn cục --- */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid #d4cdc1; padding-bottom: 15px; flex-wrap: wrap; gap: 15px; }
     .header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin: 0; font-weight: 600; }
     .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -45,7 +56,6 @@
     
     .search-input { padding: 8px 12px; font-size: 0.95rem; border: 1px solid #d4cdc1; border-radius: 4px; background: transparent; color: var(--text-color); outline: none; font-family: 'Segoe UI', sans-serif; min-width: 250px; }
     .search-input:focus { border-color: var(--primary); }
-
     .global-search-grid { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; padding: 20px; width: 100%; }
     .global-page-card { flex: 0 0 200px; height: 280px; border-radius: 2px 8px 8px 2px; box-shadow: 2px 5px 15px rgba(0,0,0,0.1); border-left: 4px solid rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 10px; text-align: center; }
     .global-page-card:hover { transform: translateY(-5px); box-shadow: 2px 10px 20px rgba(0,0,0,0.15); }
@@ -64,7 +74,7 @@
     .book-action-btn.delete { color: var(--danger); border-color: var(--danger); }
     .book-action-btn.delete:hover { background: var(--danger); color: white; }
 
-    /* --- Không gian Sách: Horizontal Cover Flow --- */
+    /* --- Không gian Sách --- */
     .pages-carousel { display: flex; overflow-x: auto; padding: 60px 40px; margin: 20px auto; align-items: center; width: 100%; max-width: 1000px; scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
     .pages-carousel::-webkit-scrollbar { height: 8px; }
     .pages-carousel::-webkit-scrollbar-track { background: transparent; }
@@ -86,7 +96,7 @@
     .read-only-mode #editor-title { color: #5c554d; }
     .read-only-mode #editor-content { color: #5c554d; }
 
-    /* --- Hệ thống Hộp thoại (Modals) --- */
+    /* --- Hệ thống Hộp thoại --- */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
     .modal-content { background: var(--book-bg); padding: 30px; border-radius: 4px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #d4cdc1; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center;}
     .modal-content h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; margin-top: 0; margin-bottom: 15px; color: #3e3a35; width: 100%;}
@@ -115,14 +125,19 @@
 </head>
 <body>
 
+  <!-- Màn hình Tải Dữ liệu -->
+  <div id="loading-screen" class="screen active">
+    <h2>Đang kết nối mây...</h2>
+  </div>
+
   <!-- Xác thực Khởi tạo -->
-  <div id="lock-screen" class="screen active">
+  <div id="lock-screen" class="screen">
     <h2 id="lock-title">Mật mã Nhật ký</h2>
     <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••">
     <button class="btn btn-primary-filled" onclick="checkPin()">Mở Khóa Không Gian</button>
   </div>
 
-  <!-- Thư viện Tổng quan (Đã bổ sung Tìm kiếm Toàn cục) -->
+  <!-- Thư viện Tổng quan -->
   <div id="dashboard" class="screen">
     <div class="header">
       <h2>Thư Viện Ký Ức</h2>
@@ -141,7 +156,7 @@
     <div class="header">
       <h2 id="current-book-title">Đang kết xuất...</h2>
       <div class="header-actions">
-        <input type="text" id="search-page-input" class="search-input" placeholder="Lọc nội dung cuốn sách..." onkeyup="handleSearch()">
+        <input type="text" id="search-page-input" class="search-input" placeholder="Tìm theo ngày, tiêu đề..." onkeyup="handleSearch()">
         <button class="btn btn-text" onclick="switchScreen('dashboard')">← Trở về</button>
         <button class="btn btn-primary-filled" onclick="openEditor(null, true)">Thêm Trang</button>
       </div>
@@ -164,8 +179,8 @@
     </div>
     
     <div class="editor-toolbar" id="editor-toolbar">
-      <input type="file" id="image-upload" accept="image/*" style="display: none;" onchange="insertImage(event)">
-      <button class="btn btn-text" onclick="document.getElementById('image-upload').click()">+ Đính kèm Ảnh</button>
+      <input type="file" id="file-upload" accept="image/*, application/pdf" style="display: none;" onchange="insertFile(event)">
+      <button class="btn btn-text" onclick="document.getElementById('file-upload').click()">+ Đính kèm File/Ảnh</button>
       <span class="save-status" id="save-status"></span>
     </div>
 
@@ -173,7 +188,7 @@
     <div id="editor-content" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
   </div>
 
-  <!-- Hộp thoại Phân loại Lưu trữ / Đổi vị trí -->
+  <!-- Các Hộp thoại Modal... -->
   <div id="modal-save" class="modal">
     <div class="modal-content">
       <h3 id="modal-save-title">Chọn Vị trí Lưu trữ</h3>
@@ -189,7 +204,6 @@
     </div>
   </div>
 
-  <!-- Hộp thoại Khởi tạo Sách Mới -->
   <div id="modal-create-book" class="modal">
     <div class="modal-content">
       <h3>Khởi Tạo Sách Mới</h3>
@@ -203,7 +217,6 @@
     </div>
   </div>
 
-  <!-- Hộp thoại Chỉnh sửa Sách -->
   <div id="modal-edit-book" class="modal">
     <div class="modal-content">
       <h3>Chỉnh Sửa Sách</h3>
@@ -212,17 +225,16 @@
       <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh mới</p>
       <div id="edit-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div>
       <input type="file" id="edit-cover-upload" accept="image/*" style="display: none;">
-      <button class="btn btn-danger-text" style="width: 100%; margin-bottom: 15px; font-size: 0.9rem;" onclick="removeBookCover()">Xóa Ảnh Bìa (Trở về Bìa Trơn)</button>
+      <button class="btn btn-danger-text" style="width: 100%; margin-bottom: 15px; font-size: 0.9rem;" onclick="removeBookCover()">Xóa Ảnh Bìa</button>
       <button class="btn btn-primary-filled" style="width: 100%;" onclick="executeEditBook()">Lưu Thay Đổi</button>
       <button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button>
     </div>
   </div>
 
-  <!-- Hộp thoại Yêu cầu Xác thực Bảo mật -->
   <div id="modal-passcode" class="modal">
     <div class="modal-content">
       <h3 id="modal-passcode-title">Xác Thực Thao Tác</h3>
-      <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống để tiếp tục.</p>
+      <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p>
       <input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••">
       <button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác Nhận</button>
       <button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy Thao Tác</button>
@@ -230,7 +242,23 @@
   </div>
 
   <script>
-    let db = JSON.parse(localStorage.getItem('diary_db')) || { books: [], pages: [], passcode: null };
+    // --- CẤU HÌNH FIREBASE KẾT NỐI ĐÁM MÂY ---
+    // !!! QUAN TRỌNG: COPY TOÀN BỘ ĐOẠN FIREBASECONFIG CỦA BÀ VÀ DÁN ĐÈ VÀO ĐÂY !!!
+    const firebaseConfig = {
+      apiKey: "PASTE_API_KEY_CUA_BA_VAO_DAY",
+      authDomain: "PASTE_AUTH_DOMAIN_CUA_BA_VAO_DAY",
+      projectId: "PASTE_PROJECT_ID_CUA_BA_VAO_DAY",
+      storageBucket: "PASTE_STORAGE_BUCKET_CUA_BA_VAO_DAY",
+      messagingSenderId: "PASTE_SENDER_ID_CUA_BA_VAO_DAY",
+      appId: "PASTE_APP_ID_CUA_BA_VAO_DAY"
+    };
+    
+    // Khởi tạo Firebase SDK
+    firebase.initializeApp(firebaseConfig);
+    const firestore = firebase.firestore();
+    const docRef = firestore.collection("diaryData").doc("my_vintage_diary");
+
+    let db = { books: [], pages: [], passcode: null };
     let currentPageId = null;
     let preSelectedBookId = null; 
     let editingBookId = null; 
@@ -238,11 +266,38 @@
     let isEditMode = true; 
     let dragStartIndex = null; 
     let pendingSecureAction = null;
-    
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
-    if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã Khởi tạo";
+    // Lắng nghe và Tải dữ liệu từ mây khi khởi động
+    window.onload = () => {
+      docRef.get().then((doc) => {
+        if (doc.exists) {
+          db = doc.data();
+        }
+        initAppUI();
+      }).catch((error) => {
+        alert("Lỗi kết nối máy chủ: " + error.message);
+        // Fallback về giao diện trống nếu chưa có config đúng
+        initAppUI(); 
+      });
+    };
 
+    function initAppUI() {
+      switchScreen('lock-screen');
+      if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã Khởi tạo";
+    }
+
+    // --- HÀM LƯU DỮ LIỆU LÊN MÂY (Thay thế LocalStorage) ---
+    function saveDB() {
+      docRef.set(db).then(() => {
+        document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️';
+      }).catch((error) => {
+        alert("Lỗi đồng bộ dữ liệu đám mây: " + error.message);
+      });
+      return true;
+    }
+
+    // (Phần Logic UI bên dưới giữ nguyên kiến trúc chuẩn)
     document.getElementById('pin-input').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') checkPin();
     });
@@ -252,16 +307,11 @@
       if (!input) return alert("Vui lòng cung cấp khóa định danh.");
       if (!db.passcode) {
         db.passcode = input;
-        saveDB();
-        switchScreen('dashboard');
-        renderBooks();
+        saveDB(); switchScreen('dashboard'); renderBooks();
       } else {
         if (input === db.passcode) {
-          switchScreen('dashboard');
-          renderBooks();
-        } else {
-          alert("Lỗi xác thực: Khóa định danh không hợp lệ.");
-        }
+          switchScreen('dashboard'); renderBooks();
+        } else { alert("Lỗi xác thực: Khóa định danh không hợp lệ."); }
       }
     }
 
@@ -282,9 +332,7 @@
       if (input === db.passcode) {
         closePasscodeModal();
         if (pendingSecureAction) pendingSecureAction();
-      } else {
-        alert("Lỗi xác thực: Mật mã không hợp lệ.");
-      }
+      } else { alert("Lỗi xác thực: Mật mã không hợp lệ."); }
     }
 
     function closePasscodeModal() {
@@ -295,7 +343,6 @@
     function switchScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(screenId).classList.add('active');
-      // Tự động làm sạch trạng thái tìm kiếm toàn cục khi chuyển màn hình
       if(screenId === 'dashboard') {
         document.getElementById('global-search-input').value = '';
         document.getElementById('books-container').style.display = 'flex';
@@ -367,7 +414,7 @@
       if(book) { book.cover = null; book.palette = fallbackColors; }
       document.getElementById('edit-cover-upload').value = '';
       document.getElementById('edit-paste-msg').style.display = 'none';
-      alert("Thông báo: Đã thiết lập trạng thái Bìa Trơn. Vui lòng bấm 'Lưu Thay Đổi'.");
+      alert("Thông báo: Đã thiết lập trạng thái Bìa Trơn.");
     }
 
     function executeEditBook() {
@@ -393,22 +440,15 @@
           img.src = e.target.result;
         };
         reader.readAsDataURL(coverFile);
-      } else {
-        saveDB(); closeModals(); renderBooks();
-      }
+      } else { saveDB(); closeModals(); renderBooks(); }
     }
 
-    // --- Cập nhật Thuật toán Tìm kiếm Toàn cục (Global Search) ---
     function handleGlobalSearch() {
       const query = document.getElementById('global-search-input').value.toLowerCase();
       const booksContainer = document.getElementById('books-container');
       const resultsContainer = document.getElementById('global-search-results');
 
-      if (!query) {
-        booksContainer.style.display = 'flex';
-        resultsContainer.style.display = 'none';
-        return;
-      }
+      if (!query) { booksContainer.style.display = 'flex'; resultsContainer.style.display = 'none'; return; }
 
       booksContainer.style.display = 'none';
       resultsContainer.style.display = 'flex';
@@ -420,21 +460,17 @@
         const dateStr2 = dateObj.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase();
         return (p.title && p.title.toLowerCase().includes(query)) ||
                (p.content && p.content.toLowerCase().includes(query)) ||
-               dateStr1.includes(query) ||
-               dateStr2.includes(query);
+               dateStr1.includes(query) || dateStr2.includes(query);
       });
 
       if (results.length === 0) {
-        resultsContainer.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy trang thư liệu nào trên toàn hệ thống.</p>';
+        resultsContainer.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy trang thư liệu.</p>';
         return;
       }
 
-      // Sắp xếp tương tự tìm kiếm cục bộ (Pin > Time)
       results.sort((a, b) => {
-        const pinA = a.isPinned ? 1 : 0;
-        const pinB = b.isPinned ? 1 : 0;
-        if (pinA !== pinB) return pinB - pinA;
-        return b.timestamp - a.timestamp;
+        const pinA = a.isPinned ? 1 : 0; const pinB = b.isPinned ? 1 : 0;
+        if (pinA !== pinB) return pinB - pinA; return b.timestamp - a.timestamp;
       });
 
       results.forEach((page, index) => {
@@ -448,15 +484,8 @@
         const pageEl = document.createElement('div');
         pageEl.className = 'global-page-card';
         pageEl.style.backgroundColor = pageColor;
-        pageEl.onclick = () => {
-          preSelectedBookId = page.bookId; // Gán bookId để lệnh Quay lại trỏ về đúng sách
-          openEditor(page.id, true);
-        };
-
-        pageEl.innerHTML = `
-          <div class="global-book-label">Thuộc về: <b>${book.name}</b></div>
-          <div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>
-        `;
+        pageEl.onclick = () => { preSelectedBookId = page.bookId; openEditor(page.id, true); };
+        pageEl.innerHTML = `<div class="global-book-label">Thuộc về: <b>${book.name}</b></div><div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`;
         resultsContainer.appendChild(pageEl);
       });
     }
@@ -481,25 +510,18 @@
       container.innerHTML = '';
       
       let pages = db.pages.filter(p => p.bookId === bookId);
-      
       if (searchQuery) {
         pages = pages.filter(p => {
           const dateObj = new Date(p.timestamp);
           const dateStr1 = dateObj.toLocaleDateString('vi-VN').toLowerCase(); 
           const dateStr2 = dateObj.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase();
-          
-          return (p.title && p.title.toLowerCase().includes(searchQuery)) || 
-                 (p.content && p.content.toLowerCase().includes(searchQuery)) ||
-                 dateStr1.includes(searchQuery) ||
-                 dateStr2.includes(searchQuery);
+          return (p.title && p.title.toLowerCase().includes(searchQuery)) || (p.content && p.content.toLowerCase().includes(searchQuery)) || dateStr1.includes(searchQuery) || dateStr2.includes(searchQuery);
         });
       }
 
       pages.sort((a, b) => {
-        const pinA = a.isPinned ? 1 : 0;
-        const pinB = b.isPinned ? 1 : 0;
-        if (pinA !== pinB) return pinB - pinA;
-        return b.timestamp - a.timestamp;
+        const pinA = a.isPinned ? 1 : 0; const pinB = b.isPinned ? 1 : 0;
+        if (pinA !== pinB) return pinB - pinA; return b.timestamp - a.timestamp;
       });
 
       if (pages.length === 0) {
@@ -512,7 +534,6 @@
         const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
         const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors;
         const pageColor = palette[index % palette.length];
-        
         const zIndex = pages.length - index; 
         const pinIndicator = page.isPinned ? '<span style="font-size: 1.1rem; margin-right: 5px;">📌</span>' : '';
 
@@ -521,10 +542,7 @@
         pageEl.style.backgroundColor = pageColor;
         pageEl.style.zIndex = zIndex;
         pageEl.onclick = () => openEditor(page.id);
-
-        pageEl.innerHTML = `
-          <div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>
-        `;
+        pageEl.innerHTML = `<div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`;
         container.appendChild(pageEl);
       });
     }
@@ -533,19 +551,13 @@
       if (!currentPageId) return alert("Hệ thống yêu cầu lưu trữ trang trước khi thực hiện Ghim.");
       const page = db.pages.find(p => p.id === currentPageId);
       page.isPinned = !page.isPinned;
-      saveDB();
-      updatePinButtonState(page.isPinned);
+      saveDB(); updatePinButtonState(page.isPinned);
     }
 
     function updatePinButtonState(isPinned) {
       const pinBtn = document.getElementById('btn-pin-page');
-      if (isPinned) {
-        pinBtn.innerText = "Bỏ Ghim Trang";
-        pinBtn.style.color = "var(--danger)";
-      } else {
-        pinBtn.innerText = "📌 Ghim Trang";
-        pinBtn.style.color = "var(--highlight)";
-      }
+      if (isPinned) { pinBtn.innerText = "Bỏ Ghim Trang"; pinBtn.style.color = "var(--danger)"; } 
+      else { pinBtn.innerText = "📌 Ghim Trang"; pinBtn.style.color = "var(--highlight)"; }
     }
 
     function setEditorMode(editMode) {
@@ -557,68 +569,49 @@
       const editorScreen = document.getElementById('editor-screen');
 
       if (isEditMode) {
-        titleEl.readOnly = false;
-        contentEl.setAttribute('contenteditable', 'true');
-        toolbarEl.style.display = 'flex';
-        editorScreen.classList.remove('read-only-mode');
-        toggleBtn.innerText = 'Lưu Nội Dung';
-        toggleBtn.className = 'btn btn-primary-filled';
-        contentEl.focus();
+        titleEl.readOnly = false; contentEl.setAttribute('contenteditable', 'true');
+        toolbarEl.style.display = 'flex'; editorScreen.classList.remove('read-only-mode');
+        toggleBtn.innerText = 'Lưu Nội Dung'; toggleBtn.className = 'btn btn-primary-filled'; contentEl.focus();
       } else {
-        titleEl.readOnly = true;
-        contentEl.setAttribute('contenteditable', 'false');
-        toolbarEl.style.display = 'none';
-        editorScreen.classList.add('read-only-mode');
-        toggleBtn.innerText = 'Chỉnh Sửa';
-        toggleBtn.className = 'btn btn-text';
+        titleEl.readOnly = true; contentEl.setAttribute('contenteditable', 'false');
+        toolbarEl.style.display = 'none'; editorScreen.classList.add('read-only-mode');
+        toggleBtn.innerText = 'Chỉnh Sửa'; toggleBtn.className = 'btn btn-text';
       }
     }
 
     function handleEditToggle() {
-      if (isEditMode) savePageDirectly(false); 
-      else setEditorMode(true);
+      if (isEditMode) savePageDirectly(false); else setEditorMode(true);
     }
 
     function openEditor(pageId = null, fromBook = false) {
       currentPageId = pageId;
       if (!fromBook && !pageId) preSelectedBookId = null; 
-      
-      const secondaryActions = document.getElementById('editor-secondary-actions');
-      secondaryActions.style.display = pageId ? 'flex' : 'none';
+      document.getElementById('editor-secondary-actions').style.display = pageId ? 'flex' : 'none';
 
       const titleEl = document.getElementById('editor-title');
       const contentEl = document.getElementById('editor-content');
       
       if (pageId) {
         const page = db.pages.find(p => p.id === pageId);
-        titleEl.value = page.title;
-        contentEl.innerHTML = page.content;
-        updatePinButtonState(page.isPinned); 
-        setEditorMode(false);
+        titleEl.value = page.title; contentEl.innerHTML = page.content;
+        updatePinButtonState(page.isPinned); setEditorMode(false);
       } else {
-        titleEl.value = '';
-        contentEl.innerHTML = '';
+        titleEl.value = ''; contentEl.innerHTML = '';
         document.getElementById('save-status').innerText = '';
-        updatePinButtonState(false);
-        setEditorMode(true);
+        updatePinButtonState(false); setEditorMode(true);
       }
       switchScreen('editor-screen');
     }
 
     function goBackFromEditor() {
-      if (preSelectedBookId) {
-        // Bảo lưu trạng thái tìm kiếm cục bộ nếu có
-        renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); 
-        switchScreen('book-view');
-      }
+      if (preSelectedBookId) { renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); switchScreen('book-view'); }
       else { switchScreen('dashboard'); renderBooks(); }
     }
 
     function deleteCurrentPage() {
       requestPasscode("Xác Thực Xóa Trang", () => {
         db.pages = db.pages.filter(p => p.id !== currentPageId);
-        saveDB();
-        goBackFromEditor();
+        saveDB(); goBackFromEditor();
       });
     }
 
@@ -629,121 +622,97 @@
       if (currentPageId) {
         const page = db.pages.find(p => p.id === currentPageId);
         page.title = title; page.content = content;
-        saveDB();
-        setEditorMode(false); 
-        if (goBack) goBackFromEditor();
+        saveDB(); setEditorMode(false); if (goBack) goBackFromEditor();
       } else if (preSelectedBookId) {
         const newPageId = 'page_' + Date.now();
         db.pages.push({ id: newPageId, bookId: preSelectedBookId, title: title, content: content, timestamp: Date.now(), isPinned: false });
-        saveDB();
-        currentPageId = newPageId; 
+        saveDB(); currentPageId = newPageId; 
         document.getElementById('editor-secondary-actions').style.display = 'flex';
-        setEditorMode(false);
-        if (goBack) goBackFromEditor();
-      } else {
-        showSaveModal();
-      }
+        setEditorMode(false); if (goBack) goBackFromEditor();
+      } else { showSaveModal(); }
     }
 
     document.addEventListener('paste', function(e) {
-      const modalSaveVisible = document.getElementById('modal-save').style.display === 'flex';
-      const modalCreateVisible = document.getElementById('modal-create-book').style.display === 'flex';
-      const modalEditVisible = document.getElementById('modal-edit-book').style.display === 'flex';
+      const mSave = document.getElementById('modal-save').style.display === 'flex';
+      const mCreate = document.getElementById('modal-create-book').style.display === 'flex';
+      const mEdit = document.getElementById('modal-edit-book').style.display === 'flex';
+      if (!mSave && !mCreate && !mEdit) return;
 
-      if (!modalSaveVisible && !modalCreateVisible && !modalEditVisible) return;
+      const items = (e.clipboardData || window.clipboardData)?.items;
+      if (!items) return;
 
-      const clipboardData = e.clipboardData || window.clipboardData;
-      if (!clipboardData) return;
-
-      const items = clipboardData.items;
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           const file = items[i].getAsFile();
-          const dataTransfer = new DataTransfer();
-          dataTransfer.items.add(file);
-
-          if (modalSaveVisible) {
-            document.getElementById('cover-upload').files = dataTransfer.files;
-            document.getElementById('save-paste-msg').style.display = 'block';
-          } else if (modalCreateVisible) {
-            document.getElementById('only-cover-upload').files = dataTransfer.files;
-            document.getElementById('create-paste-msg').style.display = 'block';
-          } else if (modalEditVisible) {
-            document.getElementById('edit-cover-upload').files = dataTransfer.files;
-            document.getElementById('edit-paste-msg').style.display = 'block';
-          }
-          e.preventDefault(); 
-          break;
+          const dt = new DataTransfer(); dt.items.add(file);
+          if (mSave) { document.getElementById('cover-upload').files = dt.files; document.getElementById('save-paste-msg').style.display = 'block'; } 
+          else if (mCreate) { document.getElementById('only-cover-upload').files = dt.files; document.getElementById('create-paste-msg').style.display = 'block'; } 
+          else if (mEdit) { document.getElementById('edit-cover-upload').files = dt.files; document.getElementById('edit-paste-msg').style.display = 'block'; }
+          e.preventDefault(); break;
         }
       }
     });
 
     function closeModals() {
-      document.getElementById('modal-save').style.display = 'none';
-      document.getElementById('modal-create-book').style.display = 'none';
-      document.getElementById('modal-edit-book').style.display = 'none';
-      document.getElementById('save-paste-msg').style.display = 'none';
-      document.getElementById('create-paste-msg').style.display = 'none';
-      document.getElementById('edit-paste-msg').style.display = 'none';
+      document.getElementById('modal-save').style.display = 'none'; document.getElementById('modal-create-book').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'none';
+      document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('create-paste-msg').style.display = 'none'; document.getElementById('edit-paste-msg').style.display = 'none';
     }
 
     function openCreateBookModal() {
-      document.getElementById('modal-create-book').style.display = 'flex';
-      document.getElementById('only-new-book-name').value = '';
-      document.getElementById('only-cover-upload').value = '';
-      document.getElementById('create-paste-msg').style.display = 'none';
+      document.getElementById('modal-create-book').style.display = 'flex'; document.getElementById('only-new-book-name').value = '';
+      document.getElementById('only-cover-upload').value = ''; document.getElementById('create-paste-msg').style.display = 'none';
     }
 
     function showSaveModal() {
-      document.getElementById('modal-save').style.display = 'flex';
-      document.getElementById('save-paste-msg').style.display = 'none';
+      document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none';
       document.getElementById('modal-save-title').innerText = currentPageId ? "Đổi Vị Trí Lưu Trữ" : "Chọn Vị Trí Lưu Trữ";
-      const list = document.getElementById('modal-book-list');
-      list.innerHTML = '';
-      db.books.forEach(book => {
-        list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`;
-      });
-      document.getElementById('new-book-name').value = '';
-      document.getElementById('cover-upload').value = '';
+      const list = document.getElementById('modal-book-list'); list.innerHTML = '';
+      db.books.forEach(book => { list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; });
+      document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = '';
     }
 
     document.getElementById('editor-content').addEventListener('input', () => {
       if(!isEditMode) return;
-      document.getElementById('save-status').innerText = 'Đang ghi...';
+      document.getElementById('save-status').innerText = 'Đang đồng bộ...';
       clearTimeout(typingTimer);
-      typingTimer = setTimeout(() => { document.getElementById('save-status').innerText = 'Đã lưu tạm'; }, 1000);
+      typingTimer = setTimeout(() => { 
+        saveDB(); // Tự động đồng bộ lên Firebase sau khi ngừng gõ 1.5s
+      }, 1500);
     });
 
-    function insertImage(event) {
+    function insertFile(event) {
       const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        if (file.type.startsWith('image/')) {
           const img = new Image();
           img.onload = function() {
             const canvas = document.createElement('canvas');
             canvas.width = 800; canvas.height = img.height * (800 / img.width);
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             const imgHtml = `<img src="${canvas.toDataURL('image/jpeg', 0.8)}" alt="media">`;
-            document.getElementById('editor-content').focus();
-            document.execCommand('insertHTML', false, imgHtml);
+            document.getElementById('editor-content').focus(); document.execCommand('insertHTML', false, imgHtml);
+            saveDB();
           };
           img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
+        } 
+        else if (file.type === 'application/pdf') {
+          const pdfHtml = `<br><a href="${e.target.result}" download="${file.name}" style="display: inline-block; padding: 10px 15px; background: rgba(140, 123, 108, 0.1); border: 1px solid var(--primary); border-radius: 4px; text-decoration: none; color: var(--primary); font-weight: bold; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin: 10px 0;">📎 Tệp tin đính kèm: ${file.name}</a><br>`;
+          document.getElementById('editor-content').focus(); document.execCommand('insertHTML', false, pdfHtml);
+          saveDB();
+        } 
+      };
+      reader.readAsDataURL(file);
     }
 
     function generatePastelPalette(canvas, ctx, count) {
       let palette = [];
       for (let i = 0; i < count; i++) {
-        let x = Math.floor(Math.random() * canvas.width);
-        let y = Math.floor(Math.random() * canvas.height);
+        let x = Math.floor(Math.random() * canvas.width); let y = Math.floor(Math.random() * canvas.height);
         let pixel = ctx.getImageData(x, y, 1, 1).data;
-        let r = Math.floor((pixel[0] + 255 * 2) / 3);
-        let g = Math.floor((pixel[1] + 255 * 2) / 3);
-        let b = Math.floor((pixel[2] + 255 * 2) / 3);
+        let r = Math.floor((pixel[0] + 255 * 2) / 3); let g = Math.floor((pixel[1] + 255 * 2) / 3); let b = Math.floor((pixel[2] + 255 * 2) / 3);
         palette.push(`rgb(${r}, ${g}, ${b})`);
       }
       return palette;
@@ -782,8 +751,7 @@
           img.onload = function() {
             const canvas = document.createElement('canvas');
             canvas.width = 400; canvas.height = img.height * (400 / img.width);
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             finalizeAction(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5));
           };
           img.src = e.target.result;
@@ -809,19 +777,13 @@
           img.onload = function() {
             const canvas = document.createElement('canvas');
             canvas.width = 400; canvas.height = img.height * (400 / img.width);
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             finalizeCreate(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5));
           };
           img.src = e.target.result;
         };
         reader.readAsDataURL(coverFile);
       } else { finalizeCreate(null, null); }
-    }
-
-    function saveDB() {
-      try { localStorage.setItem('diary_db', JSON.stringify(db)); return true; } 
-      catch (e) { alert("Lỗi phân vùng: Bộ nhớ đệm đã đầy."); return false; }
     }
   </script>
 </body>
