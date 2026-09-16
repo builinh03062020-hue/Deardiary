@@ -188,7 +188,7 @@
     <div id="editor-content" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
   </div>
 
-  <!-- Hộp thoại Phân loại Lưu trữ / Đổi vị trí -->
+  <!-- Các Hộp thoại Modal -->
   <div id="modal-save" class="modal">
     <div class="modal-content">
       <h3 id="modal-save-title">Chọn Vị trí Lưu trữ</h3>
@@ -204,7 +204,6 @@
     </div>
   </div>
 
-  <!-- Hộp thoại Khởi tạo Sách Mới -->
   <div id="modal-create-book" class="modal">
     <div class="modal-content">
       <h3>Khởi Tạo Sách Mới</h3>
@@ -218,7 +217,6 @@
     </div>
   </div>
 
-  <!-- Hộp thoại Chỉnh sửa Sách -->
   <div id="modal-edit-book" class="modal">
     <div class="modal-content">
       <h3>Chỉnh Sửa Sách</h3>
@@ -233,7 +231,6 @@
     </div>
   </div>
 
-  <!-- Hộp thoại Yêu cầu Xác thực Bảo mật -->
   <div id="modal-passcode" class="modal">
     <div class="modal-content">
       <h3 id="modal-passcode-title">Xác Thực Thao Tác</h3>
@@ -245,7 +242,7 @@
   </div>
 
   <script>
-    // --- CẤU HÌNH FIREBASE KẾT NỐI ĐÁM MÂY ---
+    // --- CẤU HÌNH FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyAlzn4AT4M4AOSMADjMnEn5OiL8_8-7hKs",
       authDomain: "dear-diary-28b19.firebaseapp.com",
@@ -269,6 +266,7 @@
     let pendingSecureAction = null;
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
+    // Khởi tạo tiến trình tải dữ liệu
     window.onload = () => {
       document.getElementById('loading-text').innerText = "Đang kiểm tra kết nối...";
       
@@ -325,12 +323,13 @@
       }
     }
 
+    // --- SỬA LỖI MẤT HÀM THỰC THI CALLBACK TẠI ĐÂY ---
     document.getElementById('action-pin-input').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') verifyActionPin();
     });
 
     function requestPasscode(actionTitle, callback) {
-      pendingSecureAction = callback;
+      pendingSecureAction = callback; // Lưu hàm thực thi (xóa, sửa) vào bộ nhớ cục bộ
       document.getElementById('modal-passcode-title').innerText = actionTitle;
       document.getElementById('action-pin-input').value = '';
       document.getElementById('modal-passcode').style.display = 'flex';
@@ -340,15 +339,22 @@
     function verifyActionPin() {
       const input = document.getElementById('action-pin-input').value;
       if (input === db.passcode) {
-        closePasscodeModal();
-        if (pendingSecureAction) pendingSecureAction();
+        // Tắt cửa sổ nhưng KHÔNG xóa callback
+        document.getElementById('modal-passcode').style.display = 'none';
+        
+        // Kích hoạt hàm thực thi và dọn dẹp sau khi chạy xong
+        if (pendingSecureAction) {
+          pendingSecureAction();
+          pendingSecureAction = null; 
+        }
       } else { alert("Lỗi xác thực: Mật mã không hợp lệ."); }
     }
 
     function closePasscodeModal() {
       document.getElementById('modal-passcode').style.display = 'none';
-      pendingSecureAction = null;
+      pendingSecureAction = null; // Chỉ hủy callback khi người dùng chủ động bấm Hủy
     }
+    // ---------------------------------------------------
 
     function switchScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -373,7 +379,6 @@
       dragStartIndex = null;
     }
 
-    // --- SỬA LỖI EVENT DELEGATION TẠI ĐÂY ---
     function renderBooks() {
       const container = document.getElementById('books-container');
       container.innerHTML = '';
@@ -388,7 +393,6 @@
         bookEl.addEventListener('dragover', handleDragOver);
         bookEl.addEventListener('drop', (e) => handleDrop(e, index));
         
-        // Nhận diện Event ủy quyền chuyên sâu (Event Delegation)
         bookEl.addEventListener('click', (e) => {
           if (e.target.closest('.delete')) {
             e.stopPropagation();
@@ -401,7 +405,6 @@
           }
         });
 
-        // Đã loại bỏ các sự kiện nội tuyến onclick
         bookEl.innerHTML = `
           <div class="book-actions">
             <div class="book-action-btn edit">✎</div>
@@ -414,7 +417,6 @@
       });
     }
 
-    // Cập nhật hàm điều khiển Xóa Sách và Sửa Sách (Loại bỏ tham số event)
     function deleteBook(bookId) {
       requestPasscode("Xác Thực Xóa Sách", () => {
         db.books = db.books.filter(b => b.id !== bookId);
