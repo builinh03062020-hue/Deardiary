@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aesthetic Vintage Diary - Emergency Rescue Edition</title>
+  <title>Aesthetic Vintage Diary - Cloud Sync Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   
   <!-- Tích hợp Firebase SDK -->
@@ -127,7 +127,7 @@
 
   <!-- Màn hình Tải Dữ liệu -->
   <div id="loading-screen" class="screen active">
-    <h2 id="loading-text">Đang kiểm tra kết nối...</h2>
+    <h2 id="loading-text">Đang kết nối mây...</h2>
   </div>
 
   <!-- Xác thực Khởi tạo -->
@@ -188,7 +188,7 @@
     <div id="editor-content" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
   </div>
 
-  <!-- Các Hộp thoại Modal -->
+  <!-- Hộp thoại Phân loại Lưu trữ / Đổi vị trí -->
   <div id="modal-save" class="modal">
     <div class="modal-content">
       <h3 id="modal-save-title">Chọn Vị trí Lưu trữ</h3>
@@ -204,6 +204,7 @@
     </div>
   </div>
 
+  <!-- Hộp thoại Khởi tạo Sách Mới -->
   <div id="modal-create-book" class="modal">
     <div class="modal-content">
       <h3>Khởi Tạo Sách Mới</h3>
@@ -217,6 +218,7 @@
     </div>
   </div>
 
+  <!-- Hộp thoại Chỉnh sửa Sách -->
   <div id="modal-edit-book" class="modal">
     <div class="modal-content">
       <h3>Chỉnh Sửa Sách</h3>
@@ -231,10 +233,11 @@
     </div>
   </div>
 
+  <!-- Hộp thoại Yêu cầu Xác thực Bảo mật -->
   <div id="modal-passcode" class="modal">
     <div class="modal-content">
       <h3 id="modal-passcode-title">Xác Thực Thao Tác</h3>
-      <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p>
+      <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống để tiếp tục.</p>
       <input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••">
       <button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác Nhận</button>
       <button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy Thao Tác</button>
@@ -242,7 +245,7 @@
   </div>
 
   <script>
-    // CẤU HÌNH FIREBASE KẾT NỐI ĐÁM MÂY
+    // --- CẤU HÌNH FIREBASE KẾT NỐI ĐÁM MÂY ---
     const firebaseConfig = {
       apiKey: "AIzaSyAlzn4AT4M4AOSMADjMnEn5OiL8_8-7hKs",
       authDomain: "dear-diary-28b19.firebaseapp.com",
@@ -266,48 +269,25 @@
     let pendingSecureAction = null;
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
-    // THUẬT TOÁN CỨU HỘ DỮ LIỆU ĐẶC BIỆT (FORCE MIGRATION)
     window.onload = () => {
-      document.getElementById('loading-text').innerText = "Đang kiểm tra kết nối đám mây...";
+      document.getElementById('loading-text').innerText = "Đang kiểm tra kết nối...";
       
       docRef.get().then((doc) => {
         let cloudData = doc.exists ? doc.data() : null;
         let localData = JSON.parse(localStorage.getItem('diary_db'));
 
-        // Logic 1: Kiểm tra xem máy cục bộ có dữ liệu thực tế (books) không
-        let hasLocalBooks = localData && localData.books && localData.books.length > 0;
-        // Logic 2: Kiểm tra xem mây rỗng sách không (Bỏ qua việc mây đã có passcode hay chưa)
-        let cloudHasNoBooks = !cloudData || !cloudData.books || cloudData.books.length === 0;
-
-        // Nếu máy có sách mà mây không có sách -> Ép buộc chuyển nhà
-        if (hasLocalBooks && cloudHasNoBooks) {
-          document.getElementById('loading-text').innerText = "Đang cứu hộ toàn bộ nhật ký lên mây...";
-          db = localData; 
-          
-          // Giữ lại Passcode mới nhất mà người dùng vừa đặt trên mây (nếu có)
-          if (cloudData && cloudData.passcode) {
-            db.passcode = cloudData.passcode;
-          }
-          
-          docRef.set(db).then(() => {
-            console.log("Cứu hộ dữ liệu thành công!");
-            initAppUI();
-          }).catch((error) => {
-            alert("Lỗi cứu hộ dữ liệu: " + error.message);
-            initAppUI();
-          });
+        if ((!cloudData || !cloudData.passcode) && (localData && localData.passcode)) {
+          document.getElementById('loading-text').innerText = "Đang chuyển dữ liệu lên mây...";
+          db = localData;
+          docRef.set(db).then(() => { initAppUI(); }).catch((error) => { alert("Lỗi chuyển dữ liệu: " + error.message); initAppUI(); });
         } 
-        // Trạng thái bình thường: Đã có sách trên mây
         else if (cloudData && cloudData.passcode) {
           db = cloudData;
           initAppUI();
         } 
-        // Khởi tạo hoàn toàn mới
-        else {
-          initAppUI();
-        }
+        else { initAppUI(); }
       }).catch((error) => {
-        alert("Lỗi kết nối máy chủ. Đang tải dữ liệu tạm...");
+        alert("Lỗi kết nối máy chủ: Vui lòng kiểm tra mạng lưới.");
         let localData = JSON.parse(localStorage.getItem('diary_db'));
         if(localData) db = localData;
         initAppUI(); 
@@ -393,6 +373,7 @@
       dragStartIndex = null;
     }
 
+    // --- SỬA LỖI EVENT DELEGATION TẠI ĐÂY ---
     function renderBooks() {
       const container = document.getElementById('books-container');
       container.innerHTML = '';
@@ -401,15 +382,30 @@
         const bookEl = document.createElement('div');
         bookEl.className = 'book';
         bookEl.draggable = true;
+        
         bookEl.addEventListener('dragstart', (e) => handleDragStart(e, index));
         bookEl.addEventListener('dragend', handleDragEnd);
         bookEl.addEventListener('dragover', handleDragOver);
         bookEl.addEventListener('drop', (e) => handleDrop(e, index));
-        bookEl.addEventListener('click', () => openBook(book.id));
+        
+        // Nhận diện Event ủy quyền chuyên sâu (Event Delegation)
+        bookEl.addEventListener('click', (e) => {
+          if (e.target.closest('.delete')) {
+            e.stopPropagation();
+            deleteBook(book.id);
+          } else if (e.target.closest('.edit')) {
+            e.stopPropagation();
+            openEditBookModal(book.id);
+          } else {
+            openBook(book.id);
+          }
+        });
+
+        // Đã loại bỏ các sự kiện nội tuyến onclick
         bookEl.innerHTML = `
           <div class="book-actions">
-            <div class="book-action-btn edit" onclick="openEditBookModal('${book.id}', event)">✎</div>
-            <div class="book-action-btn delete" onclick="deleteBook('${book.id}', event)">✖</div>
+            <div class="book-action-btn edit">✎</div>
+            <div class="book-action-btn delete">✖</div>
           </div>
           <div class="book-cover-img" style="${bgStyle}"></div>
           <div class="book-title">${book.name}</div>
@@ -418,8 +414,8 @@
       });
     }
 
-    function deleteBook(bookId, event) {
-      event.stopPropagation();
+    // Cập nhật hàm điều khiển Xóa Sách và Sửa Sách (Loại bỏ tham số event)
+    function deleteBook(bookId) {
       requestPasscode("Xác Thực Xóa Sách", () => {
         db.books = db.books.filter(b => b.id !== bookId);
         db.pages = db.pages.filter(p => p.bookId !== bookId);
@@ -427,8 +423,7 @@
       });
     }
 
-    function openEditBookModal(bookId, event) {
-      event.stopPropagation(); 
+    function openEditBookModal(bookId) {
       requestPasscode("Xác Thực Chỉnh Sửa", () => {
         editingBookId = bookId;
         const book = db.books.find(b => b.id === bookId);
