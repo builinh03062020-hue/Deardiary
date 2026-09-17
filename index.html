@@ -6,7 +6,6 @@
   <title>Aesthetic Vintage Diary - PWA Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   
-  <!-- Khai báo PWA Manifest và Biểu tượng thiết bị -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#8c7b6c">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,7 +13,6 @@
   <meta name="apple-mobile-web-app-title" content="Diary">
   <link rel="apple-touch-icon" href="icon-192.png">
 
-  <!-- Tích hợp Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
@@ -90,18 +88,18 @@
     .input-book-name:focus { border-color: var(--primary); }
     .paste-success-msg { display: none; font-size: 0.85rem; color: #6a9c78; font-weight: bold; margin-bottom: 15px; font-style: italic; }
     
-    /* Giao diện Bảng Ghim Đính Kèm */
-    #attachment-board { display: none; margin: 15px 0; padding: 15px; border: 1px dashed var(--primary); border-radius: 4px; background: rgba(140, 123, 108, 0.05); }
-    .attachment-header { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--primary); font-weight: 600; border-bottom: 1px solid rgba(140, 123, 108, 0.2); padding-bottom: 5px; margin-bottom: 10px; }
-    .attachment-images { display: flex; gap: 10px; flex-wrap: wrap; }
-    .attachment-img-wrap { position: relative; width: 100px; height: 100px; border-radius: 4px; overflow: hidden; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; transition: 0.2s; }
-    .attachment-img-wrap:hover { transform: scale(1.05); }
+    /* Giao thức Bảng Ghim Đính Kèm */
+    #attachment-board { display: none; margin: 15px 0 25px 0; padding: 15px; border: 1px dashed var(--primary); border-radius: 6px; background: rgba(140, 123, 108, 0.04); }
+    .attachment-section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--primary); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .attachment-images { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .attachment-img-wrap { position: relative; width: 110px; height: 110px; border-radius: 4px; overflow: hidden; border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); cursor: pointer; transition: transform 0.2s ease; }
+    .attachment-img-wrap:hover { transform: scale(1.04); }
     .attachment-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-    .attachment-img-delete { position: absolute; top: 2px; right: 2px; background: rgba(196, 123, 106, 0.9); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; border: none; }
-    .attachment-files { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-    .attachment-file-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: white; border: 1px solid #d4cdc1; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-size: 0.9rem; }
-    .attachment-file-item a { text-decoration: none; color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 5px; }
-    .attachment-file-delete { color: var(--danger); cursor: pointer; font-weight: bold; }
+    .attachment-img-delete { position: absolute; top: 3px; right: 3px; background: rgba(196, 123, 106, 0.95); color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; border: none; }
+    .attachment-files { display: flex; flex-direction: column; gap: 8px; border-top: 1px dashed rgba(140, 123, 108, 0.2); padding-top: 10px; }
+    .attachment-file-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #fff; border: 1px solid #d4cdc1; border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); font-size: 0.9rem; }
+    .attachment-file-item a { text-decoration: none; color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .attachment-file-delete { color: var(--danger); cursor: pointer; font-weight: bold; padding: 2px 6px; }
 
     @media screen and (max-width: 768px) { .books-grid, .global-search-grid { gap: 25px; padding: 10px; } .book, .global-page-card { width: 160px; height: 230px; } .pages-carousel { padding: 40px 10px; } .page-sheet { flex: 0 0 180px; height: 260px; margin-left: -90px; } .search-input { min-width: 100%; margin-bottom: 10px; } }
     @media screen and (max-width: 480px) { .header { flex-direction: column; align-items: flex-start; } .header-actions, .editor-header-group { width: 100%; justify-content: flex-start; } .book, .global-page-card { width: 140px; height: 200px; } .page-sheet { flex: 0 0 150px; height: 220px; margin-left: -80px; } }
@@ -147,11 +145,16 @@
     <div class="editor-toolbar" id="editor-toolbar"><input type="file" id="file-upload" accept="image/*, application/pdf" style="display: none;" onchange="insertFile(event)"><button class="btn btn-text" onclick="document.getElementById('file-upload').click()">+ Đính kèm File/Ảnh</button><span class="save-status" id="save-status"></span></div>
     <input type="text" id="editor-title" placeholder="Tiêu đề ngày hôm nay (Tùy chọn)...">
     
-    <!-- Phân hệ Bảng Ghim Ký Ức -->
+    <!-- Phân hệ Bảng Ghim Ký Ức Độc Lập -->
     <div id="attachment-board">
-      <div class="attachment-header">Bảng Ghim Ký Ức</div>
-      <div id="attachment-images" class="attachment-images"></div>
-      <div id="attachment-files" class="attachment-files"></div>
+      <div id="attachment-img-section" style="display: none;">
+        <div class="attachment-section-title">Hình ảnh đính kèm</div>
+        <div id="attachment-images" class="attachment-images"></div>
+      </div>
+      <div id="attachment-file-section" style="display: none;">
+        <div class="attachment-section-title">Tệp tin đính kèm</div>
+        <div id="attachment-files" class="attachment-files"></div>
+      </div>
     </div>
 
     <div id="editor-content" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
@@ -163,7 +166,16 @@
   <div id="modal-passcode" class="modal"><div class="modal-content"><h3 id="modal-passcode-title">Xác Thực Thao Tác</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p><input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác Nhận</button><button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy Thao Tác</button></div></div>
 
   <script>
-    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch((err) => console.error('Lỗi khởi tạo ServiceWorker:', err)); }); }
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => {
+            reg.update(); // Yêu cầu Service Worker kiểm tra và cập nhật phiên bản mới ngay lập tức
+          })
+          .catch(err => console.error('Lỗi ServiceWorker:', err));
+      });
+    }
+
     window.addEventListener('online', () => { document.getElementById('network-alert').style.display = 'none'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã khôi phục mạng - Đang đồng bộ...'; saveDB(); });
     window.addEventListener('offline', () => { document.getElementById('network-alert').style.display = 'block'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã lưu nháp (Chế độ Ngoại tuyến)'; });
 
@@ -175,7 +187,7 @@
 
     let db = { books: [], pages: [], passcode: null };
     let currentPageId = null, preSelectedBookId = null, editingBookId = null, typingTimer, isEditMode = true, dragStartIndex = null, pendingSecureAction = null;
-    let currentAttachments = { images: [], files: [] }; // Khởi tạo mảng dữ liệu đính kèm
+    let currentAttachments = { images: [], files: [] };
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
     window.onload = () => {
@@ -183,10 +195,16 @@
       docRef.onSnapshot((doc) => {
         if (doc.exists) {
           const cloudData = doc.data();
-          if (cloudData.passcode) { db = cloudData; if(document.getElementById('loading-screen').classList.contains('active')) { initAppUI(); } else if (document.getElementById('dashboard').classList.contains('active')) { renderBooks(); } }
+          if (cloudData.passcode) {
+            db = cloudData;
+            if(document.getElementById('loading-screen').classList.contains('active')) { initAppUI(); } else if (document.getElementById('dashboard').classList.contains('active')) { renderBooks(); }
+          }
         } else {
           let localData = JSON.parse(localStorage.getItem('diary_db'));
-          if (localData && localData.passcode) { document.getElementById('loading-text').innerText = "Đang đồng bộ lần đầu lên mây..."; db = localData; docRef.set(db).then(() => initAppUI()).catch((error) => { alert("Lỗi chuyển dữ liệu: " + error.message); initAppUI(); }); } else { initAppUI(); }
+          if (localData && localData.passcode) {
+            document.getElementById('loading-text').innerText = "Đang đồng bộ lần đầu lên mây..."; db = localData;
+            docRef.set(db).then(() => initAppUI()).catch((error) => { alert("Lỗi chuyển dữ liệu: " + error.message); initAppUI(); });
+          } else { initAppUI(); }
         }
       }, (error) => { console.error("Lỗi đồng bộ Dữ liệu:", error); initAppUI(); });
     };
@@ -205,9 +223,56 @@
     function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
     function handleDrop(e, dropIndex) { e.preventDefault(); if (dragStartIndex !== null && dragStartIndex !== dropIndex) { const movedBook = db.books.splice(dragStartIndex, 1)[0]; db.books.splice(dropIndex, 0, movedBook); saveDB(); renderBooks(); } dragStartIndex = null; }
     
-    // Thuật toán Hiển thị Bảng Ghim Đính kèm
-    function renderAttachments() { const board = document.getElementById('attachment-board'); const imgContainer = document.getElementById('attachment-images'); const fileContainer = document.getElementById('attachment-files'); imgContainer.innerHTML = ''; fileContainer.innerHTML = ''; let hasContent = false; if (currentAttachments.images.length > 0) { hasContent = true; currentAttachments.images.forEach((imgSrc, idx) => { imgContainer.innerHTML += `<div class="attachment-img-wrap"><img src="${imgSrc}" onclick="window.open('${imgSrc}', '_blank')">${isEditMode ? `<div class="attachment-img-delete" onclick="removeAttachment('image', ${idx})">✖</div>` : ''}</div>`; }); } if (currentAttachments.files.length > 0) { hasContent = true; currentAttachments.files.forEach((file, idx) => { fileContainer.innerHTML += `<div class="attachment-file-item"><a href="${file.data}" download="${file.name}">📎 ${file.name}</a>${isEditMode ? `<div class="attachment-file-delete" onclick="removeAttachment('file', ${idx})">✖</div>` : ''}</div>`; }); } board.style.display = hasContent ? 'block' : 'none'; }
-    function removeAttachment(type, index) { if (!isEditMode) return; if (type === 'image') currentAttachments.images.splice(index, 1); else if (type === 'file') currentAttachments.files.splice(index, 1); renderAttachments(); saveDB(); }
+    // Thuật toán Quản lý và Kết xuất Bảng Ghim Độc Lập
+    function renderAttachments() {
+      const board = document.getElementById('attachment-board');
+      const imgSection = document.getElementById('attachment-img-section');
+      const fileSection = document.getElementById('attachment-file-section');
+      const imgContainer = document.getElementById('attachment-images');
+      const fileContainer = document.getElementById('attachment-files');
+      
+      imgContainer.innerHTML = '';
+      fileContainer.innerHTML = '';
+      
+      const hasImages = currentAttachments.images && currentAttachments.images.length > 0;
+      const hasFiles = currentAttachments.files && currentAttachments.files.length > 0;
+
+      if (hasImages) {
+        imgSection.style.display = 'block';
+        currentAttachments.images.forEach((imgSrc, idx) => {
+          imgContainer.innerHTML += `
+            <div class="attachment-img-wrap">
+              <img src="${imgSrc}" onclick="window.open('${imgSrc}', '_blank')">
+              ${isEditMode ? `<div class="attachment-img-delete" onclick="removeAttachment('image', ${idx})">✖</div>` : ''}
+            </div>`;
+        });
+      } else {
+        imgSection.style.display = 'none';
+      }
+
+      if (hasFiles) {
+        fileSection.style.display = 'block';
+        currentAttachments.files.forEach((file, idx) => {
+          fileContainer.innerHTML += `
+            <div class="attachment-file-item">
+              <a href="${file.data}" download="${file.name}">📎 ${file.name}</a>
+              ${isEditMode ? `<div class="attachment-file-delete" onclick="removeAttachment('file', ${idx})">✖</div>` : ''}
+            </div>`;
+        });
+      } else {
+        fileSection.style.display = 'none';
+      }
+
+      board.style.display = (hasImages || hasFiles) ? 'block' : 'none';
+    }
+
+    function removeAttachment(type, index) {
+      if (!isEditMode) return;
+      if (type === 'image') currentAttachments.images.splice(index, 1);
+      else if (type === 'file') currentAttachments.files.splice(index, 1);
+      renderAttachments();
+      saveDB();
+    }
 
     function renderBooks() { const container = document.getElementById('books-container'); container.innerHTML = ''; db.books.forEach((book, index) => { const bgStyle = book.cover ? `background-image: url('${book.cover}'); border: 1px solid rgba(0,0,0,0.1); box-shadow: inset 0 0 5px rgba(0,0,0,0.2);` : `background-color: transparent; border: none; box-shadow: none;`; const bookEl = document.createElement('div'); bookEl.className = 'book'; bookEl.draggable = true; bookEl.addEventListener('dragstart', (e) => handleDragStart(e, index)); bookEl.addEventListener('dragend', handleDragEnd); bookEl.addEventListener('dragover', handleDragOver); bookEl.addEventListener('drop', (e) => handleDrop(e, index)); bookEl.addEventListener('click', (e) => { if (e.target.closest('.delete')) { e.stopPropagation(); deleteBook(book.id); } else if (e.target.closest('.edit')) { e.stopPropagation(); openEditBookModal(book.id); } else { openBook(book.id); } }); bookEl.innerHTML = `<div class="book-actions"><div class="book-action-btn edit">✎</div><div class="book-action-btn delete">✖</div></div><div class="book-cover-img" style="${bgStyle}"></div><div class="book-title">${book.name}</div>`; container.appendChild(bookEl); }); }
     function deleteBook(bookId) { requestPasscode("Xác Thực Xóa Sách", () => { db.books = db.books.filter(b => b.id !== bookId); db.pages = db.pages.filter(p => p.bookId !== bookId); saveDB(); renderBooks(); }); }
@@ -222,13 +287,13 @@
     function updatePinButtonState(isPinned) { const pinBtn = document.getElementById('btn-pin-page'); if (isPinned) { pinBtn.innerText = "Bỏ Ghim Trang"; pinBtn.style.color = "var(--danger)"; } else { pinBtn.innerText = "📌 Ghim Trang"; pinBtn.style.color = "var(--highlight)"; } }
     function setEditorMode(editMode) { isEditMode = editMode; const titleEl = document.getElementById('editor-title'); const contentEl = document.getElementById('editor-content'); const toolbarEl = document.getElementById('editor-toolbar'); const toggleBtn = document.getElementById('btn-toggle-edit'); const editorScreen = document.getElementById('editor-screen'); if (isEditMode) { titleEl.readOnly = false; contentEl.setAttribute('contenteditable', 'true'); toolbarEl.style.display = 'flex'; editorScreen.classList.remove('read-only-mode'); toggleBtn.innerText = 'Lưu Nội Dung'; toggleBtn.className = 'btn btn-primary-filled'; contentEl.focus(); } else { titleEl.readOnly = true; contentEl.setAttribute('contenteditable', 'false'); toolbarEl.style.display = 'none'; editorScreen.classList.add('read-only-mode'); toggleBtn.innerText = 'Chỉnh Sửa'; toggleBtn.className = 'btn btn-text'; } renderAttachments(); }
     function handleEditToggle() { if (isEditMode) savePageDirectly(false); else setEditorMode(true); }
-    function openEditor(pageId = null, fromBook = false) { currentPageId = pageId; if (!fromBook && !pageId) preSelectedBookId = null; document.getElementById('editor-secondary-actions').style.display = pageId ? 'flex' : 'none'; const titleEl = document.getElementById('editor-title'); const contentEl = document.getElementById('editor-content'); if (pageId) { const page = db.pages.find(p => p.id === pageId); titleEl.value = page.title; contentEl.innerHTML = page.content; currentAttachments = page.attachments ? JSON.parse(JSON.stringify(page.attachments)) : { images: [], files: [] }; updatePinButtonState(page.isPinned); setEditorMode(false); } else { titleEl.value = ''; contentEl.innerHTML = ''; currentAttachments = { images: [], files: [] }; document.getElementById('save-status').innerText = ''; updatePinButtonState(false); setEditorMode(true); } switchScreen('editor-screen'); }
+    function openEditor(pageId = null, fromBook = false) { currentPageId = pageId; if (!fromBook && !pageId) preSelectedBookId = null; document.getElementById('editor-secondary-actions').style.display = pageId ? 'flex' : 'none'; const titleEl = document.getElementById('editor-title'); const contentEl = document.getElementById('editor-content'); if (pageId) { const page = db.pages.find(p => p.id === pageId); titleEl.value = page.title; contentEl.innerHTML = page.content; currentAttachments = page.attachments ? JSON.parse(JSON.stringify(page.attachments)) : { images: [], files: [] }; updatePinButtonState(page.isPinned); setEditorMode(false); } else { titleEl.value = ''; contentEl.innerHTML = ''; currentAttachments = { images: [], files: [] }; document.getElementById('save-status').innerText = ''; updatePinButtonState(false); setEditorMode(true); } renderAttachments(); switchScreen('editor-screen'); }
     function goBackFromEditor() { if (preSelectedBookId) { renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); switchScreen('book-view'); } else { switchScreen('dashboard'); renderBooks(); } }
     function deleteCurrentPage() { requestPasscode("Xác Thực Xóa Trang", () => { db.pages = db.pages.filter(p => p.id !== currentPageId); saveDB(); goBackFromEditor(); }); }
     
     function savePageDirectly(goBack = false) { const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; if (currentPageId) { const page = db.pages.find(p => p.id === currentPageId); page.title = title; page.content = content; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); saveDB(); setEditorMode(false); if (goBack) goBackFromEditor(); } else if (preSelectedBookId) { const newPageId = 'page_' + Date.now(); db.pages.push({ id: newPageId, bookId: preSelectedBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); saveDB(); currentPageId = newPageId; document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); if (goBack) goBackFromEditor(); } else { showSaveModal(); } }
     
-    // Xử lý bộ nhớ tạm (Paste) chuyển hóa thành Đính kèm
+    // Chặn triệt để dán ảnh vào dòng văn bản, chuyển 100% vào Bảng Ghim
     document.addEventListener('paste', function(e) { 
       const mSave = document.getElementById('modal-save').style.display === 'flex'; 
       const mCreate = document.getElementById('modal-create-book').style.display === 'flex'; 
@@ -241,7 +306,9 @@
 
       for (let i = 0; i < items.length; i++) { 
         if (items[i].type.indexOf('image') !== -1) { 
-          const file = items[i].getAsFile(); e.preventDefault(); 
+          const file = items[i].getAsFile();
+          e.preventDefault(); // Ngăn chặn hành vi dán ảnh mặc định vào nội dung văn bản
+          
           if (mSave || mCreate || mEdit) {
             const dt = new DataTransfer(); dt.items.add(file); 
             if (mSave) { document.getElementById('cover-upload').files = dt.files; document.getElementById('save-paste-msg').style.display = 'block'; } 
@@ -252,12 +319,21 @@
             reader.onload = function(ev) {
               const img = new Image();
               img.onload = function() {
-                const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width);
-                const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                const canvas = document.createElement('canvas');
+                canvas.width = 800;
+                canvas.height = img.height * (800 / img.width);
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                // Đẩy ảnh vào mảng Bảng Ghim thay vì chèn vào dòng chữ
+                if (!currentAttachments.images) currentAttachments.images = [];
                 currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8));
-                renderAttachments(); saveDB();
-              }; img.src = ev.target.result;
-            }; reader.readAsDataURL(file);
+                renderAttachments();
+                saveDB();
+              };
+              img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
           }
           break; 
         } 
@@ -269,8 +345,35 @@
     function showSaveModal() { document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('modal-save-title').innerText = currentPageId ? "Đổi Vị Trí Lưu Trữ" : "Chọn Vị Trí Lưu Trữ"; const list = document.getElementById('modal-book-list'); list.innerHTML = ''; db.books.forEach(book => { list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; }); document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = ''; }
     document.getElementById('editor-content').addEventListener('input', () => { if(!isEditMode) return; document.getElementById('save-status').innerText = navigator.onLine ? 'Đang đồng bộ...' : 'Đang lưu nháp (Offline)...'; clearTimeout(typingTimer); typingTimer = setTimeout(() => { saveDB(); }, 1500); });
     
-    // Tải tệp tin thủ công
-    function insertFile(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { if (file.type.startsWith('image/')) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); saveDB(); }; img.src = e.target.result; } else if (file.type === 'application/pdf') { currentAttachments.files.push({ name: file.name, data: e.target.result }); renderAttachments(); saveDB(); } }; reader.readAsDataURL(file); }
+    // Điều phối tệp tin đính kèm thủ công
+    function insertFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        if (file.type.startsWith('image/')) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 800;
+            canvas.height = img.height * (800 / img.width);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            if (!currentAttachments.images) currentAttachments.images = [];
+            currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8));
+            renderAttachments();
+            saveDB();
+          };
+          img.src = e.target.result;
+        } else if (file.type === 'application/pdf') {
+          if (!currentAttachments.files) currentAttachments.files = [];
+          currentAttachments.files.push({ name: file.name, data: e.target.result });
+          renderAttachments();
+          saveDB();
+        }
+      };
+      reader.readAsDataURL(file);
+    }
     
     function generatePastelPalette(canvas, ctx, count) { let palette = []; for (let i = 0; i < count; i++) { let x = Math.floor(Math.random() * canvas.width); let y = Math.floor(Math.random() * canvas.height); let pixel = ctx.getImageData(x, y, 1, 1).data; let r = Math.floor((pixel[0] + 255 * 2) / 3); let g = Math.floor((pixel[1] + 255 * 2) / 3); let b = Math.floor((pixel[2] + 255 * 2) / 3); palette.push(`rgb(${r}, ${g}, ${b})`); } return palette; }
     
