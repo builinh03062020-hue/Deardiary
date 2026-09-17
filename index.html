@@ -152,7 +152,6 @@
       <div class="editor-header-group" id="editor-secondary-actions"><button class="btn btn-text" id="btn-pin-page" style="color: var(--highlight);" onclick="togglePinPage()">📌 Ghim Trang</button><button class="btn btn-text" id="btn-change-location" onclick="showSaveModal()">Đổi Vị Trí</button><button class="btn btn-danger-text" id="btn-delete-page" onclick="deleteCurrentPage()">Xóa Trang</button></div>
     </div>
     
-    <!-- Cập nhật Thanh Công Cụ: Bổ sung Điều hướng Lịch sử -->
     <div class="editor-toolbar" id="editor-toolbar">
       <button class="btn btn-text" onclick="document.execCommand('undo')" title="Hoàn tác (Ctrl+Z)" style="font-size: 1.2rem; padding: 0 10px;">↶</button>
       <button class="btn btn-text" onclick="document.execCommand('redo')" title="Làm lại (Ctrl+Y)" style="font-size: 1.2rem; padding: 0 10px;">↷</button>
@@ -163,7 +162,6 @@
 
     <input type="text" id="editor-title" placeholder="Tiêu đề ngày hôm nay (Tùy chọn)...">
     
-    <!-- Phân hệ Bảng Ghim Ký Ức - Đa Cột (Multi-column) -->
     <div id="attachment-board">
       <div id="attachment-img-section" class="attachment-col" style="display: none;">
         <div class="attachment-section-title">Nhiếp Ảnh</div>
@@ -193,12 +191,20 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-          .then(reg => {
-            reg.update(); // Yêu cầu Service Worker kiểm tra và cập nhật phiên bản mới ngay lập tức
-          })
+          .then(reg => { reg.update(); })
           .catch(err => console.error('Lỗi ServiceWorker:', err));
       });
     }
+
+    // Tích hợp phím tắt Ctrl+S / Cmd+S
+    document.addEventListener('keydown', function(e) { 
+      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) { 
+        e.preventDefault(); 
+        if (document.getElementById('editor-screen').classList.contains('active') && isEditMode) { 
+          handleEditToggle(); 
+        } 
+      } 
+    });
 
     window.addEventListener('online', () => { document.getElementById('network-alert').style.display = 'none'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã khôi phục mạng - Đang đồng bộ...'; saveDB(); });
     window.addEventListener('offline', () => { document.getElementById('network-alert').style.display = 'block'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã lưu nháp (Chế độ Ngoại tuyến)'; });
@@ -242,17 +248,9 @@
     function handleDrop(e, dropIndex) { e.preventDefault(); if (dragStartIndex !== null && dragStartIndex !== dropIndex) { const movedBook = db.books.splice(dragStartIndex, 1)[0]; db.books.splice(dropIndex, 0, movedBook); saveDB(); renderBooks(); } dragStartIndex = null; }
     
     // Thuật toán Quản lý Hộp Ánh Sáng (Lightbox)
-    function openLightbox(imgSrc) {
-      document.getElementById('lightbox-img').src = imgSrc;
-      document.getElementById('lightbox-modal').classList.add('active');
-    }
-    function closeLightbox() {
-      document.getElementById('lightbox-modal').classList.remove('active');
-      document.getElementById('lightbox-img').src = '';
-    }
-    document.getElementById('lightbox-modal').addEventListener('click', function(e) {
-      if (e.target === this) closeLightbox();
-    });
+    function openLightbox(imgSrc) { document.getElementById('lightbox-img').src = imgSrc; document.getElementById('lightbox-modal').classList.add('active'); }
+    function closeLightbox() { document.getElementById('lightbox-modal').classList.remove('active'); document.getElementById('lightbox-img').src = ''; }
+    document.getElementById('lightbox-modal').addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
 
     // Thuật toán Quản lý và Kết xuất Bảng Ghim Đa Cột
     function renderAttachments() {
@@ -293,14 +291,7 @@
       board.style.display = (hasImages || hasFiles) ? 'flex' : 'none';
     }
 
-    function removeAttachment(type, index) {
-      if (!isEditMode) return;
-      if (type === 'image') currentAttachments.images.splice(index, 1);
-      else if (type === 'file') currentAttachments.files.splice(index, 1);
-      renderAttachments();
-      saveDB();
-    }
-
+    function removeAttachment(type, index) { if (!isEditMode) return; if (type === 'image') currentAttachments.images.splice(index, 1); else if (type === 'file') currentAttachments.files.splice(index, 1); renderAttachments(); saveDB(); }
     function renderBooks() { const container = document.getElementById('books-container'); container.innerHTML = ''; db.books.forEach((book, index) => { const bgStyle = book.cover ? `background-image: url('${book.cover}'); border: 1px solid rgba(0,0,0,0.1); box-shadow: inset 0 0 5px rgba(0,0,0,0.2);` : `background-color: transparent; border: none; box-shadow: none;`; const bookEl = document.createElement('div'); bookEl.className = 'book'; bookEl.draggable = true; bookEl.addEventListener('dragstart', (e) => handleDragStart(e, index)); bookEl.addEventListener('dragend', handleDragEnd); bookEl.addEventListener('dragover', handleDragOver); bookEl.addEventListener('drop', (e) => handleDrop(e, index)); bookEl.addEventListener('click', (e) => { if (e.target.closest('.delete')) { e.stopPropagation(); deleteBook(book.id); } else if (e.target.closest('.edit')) { e.stopPropagation(); openEditBookModal(book.id); } else { openBook(book.id); } }); bookEl.innerHTML = `<div class="book-actions"><div class="book-action-btn edit">✎</div><div class="book-action-btn delete">✖</div></div><div class="book-cover-img" style="${bgStyle}"></div><div class="book-title">${book.name}</div>`; container.appendChild(bookEl); }); }
     function deleteBook(bookId) { requestPasscode("Xác Thực Xóa Sách", () => { db.books = db.books.filter(b => b.id !== bookId); db.pages = db.pages.filter(p => p.bookId !== bookId); saveDB(); renderBooks(); }); }
     function openEditBookModal(bookId) { requestPasscode("Xác Thực Chỉnh Sửa", () => { editingBookId = bookId; const book = db.books.find(b => b.id === bookId); document.getElementById('edit-book-name').value = book.name; document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'flex'; }); }
@@ -320,7 +311,6 @@
     
     function savePageDirectly(goBack = false) { const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; if (currentPageId) { const page = db.pages.find(p => p.id === currentPageId); page.title = title; page.content = content; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); saveDB(); setEditorMode(false); if (goBack) goBackFromEditor(); } else if (preSelectedBookId) { const newPageId = 'page_' + Date.now(); db.pages.push({ id: newPageId, bookId: preSelectedBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); saveDB(); currentPageId = newPageId; document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); if (goBack) goBackFromEditor(); } else { showSaveModal(); } }
     
-    // Chặn dán ảnh vào nội dung, điều hướng 100% vào Bảng Ghim
     document.addEventListener('paste', function(e) { 
       const mSave = document.getElementById('modal-save').style.display === 'flex'; 
       const mCreate = document.getElementById('modal-create-book').style.display === 'flex'; 
@@ -346,16 +336,11 @@
             reader.onload = function(ev) {
               const img = new Image();
               img.onload = function() {
-                const canvas = document.createElement('canvas');
-                canvas.width = 800;
-                canvas.height = img.height * (800 / img.width);
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                
+                const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width);
+                const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 if (!currentAttachments.images) currentAttachments.images = [];
                 currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8));
-                renderAttachments();
-                saveDB();
+                renderAttachments(); saveDB();
               };
               img.src = ev.target.result;
             };
@@ -371,35 +356,7 @@
     function showSaveModal() { document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('modal-save-title').innerText = currentPageId ? "Đổi Vị Trí Lưu Trữ" : "Chọn Vị Trí Lưu Trữ"; const list = document.getElementById('modal-book-list'); list.innerHTML = ''; db.books.forEach(book => { list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; }); document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = ''; }
     document.getElementById('editor-content').addEventListener('input', () => { if(!isEditMode) return; document.getElementById('save-status').innerText = navigator.onLine ? 'Đang đồng bộ...' : 'Đang lưu nháp (Offline)...'; clearTimeout(typingTimer); typingTimer = setTimeout(() => { saveDB(); }, 1500); });
     
-    function insertFile(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        if (file.type.startsWith('image/')) {
-          const img = new Image();
-          img.onload = function() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 800;
-            canvas.height = img.height * (800 / img.width);
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            if (!currentAttachments.images) currentAttachments.images = [];
-            currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8));
-            renderAttachments();
-            saveDB();
-          };
-          img.src = e.target.result;
-        } else if (file.type === 'application/pdf') {
-          if (!currentAttachments.files) currentAttachments.files = [];
-          currentAttachments.files.push({ name: file.name, data: e.target.result });
-          renderAttachments();
-          saveDB();
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-    
+    function insertFile(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { if (file.type.startsWith('image/')) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); if (!currentAttachments.images) currentAttachments.images = []; currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); saveDB(); }; img.src = e.target.result; } else if (file.type === 'application/pdf') { if (!currentAttachments.files) currentAttachments.files = []; currentAttachments.files.push({ name: file.name, data: e.target.result }); renderAttachments(); saveDB(); } }; reader.readAsDataURL(file); }
     function generatePastelPalette(canvas, ctx, count) { let palette = []; for (let i = 0; i < count; i++) { let x = Math.floor(Math.random() * canvas.width); let y = Math.floor(Math.random() * canvas.height); let pixel = ctx.getImageData(x, y, 1, 1).data; let r = Math.floor((pixel[0] + 255 * 2) / 3); let g = Math.floor((pixel[1] + 255 * 2) / 3); let b = Math.floor((pixel[2] + 255 * 2) / 3); palette.push(`rgb(${r}, ${g}, ${b})`); } return palette; }
     
     function executeSaveAction() { const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; const bookInput = document.getElementById('new-book-name').value; const coverFile = document.getElementById('cover-upload').files[0]; if (!bookInput) return alert("Yêu cầu định danh phân loại sách."); let targetBookId = bookInput; const existingBook = db.books.find(b => b.id === bookInput); const finalizeAction = (coverDataUrl, dynamicPalette) => { if (!existingBook) { targetBookId = 'book_' + Date.now(); db.books.push({ id: targetBookId, name: bookInput, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); } if (currentPageId) { const page = db.pages.find(p => p.id === currentPageId); page.title = title; page.content = content; page.bookId = targetBookId; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); } else { currentPageId = 'page_' + Date.now(); db.pages.push({ id: currentPageId, bookId: targetBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); } saveDB(); closeModals(); document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); }; if (coverFile && !existingBook) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeAction(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeAction(null, null); } }
