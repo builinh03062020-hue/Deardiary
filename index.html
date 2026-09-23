@@ -31,7 +31,9 @@
     #lock-screen.active { display: flex; }
     #lock-title { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 20px; color: #4a4238; }
     .pin-input { font-size: 2rem; padding: 10px; width: 200px; text-align: center; border: 1px solid var(--primary); border-radius: 4px; margin-bottom: 20px; letter-spacing: 5px; background: transparent; color: #4a4238; outline: none; }
-    .btn { padding: 8px 18px; font-size: 0.95rem; border: 1px solid var(--primary); border-radius: 4px; cursor: pointer; background: transparent; color: var(--primary); font-weight: 600; transition: all 0.3s ease; }
+    
+    .icon-btn { display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
+    .btn { padding: 8px 16px; font-size: 0.95rem; border: 1px solid var(--primary); border-radius: 4px; cursor: pointer; background: transparent; color: var(--primary); font-weight: 600; transition: all 0.3s ease; }
     .btn:hover { background: var(--primary); color: #fff; }
     .btn-text { border: none; background: transparent; color: var(--primary); padding: 8px 12px; }
     .btn-text:hover { background: rgba(140, 123, 108, 0.1); color: var(--primary); }
@@ -42,16 +44,15 @@
     .btn-primary-filled { background: var(--primary); color: #fff; }
     .btn-primary-filled:hover { opacity: 0.8; }
     
-    .icon-btn { display: inline-flex; align-items: center; gap: 6px; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid #d4cdc1; padding-bottom: 15px; flex-wrap: wrap; gap: 15px; }
     .header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin: 0; font-weight: 600; }
     .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     
-    /* Giao diện Thanh công cụ cuộn ngang trên Di động */
     .editor-toolbar-wrapper { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; border-bottom: 1px solid #d4cdc1; padding-bottom: 10px; margin-bottom: 20px; transition: opacity 0.3s ease; }
-    .editor-actions-scrollable { display: flex; align-items: center; gap: 8px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; width: 100%; padding-bottom: 5px; mask-image: linear-gradient(to right, black 90%, transparent 100%); -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%); }
+    .editor-actions-scrollable { display: flex; align-items: center; gap: 8px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; mask-image: linear-gradient(to right, black 90%, transparent 100%); -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%); }
     .editor-actions-scrollable::-webkit-scrollbar { display: none; }
-    
+    .editor-header-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
     .books-grid { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; padding: 20px; perspective: 1200px; }
     .search-input { padding: 8px 12px; font-size: 0.95rem; border: 1px solid #d4cdc1; border-radius: 4px; background: transparent; color: var(--text-color); outline: none; font-family: 'Segoe UI', sans-serif; min-width: 250px; }
     .search-input:focus { border-color: var(--primary); }
@@ -70,6 +71,7 @@
     .book-action-btn:hover { background: var(--primary); color: white; transform: scale(1.1); }
     .book-action-btn.delete { color: var(--danger); border-color: var(--danger); }
     .book-action-btn.delete:hover { background: var(--danger); color: white; }
+    
     .pages-carousel { display: flex; overflow-x: auto; padding: 60px 40px; margin: 20px auto; align-items: center; width: 100%; max-width: 1000px; scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
     .pages-carousel::-webkit-scrollbar { height: 8px; }
     .pages-carousel::-webkit-scrollbar-track { background: transparent; }
@@ -121,7 +123,6 @@
     #lightbox-img { max-width: 90%; max-height: 85%; border: 4px solid #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain; display: none; }
     #lightbox-pdf { width: 90%; height: 85%; border: none; background: #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
 
-    /* CSS Triệt tiêu Văn bản và Ẩn thanh cuộn trên Mobile */
     @media screen and (max-width: 768px) { 
       #attachment-board { flex-direction: column; gap: 15px; } 
       .attachment-col { width: 100%; } 
@@ -138,8 +139,7 @@
       .book, .global-page-card { width: 140px; height: 200px; } 
       .page-sheet { flex: 0 0 150px; height: 220px; margin-left: -80px; } 
       .hide-on-mobile { display: none !important; }
-      .editor-toolbar-wrapper { flex-direction: column; align-items: stretch; border-bottom: none; }
-      .editor-actions-scrollable { padding-bottom: 10px; border-bottom: 1px solid #d4cdc1; }
+      .editor-toolbar-wrapper { flex-direction: row; align-items: center; border-bottom: none; }
       .btn { padding: 6px 12px; }
       .icon-btn { padding: 6px 8px; }
     }
@@ -157,8 +157,8 @@
       <h2>Thư Viện Ký Ức</h2>
       <div class="header-actions">
         <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm toàn hệ thống..." onkeyup="handleGlobalSearch()">
-        <button class="btn" onclick="openCreateBookModal()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:4px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="12" y1="8" x2="12" y2="14"></line><line x1="9" y1="11" x2="15" y2="11"></line></svg>
+        <button class="btn icon-btn" onclick="openCreateBookModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="12" y1="8" x2="12" y2="14"></line><line x1="9" y1="11" x2="15" y2="11"></line></svg>
           <span class="hide-on-mobile">Tạo Sách Mới</span>
         </button>
         <button class="btn btn-primary-filled icon-btn" onclick="openEditor(null)">
@@ -190,51 +190,44 @@
   </div>
 
   <div id="editor-screen" class="screen">
-    <!-- Phân vùng Thanh công cụ động -->
-    <div class="editor-toolbar-wrapper" id="editor-toolbar-wrapper">
-      <div class="editor-actions-scrollable">
-        <button class="btn btn-text icon-btn" onclick="goBackFromEditor()" title="Trở về">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    <div class="header" style="margin-bottom: 20px;">
+      <div class="editor-header-group">
+        <button class="btn btn-text icon-btn" onclick="goBackFromEditor()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           <span class="hide-on-mobile">Trở về</span>
         </button>
-        
-        <button class="btn btn-text icon-btn" id="btn-pin-page" style="color: var(--highlight);" onclick="togglePinPage()" title="Ghim Trang">
-          <!-- Vector Icon rỗng (Outline) -->
-        </button>
-        
-        <button class="btn btn-text icon-btn" id="btn-change-location" onclick="showSaveModal()" title="Đổi Vị Trí">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <div class="editor-header-group" id="editor-secondary-actions">
+        <button class="btn btn-text icon-btn" id="btn-pin-page" style="color: var(--highlight);" onclick="togglePinPage()"></button>
+        <button class="btn btn-text icon-btn" id="btn-change-location" onclick="showSaveModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
           <span class="hide-on-mobile">Đổi Vị Trí</span>
         </button>
-        
-        <div style="width: 1px; height: 18px; background: #d4cdc1; margin: 0 5px;"></div>
-        
-        <div id="editor-tools-group" style="display: flex; align-items: center; gap: 8px;">
-          <button class="btn btn-text icon-btn" onclick="document.execCommand('undo')" title="Hoàn tác (Ctrl+Z)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-          </button>
-          <button class="btn btn-text icon-btn" onclick="document.execCommand('redo')" title="Làm lại (Ctrl+Y)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-          </button>
-          <input type="file" id="file-upload" accept="image/*, application/pdf" style="display: none;" onchange="insertFile(event)">
-          <button class="btn btn-text icon-btn" onclick="document.getElementById('file-upload').click()" title="Đính kèm Tệp tin">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
-            <span class="hide-on-mobile">Đính kèm</span>
-          </button>
-        </div>
-        
-        <button class="btn btn-danger-text icon-btn" id="btn-delete-page" onclick="deleteCurrentPage()" title="Xóa Trang">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        <button class="btn btn-danger-text icon-btn" id="btn-delete-page" onclick="deleteCurrentPage()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
           <span class="hide-on-mobile">Xóa</span>
         </button>
       </div>
-
+    </div>
+    
+    <div class="editor-toolbar-wrapper" id="editor-toolbar-wrapper">
+      <div class="editor-actions-scrollable" id="editor-tools-group">
+        <button class="btn btn-text icon-btn" onclick="document.execCommand('undo')" title="Hoàn tác (Ctrl+Z)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+        </button>
+        <button class="btn btn-text icon-btn" onclick="document.execCommand('redo')" title="Làm lại (Ctrl+Y)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </button>
+        <input type="file" id="file-upload" accept="image/*, application/pdf" style="display: none;" onchange="insertFile(event)">
+        <button class="btn btn-text icon-btn" onclick="document.getElementById('file-upload').click()" title="Đính kèm Tệp tin">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+          <span class="hide-on-mobile">Đính kèm</span>
+        </button>
+      </div>
+      
       <div style="display: flex; align-items: center; gap: 10px;">
         <span class="save-status hide-on-mobile" id="save-status"></span>
-        <button class="btn btn-primary-filled icon-btn" id="btn-toggle-edit" onclick="handleEditToggle()" style="white-space: nowrap;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-          Lưu Nội Dung
-        </button>
+        <button class="btn btn-primary-filled icon-btn" id="btn-toggle-edit" onclick="handleEditToggle()" style="white-space: nowrap;"></button>
       </div>
     </div>
 
@@ -262,7 +255,6 @@
   <div id="lightbox-modal">
     <div class="lightbox-toolbar">
       <div id="lightbox-download" class="lightbox-btn" onclick="executeLightboxDownload()" title="Tải xuống thiết bị">
-        <!-- Biểu tượng Download SVG nét viền -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         <span class="hide-on-mobile">Tải Xuống</span>
       </div>
@@ -278,7 +270,6 @@
     const INACTIVITY_LIMIT = 20000; 
     let currentLightboxMedia = { url: '', name: '' }; 
 
-    // Biểu tượng Vector nét viền (Hollow Outline SVG)
     const svgPinOutline = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>`;
     const svgUnpin = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
 
@@ -296,7 +287,7 @@
 
     ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt => { document.addEventListener(evt, resetInactivityTimer, true); });
 
-    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => { reg.update(); }).catch(err => console.error('Lỗi ServiceWorker:', err)); }); }
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => { reg.update(); }).catch(err => console.error('Lỗi SW:', err)); }); }
 
     document.addEventListener('keydown', function(e) { 
       if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) { 
@@ -311,7 +302,7 @@
     const firebaseConfig = { apiKey: "AIzaSyAlzn4AT4M4AOSMADjMnEn5OiL8_8-7hKs", authDomain: "dear-diary-28b19.firebaseapp.com", projectId: "dear-diary-28b19", storageBucket: "dear-diary-28b19.firebasestorage.app", messagingSenderId: "185780215702", appId: "1:185780215702:web:457437f9cd3f3b9bf887b7" };
     firebase.initializeApp(firebaseConfig);
     const firestore = firebase.firestore();
-    firestore.enablePersistence().catch((err) => { console.warn("Lỗi tính năng Ngoại tuyến.", err); });
+    firestore.enablePersistence().catch((err) => { console.warn("Lỗi Offline.", err); });
     const docRef = firestore.collection("diaryData").doc("my_vintage_diary");
 
     let db = { books: [], pages: [], passcode: null };
@@ -331,13 +322,13 @@
           }
         } else {
           let localData = JSON.parse(localStorage.getItem('diary_db'));
-          if (localData && localData.passcode) { document.getElementById('loading-text').innerText = "Đang đồng bộ lần đầu lên mây..."; db = localData; docRef.set(db).then(() => initAppUI()).catch((error) => { alert("Lỗi chuyển dữ liệu: " + error.message); initAppUI(); }); } else { initAppUI(); }
+          if (localData && localData.passcode) { document.getElementById('loading-text').innerText = "Đang đồng bộ..."; db = localData; docRef.set(db).then(() => initAppUI()); } else { initAppUI(); }
         }
-      }, (error) => { console.error("Lỗi đồng bộ Dữ liệu:", error); initAppUI(); });
+      }, (error) => { console.error("Lỗi:", error); initAppUI(); });
     };
 
-    function initAppUI() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('lock-screen').classList.add('active'); isAppLocked = true; if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã Khởi tạo"; }
-    function saveDB() { docRef.set(db).then(() => { if (navigator.onLine) document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️'; }).catch((error) => { console.error("Lỗi đồng bộ:", error.message); }); return true; }
+    function initAppUI() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('lock-screen').classList.add('active'); isAppLocked = true; if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã"; }
+    function saveDB() { docRef.set(db).then(() => { if (navigator.onLine) document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️'; }).catch((error) => { console.error("Lỗi:", error.message); }); return true; }
     document.getElementById('pin-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
     
     function checkPin() { 
@@ -372,12 +363,9 @@
       const pdfEl = document.getElementById('lightbox-pdf');
       
       if (type === 'image') {
-        pdfEl.style.display = 'none';
-        imgEl.style.display = 'block';
-        imgEl.src = dataUrl;
+        pdfEl.style.display = 'none'; imgEl.style.display = 'block'; imgEl.src = dataUrl;
       } else if (type === 'pdf') {
-        imgEl.style.display = 'none';
-        pdfEl.style.display = 'block';
+        imgEl.style.display = 'none'; pdfEl.style.display = 'block';
         let renderUrl = dataUrl;
         if (dataUrl.startsWith('data:application/pdf')) {
           try {
@@ -389,7 +377,7 @@
             const blob = new Blob([byteArray], { type: 'application/pdf' });
             renderUrl = URL.createObjectURL(blob);
             pdfEl.dataset.blobUrl = renderUrl;
-          } catch (e) { console.error("Lỗi chuyển đổi Blob PDF:", e); }
+          } catch (e) { console.error("Lỗi Blob:", e); }
         }
         pdfEl.src = renderUrl;
       }
@@ -400,19 +388,14 @@
       const modal = document.getElementById('lightbox-modal');
       const pdfEl = document.getElementById('lightbox-pdf');
       if (pdfEl.dataset.blobUrl) { URL.revokeObjectURL(pdfEl.dataset.blobUrl); pdfEl.dataset.blobUrl = ''; }
-      document.getElementById('lightbox-img').src = '';
-      pdfEl.src = '';
+      document.getElementById('lightbox-img').src = ''; pdfEl.src = '';
       modal.classList.remove('active');
     }
 
     function executeLightboxDownload() {
       if (!currentLightboxMedia.url) return;
-      const a = document.createElement('a');
-      a.href = currentLightboxMedia.url;
-      a.download = currentLightboxMedia.name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const a = document.createElement('a'); a.href = currentLightboxMedia.url; a.download = currentLightboxMedia.name;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
 
     document.getElementById('lightbox-modal').addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
@@ -438,7 +421,7 @@
       if (hasFiles) {
         fileSection.style.display = 'block';
         currentAttachments.files.forEach((file, idx) => {
-          fileContainer.innerHTML += `<div class="attachment-file-item" onclick="openLightbox('${file.data}', 'pdf', '${file.name}')"><a><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg> ${file.name}</a>${isEditMode ? `<div class="attachment-file-delete" onclick="removeAttachment('file', ${idx}, event)">✖</div>` : ''}</div>`;
+          fileContainer.innerHTML += `<div class="attachment-file-item" onclick="openLightbox('${file.data}', 'pdf', '${file.name}')"><a><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg> <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">${file.name}</span></a>${isEditMode ? `<div class="attachment-file-delete" onclick="removeAttachment('file', ${idx}, event)">✖</div>` : ''}</div>`;
         });
       } else { fileSection.style.display = 'none'; }
 
@@ -479,15 +462,19 @@
       const editorScreen = document.getElementById('editor-screen'); 
       
       if (isEditMode) { 
-        titleEl.readOnly = false; contentEl.setAttribute('contenteditable', 'true'); 
-        toolsGroup.style.display = 'flex'; 
+        titleEl.readOnly = false; 
+        contentEl.setAttribute('contenteditable', 'true'); 
+        titleEl.style.display = 'block';
+        if (toolsGroup) toolsGroup.style.display = 'flex'; 
         editorScreen.classList.remove('read-only-mode'); 
         toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <span class="hide-on-mobile">Lưu Nội Dung</span>`; 
         toggleBtn.className = 'btn btn-primary-filled icon-btn'; 
         contentEl.focus(); 
       } else { 
-        titleEl.readOnly = true; contentEl.setAttribute('contenteditable', 'false'); 
-        toolsGroup.style.display = 'none'; 
+        titleEl.readOnly = true; 
+        contentEl.setAttribute('contenteditable', 'false'); 
+        titleEl.style.display = (!titleEl.value.trim()) ? 'none' : 'block';
+        if (toolsGroup) toolsGroup.style.display = 'none'; 
         editorScreen.classList.add('read-only-mode'); 
         toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> <span class="hide-on-mobile">Chỉnh Sửa</span>`; 
         toggleBtn.className = 'btn btn-text icon-btn'; 
@@ -496,12 +483,76 @@
     }
     
     function handleEditToggle() { if (isEditMode) savePageDirectly(false); else setEditorMode(true); }
-    function openEditor(pageId = null, fromBook = false) { currentPageId = pageId; if (!fromBook && !pageId) preSelectedBookId = null; document.getElementById('editor-secondary-actions').style.display = pageId ? 'flex' : 'none'; const titleEl = document.getElementById('editor-title'); const contentEl = document.getElementById('editor-content'); if (pageId) { const page = db.pages.find(p => p.id === pageId); titleEl.value = page.title; contentEl.innerHTML = page.content; currentAttachments = page.attachments ? JSON.parse(JSON.stringify(page.attachments)) : { images: [], files: [] }; updatePinButtonState(page.isPinned); setEditorMode(false); } else { titleEl.value = ''; contentEl.innerHTML = ''; currentAttachments = { images: [], files: [] }; document.getElementById('save-status').innerText = ''; updatePinButtonState(false); setEditorMode(true); } renderAttachments(); switchScreen('editor-screen'); }
+    
+    function openEditor(pageId = null, fromBook = false) { 
+      currentPageId = pageId; 
+      if (!fromBook && !pageId) preSelectedBookId = null; 
+      document.getElementById('editor-secondary-actions').style.display = pageId ? 'flex' : 'none'; 
+      const titleEl = document.getElementById('editor-title'); 
+      const contentEl = document.getElementById('editor-content'); 
+      
+      if (pageId) { 
+        const page = db.pages.find(p => p.id === pageId); 
+        titleEl.value = page.title || ''; 
+        contentEl.innerHTML = page.content || ''; 
+        currentAttachments = page.attachments ? JSON.parse(JSON.stringify(page.attachments)) : { images: [], files: [] }; 
+        updatePinButtonState(page.isPinned); 
+        setEditorMode(false); 
+      } else { 
+        const draftTitle = localStorage.getItem('diary_draft_title');
+        const draftContent = localStorage.getItem('diary_draft_content');
+        titleEl.value = draftTitle || ''; 
+        contentEl.innerHTML = draftContent || ''; 
+        currentAttachments = { images: [], files: [] }; 
+        document.getElementById('save-status').innerText = (draftTitle || draftContent) ? 'Đã khôi phục nháp cục bộ' : ''; 
+        updatePinButtonState(false); 
+        setEditorMode(true); 
+      } 
+      renderAttachments(); 
+      switchScreen('editor-screen'); 
+    }
+    
     function goBackFromEditor() { if (preSelectedBookId) { renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); switchScreen('book-view'); } else { switchScreen('dashboard'); renderBooks(); } }
     function deleteCurrentPage() { requestPasscode("Xác Thực Xóa Trang", () => { db.pages = db.pages.filter(p => p.id !== currentPageId); saveDB(); goBackFromEditor(); }); }
     
-    function savePageDirectly(goBack = false) { const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; if (currentPageId) { const page = db.pages.find(p => p.id === currentPageId); page.title = title; page.content = content; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); saveDB(); setEditorMode(false); if (goBack) goBackFromEditor(); } else if (preSelectedBookId) { const newPageId = 'page_' + Date.now(); db.pages.push({ id: newPageId, bookId: preSelectedBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); saveDB(); currentPageId = newPageId; document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); if (goBack) goBackFromEditor(); } else { showSaveModal(); } }
+    function savePageDirectly(goBack = false) { 
+      const title = document.getElementById('editor-title').value; 
+      const content = document.getElementById('editor-content').innerHTML; 
+      
+      if (currentPageId) { 
+        const page = db.pages.find(p => p.id === currentPageId); 
+        page.title = title; page.content = content; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); 
+        saveDB(); 
+        localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
+        setEditorMode(false); 
+        if (goBack) goBackFromEditor(); 
+      } else if (preSelectedBookId) { 
+        const newPageId = 'page_' + Date.now(); 
+        db.pages.push({ id: newPageId, bookId: preSelectedBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); 
+        saveDB(); 
+        localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
+        currentPageId = newPageId; document.getElementById('editor-secondary-actions').style.display = 'flex'; 
+        setEditorMode(false); 
+        if (goBack) goBackFromEditor(); 
+      } else { 
+        showSaveModal(); 
+      } 
+    }
     
+    // Bắt sự kiện Autosave cục bộ
+    document.getElementById('editor-title').addEventListener('input', () => { 
+      if(!isEditMode) return; 
+      localStorage.setItem('diary_draft_title', document.getElementById('editor-title').value); 
+    });
+
+    document.getElementById('editor-content').addEventListener('input', () => { 
+      if(!isEditMode) return; 
+      document.getElementById('save-status').innerText = navigator.onLine ? 'Đang đồng bộ...' : 'Đang lưu nháp (Offline)...'; 
+      localStorage.setItem('diary_draft_content', document.getElementById('editor-content').innerHTML);
+      clearTimeout(typingTimer); 
+      typingTimer = setTimeout(() => { saveDB(); }, 1500); 
+    });
+
     document.addEventListener('paste', function(e) { 
       const mSave = document.getElementById('modal-save').style.display === 'flex'; 
       const mCreate = document.getElementById('modal-create-book').style.display === 'flex'; 
@@ -545,12 +596,11 @@
     function closeModals() { document.getElementById('modal-save').style.display = 'none'; document.getElementById('modal-create-book').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'none'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('create-paste-msg').style.display = 'none'; document.getElementById('edit-paste-msg').style.display = 'none'; }
     function openCreateBookModal() { document.getElementById('modal-create-book').style.display = 'flex'; document.getElementById('only-new-book-name').value = ''; document.getElementById('only-cover-upload').value = ''; document.getElementById('create-paste-msg').style.display = 'none'; }
     function showSaveModal() { document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('modal-save-title').innerText = currentPageId ? "Đổi Vị Trí Lưu Trữ" : "Chọn Vị Trí Lưu Trữ"; const list = document.getElementById('modal-book-list'); list.innerHTML = ''; db.books.forEach(book => { list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; }); document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = ''; }
-    document.getElementById('editor-content').addEventListener('input', () => { if(!isEditMode) return; document.getElementById('save-status').innerText = navigator.onLine ? 'Đang đồng bộ...' : 'Đang lưu nháp (Offline)...'; clearTimeout(typingTimer); typingTimer = setTimeout(() => { saveDB(); }, 1500); });
     
     function insertFile(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { if (file.type.startsWith('image/')) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); if (!currentAttachments.images) currentAttachments.images = []; currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); saveDB(); }; img.src = e.target.result; } else if (file.type === 'application/pdf') { if (!currentAttachments.files) currentAttachments.files = []; currentAttachments.files.push({ name: file.name, data: e.target.result }); renderAttachments(); saveDB(); } }; reader.readAsDataURL(file); }
     function generatePastelPalette(canvas, ctx, count) { let palette = []; for (let i = 0; i < count; i++) { let x = Math.floor(Math.random() * canvas.width); let y = Math.floor(Math.random() * canvas.height); let pixel = ctx.getImageData(x, y, 1, 1).data; let r = Math.floor((pixel[0] + 255 * 2) / 3); let g = Math.floor((pixel[1] + 255 * 2) / 3); let b = Math.floor((pixel[2] + 255 * 2) / 3); palette.push(`rgb(${r}, ${g}, ${b})`); } return palette; }
     
-    function executeSaveAction() { const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; const bookInput = document.getElementById('new-book-name').value; const coverFile = document.getElementById('cover-upload').files[0]; if (!bookInput) return alert("Yêu cầu định danh phân loại sách."); let targetBookId = bookInput; const existingBook = db.books.find(b => b.id === bookInput); const finalizeAction = (coverDataUrl, dynamicPalette) => { if (!existingBook) { targetBookId = 'book_' + Date.now(); db.books.push({ id: targetBookId, name: bookInput, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); } if (currentPageId) { const page = db.pages.find(p => p.id === currentPageId); page.title = title; page.content = content; page.bookId = targetBookId; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); } else { currentPageId = 'page_' + Date.now(); db.pages.push({ id: currentPageId, bookId: targetBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); } saveDB(); closeModals(); document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); }; if (coverFile && !existingBook) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeAction(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeAction(null, null); } }
+    function executeSaveAction() { const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; const bookInput = document.getElementById('new-book-name').value; const coverFile = document.getElementById('cover-upload').files[0]; if (!bookInput) return alert("Yêu cầu định danh phân loại sách."); let targetBookId = bookInput; const existingBook = db.books.find(b => b.id === bookInput); const finalizeAction = (coverDataUrl, dynamicPalette) => { if (!existingBook) { targetBookId = 'book_' + Date.now(); db.books.push({ id: targetBookId, name: bookInput, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); } if (currentPageId) { const page = db.pages.find(p => p.id === currentPageId); page.title = title; page.content = content; page.bookId = targetBookId; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); } else { currentPageId = 'page_' + Date.now(); db.pages.push({ id: currentPageId, bookId: targetBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); } saveDB(); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content'); closeModals(); document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); }; if (coverFile && !existingBook) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeAction(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeAction(null, null); } }
     function executeCreateBook() { const bookName = document.getElementById('only-new-book-name').value; const coverFile = document.getElementById('only-cover-upload').files[0]; if (!bookName) return alert("Yêu cầu cung cấp định danh sách."); const finalizeCreate = (coverDataUrl, dynamicPalette) => { db.books.push({ id: 'book_' + Date.now(), name: bookName, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); saveDB(); closeModals(); renderBooks(); }; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeCreate(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeCreate(null, null); } }
   </script>
 </body>
