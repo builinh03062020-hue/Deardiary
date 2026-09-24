@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#8c7b6c">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Diary">
+  <meta name="apple-mobile-web-app-title" content="DearDiary">
   <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png?v=2">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=2">
 
@@ -56,10 +56,10 @@
     .editor-actions-scrollable::-webkit-scrollbar { display: none; }
     .editor-header-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
-    .books-grid { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; padding: 20px; perspective: 1200px; }
+    .books-grid { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; padding: 20px; perspective: 1200px; min-height: 40vh; }
     .search-input { padding: 8px 12px; font-size: 0.95rem; border: 1px solid #d4cdc1; border-radius: 4px; background: transparent; color: var(--text-color); outline: none; font-family: 'Segoe UI', sans-serif; min-width: 250px; }
     .search-input:focus { border-color: var(--primary); }
-    .global-search-grid { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; padding: 20px; width: 100%; }
+    .global-search-grid { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; padding: 20px; width: 100%; min-height: 40vh; }
     .global-page-card { flex: 0 0 200px; height: 280px; border-radius: 2px 8px 8px 2px; box-shadow: 2px 5px 15px rgba(0,0,0,0.1); border-left: 4px solid rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 10px; text-align: center; }
     .global-page-card:hover { transform: translateY(-5px); box-shadow: 2px 10px 20px rgba(0,0,0,0.15); }
     .global-book-label { font-size: 0.85rem; font-style: italic; color: #555; background: rgba(255,255,255,0.4); padding: 4px 8px; border-radius: 4px; margin-bottom: 15px; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -126,20 +126,33 @@
     #lightbox-img { max-width: 90%; max-height: 85%; border: 4px solid #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain; display: none; }
     #lightbox-pdf { width: 90%; height: 85%; border: none; background: #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
 
-    .trash-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.5); padding: 10px; border: 1px solid #d4cdc1; border-radius: 4px; margin-bottom: 8px; width: 100%; text-align: left; }
-    .trash-item-info { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
+    /* Fix Layer hiển thị hộp thoại & Cấu trúc Footer */
+    #modal-passcode { z-index: 1005; }
+    #modal-confirm { z-index: 1010; }
+    #modal-preview { z-index: 1015; }
+    
+    .app-footer { text-align: center; font-size: 0.85rem; color: #888; padding: 30px 10px 10px; margin-top: auto; border-top: 1px dashed #d4cdc1; width: 100%; font-style: italic; line-height: 1.6; }
+    
+    /* Giao diện Thùng rác phân vùng */
+    .trash-tabs { display: flex; gap: 10px; margin-bottom: 15px; width: 100%; border-bottom: 1px solid #d4cdc1; padding-bottom: 10px; }
+    .trash-tab-btn { flex: 1; background: transparent; border: none; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: #999; cursor: pointer; padding: 5px; border-bottom: 2px solid transparent; transition: 0.3s; }
+    .trash-tab-btn:hover { color: var(--primary); }
+    .trash-tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .trash-pane { display: none; width: 100%; max-height: 300px; overflow-y: auto; padding-right: 5px; }
+    .trash-pane.active { display: block; }
+
+    .trash-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.5); padding: 12px; border: 1px solid #d4cdc1; border-radius: 4px; margin-bottom: 8px; width: 100%; text-align: left; gap: 10px; flex-wrap: wrap; }
+    .trash-item-info { display: flex; flex-direction: column; gap: 3px; overflow: hidden; flex: 1; min-width: 150px; }
     .trash-item-title { font-weight: 600; color: #3e3a35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
     .trash-item-date { font-size: 0.8rem; color: var(--danger); font-style: italic; }
-    .trash-actions { display: flex; gap: 8px; flex-shrink: 0; }
-    .trash-btn { background: transparent; border: 1px solid #d4cdc1; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
+    .trash-actions { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .trash-btn { background: transparent; border: 1px solid #d4cdc1; border-radius: 4px; padding: 6px 10px; font-size: 0.8rem; cursor: pointer; font-weight: 600; white-space: nowrap; transition: 0.2s; }
     .trash-btn.restore { color: var(--primary); border-color: var(--primary); }
     .trash-btn.restore:hover { background: var(--primary); color: #fff; }
     .trash-btn.destroy { color: var(--danger); border-color: var(--danger); }
     .trash-btn.destroy:hover { background: var(--danger); color: #fff; }
 
-    /* Fix Layer hiển thị hộp thoại */
-    #modal-passcode { z-index: 1005; }
-    #modal-confirm { z-index: 1010; }
+    #preview-content-box { font-size: 0.95rem; color: #4a4238; max-height: 40vh; overflow-y: auto; text-align: left; padding: 15px; background: rgba(255,255,255,0.5); border: 1px solid #d4cdc1; border-radius: 4px; margin-bottom: 15px; line-height: 1.6; font-family: 'Segoe UI', sans-serif; }
 
     @media screen and (max-width: 768px) { 
       #attachment-board { flex-direction: column; gap: 15px; } 
@@ -160,6 +173,8 @@
       .editor-toolbar-wrapper { flex-direction: row; align-items: center; border-bottom: none; }
       .btn { padding: 6px 12px; }
       .icon-btn { padding: 6px 8px; }
+      .trash-item { flex-direction: column; align-items: flex-start; }
+      .trash-actions { width: 100%; justify-content: space-between; }
     }
   </style>
 </head>
@@ -170,7 +185,8 @@
   <div id="loading-screen" class="screen active"><h2 id="loading-text">Đang kết nối mây...</h2></div>
   <div id="lock-screen" class="screen"><h2 id="lock-title">Mật mã nhật ký</h2><input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" onclick="checkPin()">Mở khóa không gian</button></div>
 
-  <div id="dashboard" class="screen">
+  <!-- Bổ sung flex-direction column cho dashboard để đẩy Footer xuống đáy -->
+  <div id="dashboard" class="screen" style="display: flex; flex-direction: column; min-height: 100vh;">
     <div class="header">
       <h2>Thư Viện Ký Ức</h2>
       <div class="header-actions">
@@ -189,8 +205,14 @@
         </button>
       </div>
     </div>
+    
     <div class="books-grid" id="books-container"></div>
     <div class="global-search-grid" id="global-search-results" style="display: none;"></div>
+    
+    <!-- Footer Bản quyền -->
+    <div class="app-footer">
+      © 2026 Bản quyền hệ thống thuộc về Nhà phát triển nền tảng Bùi Khánh Linh.<br>All rights reserved.
+    </div>
   </div>
 
   <div id="book-view" class="screen">
@@ -295,12 +317,30 @@
 
   <div id="modal-edit-time" class="modal"><div class="modal-content"><h3>Đồng bộ thời gian</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Điều chỉnh dòng thời gian của tài liệu này.</p><input type="datetime-local" id="edit-time-input" class="input-book-name"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="executeEditTime()">Lưu dấu thời gian</button><button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Hủy thao tác</button></div></div>
 
+  <!-- Phân hệ Thùng Rác Đa Luồng -->
   <div id="modal-trash" class="modal">
+    <div class="modal-content" style="max-width: 580px;">
+      <h3 style="color: var(--danger); margin-bottom: 10px;">Thùng rác tài liệu</h3>
+      <p style="font-size: 0.85rem; color: #777; margin-bottom: 15px; width: 100%;">Tài liệu sẽ tự động tiêu hủy sau 25 ngày kể từ thời điểm xóa.</p>
+      
+      <div class="trash-tabs">
+        <button class="trash-tab-btn active" id="tab-btn-books" onclick="switchTrashTab('books')">Sách đã xóa</button>
+        <button class="trash-tab-btn" id="tab-btn-pages" onclick="switchTrashTab('pages')">Trang đã xóa</button>
+      </div>
+
+      <div id="trash-list-books" class="trash-pane active"></div>
+      <div id="trash-list-pages" class="trash-pane"></div>
+
+      <button class="btn btn-text" style="width: 100%; margin-top: 15px;" onclick="closeModals()">Đóng thùng rác</button>
+    </div>
+  </div>
+
+  <!-- Hộp thoại Xem trước nội dung bị xóa -->
+  <div id="modal-preview" class="modal">
     <div class="modal-content" style="max-width: 500px;">
-      <h3 style="color: var(--danger);">Thùng rác tài liệu</h3>
-      <p style="font-size: 0.85rem; color: #777; margin-bottom: 15px; width: 100%;">Tài liệu sẽ bị xóa vĩnh viễn sau 25 ngày kể từ thời điểm hủy bỏ.</p>
-      <div id="trash-list" style="width: 100%; max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
-      <button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Đóng thùng rác</button>
+      <h3 id="preview-title" style="color: var(--primary); margin-bottom: 15px; font-size: 1.4rem; width: 100%; text-align: center;">Tiêu đề</h3>
+      <div id="preview-content-box"></div>
+      <button class="btn btn-primary-filled" style="width: 100%;" onclick="document.getElementById('modal-preview').style.display='none'">Đóng xem trước</button>
     </div>
   </div>
 
@@ -319,7 +359,7 @@
   <script>
     let isAppLocked = true;
     let inactivityTimer;
-    const INACTIVITY_LIMIT = 35000; 
+    const INACTIVITY_LIMIT = 40000; 
     const TRASH_RETENTION_MS = 25 * 24 * 60 * 60 * 1000;
     let currentLightboxMedia = { url: '', name: '' }; 
 
@@ -392,7 +432,7 @@
             db = cloudData; 
             autoPurgeTrash();
             
-            // Logic Reactive UI: Tự động tái kết xuất các phân hệ đang mở khi nhận tín hiệu mây
+            // Logic Reactive UI: Tự động tái kết xuất các phân hệ đang mở
             if (document.getElementById('loading-screen').classList.contains('active')) { 
               initAppUI(); 
             } else if (document.getElementById('dashboard').classList.contains('active')) { 
@@ -408,7 +448,7 @@
             
             // Phản xạ giao diện cập nhật trạng thái Thùng rác
             if (document.getElementById('modal-trash').style.display === 'flex') {
-              openTrashModal();
+              openTrashModal(false); // Gọi hàm với tham số false để không reset Tab hiện tại
             }
           }
         } else {
@@ -731,7 +771,7 @@
       document.getElementById('modal-save').style.display = 'none'; document.getElementById('modal-create-book').style.display = 'none'; 
       document.getElementById('modal-edit-book').style.display = 'none'; document.getElementById('modal-passcode').style.display = 'none'; 
       document.getElementById('modal-edit-time').style.display = 'none'; document.getElementById('modal-trash').style.display = 'none';
-      document.getElementById('modal-confirm').style.display = 'none';
+      document.getElementById('modal-confirm').style.display = 'none'; document.getElementById('modal-preview').style.display = 'none';
       document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('create-paste-msg').style.display = 'none'; document.getElementById('edit-paste-msg').style.display = 'none'; 
       pendingConfirmAction = null;
     }
@@ -758,28 +798,58 @@
       goBackFromEditor();
     }
 
-    function openTrashModal() {
-      const list = document.getElementById('trash-list');
-      list.innerHTML = '';
-      let hasItems = false;
+    // Giao thức Thùng rác phân tầng (Tab Navigation)
+    function switchTrashTab(tabName) {
+      document.getElementById('tab-btn-books').classList.remove('active');
+      document.getElementById('tab-btn-pages').classList.remove('active');
+      document.getElementById('trash-list-books').classList.remove('active');
+      document.getElementById('trash-list-pages').classList.remove('active');
+      
+      document.getElementById('tab-btn-' + tabName).classList.add('active');
+      document.getElementById('trash-list-' + tabName).classList.add('active');
+    }
+
+    function openTrashModal(resetTab = true) {
+      if(resetTab) switchTrashTab('books');
+      
+      const listBooks = document.getElementById('trash-list-books');
+      const listPages = document.getElementById('trash-list-pages');
+      listBooks.innerHTML = '';
+      listPages.innerHTML = '';
+      
+      let hasBooks = false;
+      let hasPages = false;
       const now = Date.now();
 
       db.books.forEach(b => {
         if(b.deletedAt) {
-          hasItems = true;
+          hasBooks = true;
           const daysLeft = 25 - Math.floor((now - b.deletedAt) / (1000 * 60 * 60 * 24));
-          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Sách: ${b.name}</span><span class="trash-item-date">Thời gian lưu trữ còn lại: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restoreBook('${b.id}')">Khôi phục</button><button class="trash-btn destroy" onclick="destroyBook('${b.id}')">Xóa vĩnh viễn</button></div></div>`;
+          listBooks.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Sách: ${b.name}</span><span class="trash-item-date">Tự hủy sau: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restoreBook('${b.id}')">Khôi phục</button><button class="trash-btn destroy" onclick="destroyBook('${b.id}')">Xóa vĩnh viễn</button></div></div>`;
         }
       });
+      
       db.pages.forEach(p => {
         if(p.deletedAt) {
-          hasItems = true;
+          hasPages = true;
           const daysLeft = 25 - Math.floor((now - p.deletedAt) / (1000 * 60 * 60 * 24));
-          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Trang: ${p.title || 'Dữ liệu không có phân loại'}</span><span class="trash-item-date">Thời gian lưu trữ còn lại: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restorePage('${p.id}')">Khôi phục</button><button class="trash-btn destroy" onclick="destroyPage('${p.id}')">Xóa vĩnh viễn</button></div></div>`;
+          listPages.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">${p.title || 'Dữ liệu không có phân loại'}</span><span class="trash-item-date">Tự hủy sau: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn" style="color: var(--warning); border-color: var(--warning);" onclick="previewPage('${p.id}')">Xem trước</button><button class="trash-btn restore" onclick="restorePage('${p.id}')">Khôi phục</button><button class="trash-btn destroy" onclick="destroyPage('${p.id}')">Xóa vĩnh viễn</button></div></div>`;
         }
       });
-      if(!hasItems) list.innerHTML = '<p style="text-align:center; font-style:italic; font-size:0.9rem;">Thùng rác hiện không có tài liệu lưu trữ.</p>';
+      
+      if(!hasBooks) listBooks.innerHTML = '<p style="text-align:center; font-style:italic; font-size:0.9rem; padding: 20px;">Thùng rác phân hệ Sách hiện trống.</p>';
+      if(!hasPages) listPages.innerHTML = '<p style="text-align:center; font-style:italic; font-size:0.9rem; padding: 20px;">Thùng rác phân hệ Trang hiện trống.</p>';
+      
       document.getElementById('modal-trash').style.display = 'flex';
+    }
+
+    // Giao thức Xem trước Dữ liệu (Soft-delete Preview)
+    function previewPage(pageId) {
+      const page = db.pages.find(p => p.id === pageId);
+      if(!page) return;
+      document.getElementById('preview-title').innerText = page.title || 'Dữ liệu không có phân loại';
+      document.getElementById('preview-content-box').innerHTML = page.content || '<i style="color:#888;">Nội dung tài liệu trống</i>';
+      document.getElementById('modal-preview').style.display = 'flex';
     }
 
     function executeConfirmYes() {
@@ -788,7 +858,7 @@
       pendingConfirmAction = null;
     }
 
-    function restoreBook(id) { const book = db.books.find(b => b.id === id); if(book) delete book.deletedAt; saveDB(); openTrashModal(); renderBooks(); }
+    function restoreBook(id) { const book = db.books.find(b => b.id === id); if(book) delete book.deletedAt; saveDB(); openTrashModal(false); renderBooks(); }
     
     function destroyBook(id) { 
       pendingConfirmAction = () => {
@@ -799,7 +869,7 @@
       document.getElementById('modal-confirm').style.display = 'flex';
     }
 
-    function restorePage(id) { const page = db.pages.find(p => p.id === id); if(page) delete page.deletedAt; saveDB(); openTrashModal(); }
+    function restorePage(id) { const page = db.pages.find(p => p.id === id); if(page) delete page.deletedAt; saveDB(); openTrashModal(false); }
     
     function destroyPage(id) { 
       pendingConfirmAction = () => {
