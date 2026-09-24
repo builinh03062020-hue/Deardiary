@@ -21,8 +21,10 @@
     :root { --bg-color: #eae6db; --book-bg: #F4EFE6; --text-color: #3e3a35; --primary: #8c7b6c; --danger: #c47b6a; --highlight: #d1b894; --warning: #d4a373; }
     * { box-sizing: border-box; }
     body { margin: 0; padding: 0; background: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', Tahoma, sans-serif; overflow-x: hidden; }
+    
     .screen { display: none; min-height: 100vh; padding: 20px; }
     .screen.active { display: block; }
+    
     #network-alert { display: none; background: #c47b6a; color: white; text-align: center; padding: 5px; font-size: 0.85rem; position: fixed; top: 0; width: 100%; z-index: 10000; font-weight: 600; }
     #loading-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
     #loading-screen.active { display: flex; }
@@ -126,14 +128,13 @@
     #lightbox-img { max-width: 90%; max-height: 85%; border: 4px solid #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain; display: none; }
     #lightbox-pdf { width: 90%; height: 85%; border: none; background: #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
 
-    /* Fix Layer hiển thị hộp thoại & Cấu trúc Footer */
+    /* Fix Layer hiển thị & Footer bản quyền */
     #modal-passcode { z-index: 1005; }
     #modal-confirm { z-index: 1010; }
     #modal-preview { z-index: 1015; }
     
-    .app-footer { text-align: center; font-size: 0.85rem; color: #888; padding: 30px 10px 10px; margin-top: auto; border-top: 1px dashed #d4cdc1; width: 100%; font-style: italic; line-height: 1.6; }
+    .app-footer { text-align: center; font-size: 0.85rem; color: #888; padding: 30px 10px 20px; margin-top: 40px; border-top: 1px dashed #d4cdc1; width: 100%; font-style: italic; line-height: 1.6; }
     
-    /* Giao diện Thùng rác phân vùng */
     .trash-tabs { display: flex; gap: 10px; margin-bottom: 15px; width: 100%; border-bottom: 1px solid #d4cdc1; padding-bottom: 10px; }
     .trash-tab-btn { flex: 1; background: transparent; border: none; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: #999; cursor: pointer; padding: 5px; border-bottom: 2px solid transparent; transition: 0.3s; }
     .trash-tab-btn:hover { color: var(--primary); }
@@ -185,8 +186,8 @@
   <div id="loading-screen" class="screen active"><h2 id="loading-text">Đang kết nối mây...</h2></div>
   <div id="lock-screen" class="screen"><h2 id="lock-title">Mật mã nhật ký</h2><input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" onclick="checkPin()">Mở khóa không gian</button></div>
 
-  <!-- Bổ sung flex-direction column cho dashboard để đẩy Footer xuống đáy -->
-  <div id="dashboard" class="screen" style="display: flex; flex-direction: column; min-height: 100vh;">
+  <!-- Đã loại bỏ hoàn toàn inline style flex gây lỗi đè giao diện -->
+  <div id="dashboard" class="screen">
     <div class="header">
       <h2>Thư Viện Ký Ức</h2>
       <div class="header-actions">
@@ -209,7 +210,6 @@
     <div class="books-grid" id="books-container"></div>
     <div class="global-search-grid" id="global-search-results" style="display: none;"></div>
     
-    <!-- Footer Bản quyền -->
     <div class="app-footer">
       © 2026 Bản quyền hệ thống thuộc về Nhà phát triển nền tảng Bùi Khánh Linh.<br>All rights reserved.
     </div>
@@ -395,7 +395,6 @@
       } 
     });
 
-    // Cưỡng chế kết nối mạng khi ứng dụng được đưa lên màn hình chính
     window.addEventListener('online', () => { 
         document.getElementById('network-alert').style.display = 'none'; 
         if(isEditMode) document.getElementById('save-status').innerText = 'Đã khôi phục kết nối mạng - Đang đồng bộ...'; 
@@ -432,7 +431,6 @@
             db = cloudData; 
             autoPurgeTrash();
             
-            // Logic Reactive UI: Tự động tái kết xuất các phân hệ đang mở
             if (document.getElementById('loading-screen').classList.contains('active')) { 
               initAppUI(); 
             } else if (document.getElementById('dashboard').classList.contains('active')) { 
@@ -446,9 +444,8 @@
               }
             }
             
-            // Phản xạ giao diện cập nhật trạng thái Thùng rác
             if (document.getElementById('modal-trash').style.display === 'flex') {
-              openTrashModal(false); // Gọi hàm với tham số false để không reset Tab hiện tại
+              openTrashModal(false);
             }
           }
         } else {
