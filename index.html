@@ -4,20 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aesthetic Vintage Diary - PWA Edition</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   
+  <!-- Cập nhật nhận diện Icon PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#8c7b6c">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Diary">
   <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" href="icon-192.png">
 
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <style>
-    :root { --bg-color: #eae6db; --book-bg: #F4EFE6; --text-color: #3e3a35; --primary: #8c7b6c; --danger: #c47b6a; --highlight: #d1b894; }
+    :root { --bg-color: #eae6db; --book-bg: #F4EFE6; --text-color: #3e3a35; --primary: #8c7b6c; --danger: #c47b6a; --highlight: #d1b894; --warning: #d4a373; }
     * { box-sizing: border-box; }
     body { margin: 0; padding: 0; background: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', Tahoma, sans-serif; overflow-x: hidden; }
     .screen { display: none; min-height: 100vh; padding: 20px; }
@@ -41,6 +43,8 @@
     .btn-danger:hover { background: var(--danger); color: #fff; }
     .btn-danger-text { border: none; color: var(--danger); }
     .btn-danger-text:hover { background: rgba(196, 123, 106, 0.1); color: var(--danger); }
+    .btn-warning-text { border: none; color: var(--warning); }
+    .btn-warning-text:hover { background: rgba(212, 163, 115, 0.1); color: var(--warning); }
     .btn-primary-filled { background: var(--primary); color: #fff; }
     .btn-primary-filled:hover { opacity: 0.8; }
     
@@ -123,6 +127,17 @@
     #lightbox-img { max-width: 90%; max-height: 85%; border: 4px solid #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain; display: none; }
     #lightbox-pdf { width: 90%; height: 85%; border: none; background: #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
 
+    .trash-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.5); padding: 10px; border: 1px solid #d4cdc1; border-radius: 4px; margin-bottom: 8px; width: 100%; text-align: left; }
+    .trash-item-info { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
+    .trash-item-title { font-weight: 600; color: #3e3a35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+    .trash-item-date { font-size: 0.8rem; color: var(--danger); font-style: italic; }
+    .trash-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .trash-btn { background: transparent; border: 1px solid #d4cdc1; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
+    .trash-btn.restore { color: var(--primary); border-color: var(--primary); }
+    .trash-btn.restore:hover { background: var(--primary); color: #fff; }
+    .trash-btn.destroy { color: var(--danger); border-color: var(--danger); }
+    .trash-btn.destroy:hover { background: var(--danger); color: #fff; }
+
     @media screen and (max-width: 768px) { 
       #attachment-board { flex-direction: column; gap: 15px; } 
       .attachment-col { width: 100%; } 
@@ -157,9 +172,13 @@
       <h2>Thư Viện Ký Ức</h2>
       <div class="header-actions">
         <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm toàn hệ thống..." onkeyup="handleGlobalSearch()">
+        <button class="btn btn-warning-text icon-btn" onclick="openTrashModal()" title="Thùng Rác">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          <span class="hide-on-mobile">Thùng Rác</span>
+        </button>
         <button class="btn icon-btn" onclick="openCreateBookModal()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="12" y1="8" x2="12" y2="14"></line><line x1="9" y1="11" x2="15" y2="11"></line></svg>
-          <span class="hide-on-mobile">Tạo Sách Mới</span>
+          <span class="hide-on-mobile">Tạo Sách</span>
         </button>
         <button class="btn btn-primary-filled icon-btn" onclick="openEditor(null)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
@@ -199,6 +218,10 @@
       </div>
       <div class="editor-header-group" id="editor-secondary-actions">
         <button class="btn btn-text icon-btn" id="btn-pin-page" style="color: var(--highlight);" onclick="togglePinPage()"></button>
+        <button class="btn btn-text icon-btn" onclick="openEditTimeModal()" title="Sửa Thời Gian">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span class="hide-on-mobile">Đổi Giờ</span>
+        </button>
         <button class="btn btn-text icon-btn" id="btn-change-location" onclick="showSaveModal()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
           <span class="hide-on-mobile">Đổi Vị Trí</span>
@@ -247,10 +270,24 @@
     <div id="editor-content" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
   </div>
 
+  <!-- Các Modal Nội bộ -->
   <div id="modal-save" class="modal"><div class="modal-content"><h3 id="modal-save-title">Chọn Vị trí Lưu trữ</h3><div class="book-list-modal" id="modal-book-list"></div><p style="margin: 10px 0; font-style: italic; font-size: 0.9rem; color: #777; width: 100%;">Hoặc đưa vào miền ký ức mới</p><input type="text" id="new-book-name" class="input-book-name" placeholder="Tên cuốn sách mới..."><label for="cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Chọn Tệp tin Bìa</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="save-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeSaveAction()">Xác nhận Vị trí</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
   <div id="modal-create-book" class="modal"><div class="modal-content"><h3>Khởi Tạo Sách Mới</h3><input type="text" id="only-new-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="only-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Tải lên Ảnh Bìa (Tùy chọn)</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="create-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="only-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeCreateBook()">Tạo Sách</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
   <div id="modal-edit-book" class="modal"><div class="modal-content"><h3>Chỉnh Sửa Sách</h3><input type="text" id="edit-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="edit-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Đổi Ảnh Bìa Khác</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh mới</p><div id="edit-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="edit-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-danger-text" style="width: 100%; margin-bottom: 15px; font-size: 0.9rem;" onclick="removeBookCover()">Xóa Ảnh Bìa</button><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeEditBook()">Lưu Thay Đổi</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
   <div id="modal-passcode" class="modal"><div class="modal-content"><h3 id="modal-passcode-title">Xác Thực Thao Tác</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p><input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác Nhận</button><button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy Thao Tác</button></div></div>
+
+  <!-- Modal Thay đổi Thời gian -->
+  <div id="modal-edit-time" class="modal"><div class="modal-content"><h3>Đồng Bộ Thời Gian</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Điều chỉnh dòng thời gian của ký ức này.</p><input type="datetime-local" id="edit-time-input" class="input-book-name"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="executeEditTime()">Lưu Dấu Thời Gian</button><button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Hủy Thao Tác</button></div></div>
+
+  <!-- Modal Thùng Rác -->
+  <div id="modal-trash" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <h3 style="color: var(--danger);">Thùng Rác Ký Ức</h3>
+      <p style="font-size: 0.85rem; color: #777; margin-bottom: 15px; width: 100%;">Tài liệu sẽ bị xóa vĩnh viễn sau 25 ngày kể từ khi đưa vào đây.</p>
+      <div id="trash-list" style="width: 100%; max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
+      <button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Đóng Thùng Rác</button>
+    </div>
+  </div>
 
   <div id="lightbox-modal">
     <div class="lightbox-toolbar">
@@ -268,6 +305,7 @@
     let isAppLocked = true;
     let inactivityTimer;
     const INACTIVITY_LIMIT = 20000; 
+    const TRASH_RETENTION_MS = 25 * 24 * 60 * 60 * 1000;
     let currentLightboxMedia = { url: '', name: '' }; 
 
     const svgPinOutline = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>`;
@@ -287,7 +325,14 @@
 
     ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt => { document.addEventListener(evt, resetInactivityTimer, true); });
 
-    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => { reg.update(); }).catch(err => console.error('Lỗi SW:', err)); }); }
+    // Ép SW tải file mới chống dính Cache
+    if ('serviceWorker' in navigator) { 
+      window.addEventListener('load', () => { 
+        navigator.serviceWorker.register('sw.js').then(reg => { 
+          reg.update(); 
+        }).catch(err => console.error('Lỗi SW:', err)); 
+      }); 
+    }
 
     document.addEventListener('keydown', function(e) { 
       if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) { 
@@ -317,15 +362,32 @@
           const cloudData = doc.data();
           if (cloudData.passcode) { 
             db = cloudData; 
+            autoPurgeTrash();
             if(document.getElementById('loading-screen').classList.contains('active')) { initAppUI(); } 
             else if (document.getElementById('dashboard').classList.contains('active')) { renderBooks(); } 
           }
         } else {
           let localData = JSON.parse(localStorage.getItem('diary_db'));
-          if (localData && localData.passcode) { document.getElementById('loading-text').innerText = "Đang đồng bộ..."; db = localData; docRef.set(db).then(() => initAppUI()); } else { initAppUI(); }
+          if (localData && localData.passcode) { document.getElementById('loading-text').innerText = "Đang đồng bộ..."; db = localData; autoPurgeTrash(); docRef.set(db).then(() => initAppUI()); } else { initAppUI(); }
         }
       }, (error) => { console.error("Lỗi:", error); initAppUI(); });
     };
+
+    function autoPurgeTrash() {
+      const now = Date.now();
+      let changed = false;
+      if(db.books) {
+        const initialBooks = db.books.length;
+        db.books = db.books.filter(b => !b.deletedAt || (now - b.deletedAt < TRASH_RETENTION_MS));
+        if (db.books.length !== initialBooks) changed = true;
+      }
+      if(db.pages) {
+        const initialPages = db.pages.length;
+        db.pages = db.pages.filter(p => !p.deletedAt || (now - p.deletedAt < TRASH_RETENTION_MS));
+        if (db.pages.length !== initialPages) changed = true;
+      }
+      if (changed) saveDB();
+    }
 
     function initAppUI() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('lock-screen').classList.add('active'); isAppLocked = true; if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã"; }
     function saveDB() { docRef.set(db).then(() => { if (navigator.onLine) document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️'; }).catch((error) => { console.error("Lỗi:", error.message); }); return true; }
@@ -349,14 +411,34 @@
     document.getElementById('action-pin-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') verifyActionPin(); });
     function requestPasscode(actionTitle, callback) { pendingSecureAction = callback; document.getElementById('modal-passcode-title').innerText = actionTitle; document.getElementById('action-pin-input').value = ''; document.getElementById('modal-passcode').style.display = 'flex'; setTimeout(() => document.getElementById('action-pin-input').focus(), 100); }
     function verifyActionPin() { const input = document.getElementById('action-pin-input').value; if (input === db.passcode) { document.getElementById('modal-passcode').style.display = 'none'; if (pendingSecureAction) { pendingSecureAction(); pendingSecureAction = null; } } else { alert("Lỗi xác thực: Mật mã không hợp lệ."); } }
-    function closePasscodeModal() { document.getElementById('modal-passcode').style.display = 'none'; pendingSecureAction = null; }
+    
     function switchScreen(screenId) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(screenId).classList.add('active'); if(screenId === 'dashboard') { document.getElementById('global-search-input').value = ''; document.getElementById('books-container').style.display = 'flex'; document.getElementById('global-search-results').style.display = 'none'; } }
     function handleDragStart(e, index) { dragStartIndex = index; e.dataTransfer.effectAllowed = 'move'; setTimeout(() => e.target.classList.add('dragging'), 0); }
     function handleDragEnd(e) { e.target.classList.remove('dragging'); }
     function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
-    function handleDrop(e, dropIndex) { e.preventDefault(); if (dragStartIndex !== null && dragStartIndex !== dropIndex) { const movedBook = db.books.splice(dragStartIndex, 1)[0]; db.books.splice(dropIndex, 0, movedBook); saveDB(); renderBooks(); } dragStartIndex = null; }
+    function handleDrop(e, dropIndex) { 
+      e.preventDefault(); 
+      if (dragStartIndex !== null && dragStartIndex !== dropIndex) { 
+        const visibleBooks = db.books.filter(b => !b.deletedAt);
+        const movedBook = visibleBooks[dragStartIndex];
+        db.books = db.books.filter(b => b.id !== movedBook.id);
+        
+        let insertIndex = 0;
+        let visibleCount = 0;
+        for(let i = 0; i < db.books.length; i++) {
+            if(!db.books[i].deletedAt) {
+                if(visibleCount === dropIndex) { insertIndex = i; break; }
+                visibleCount++;
+            }
+            insertIndex = i + 1;
+        }
+        db.books.splice(insertIndex, 0, movedBook);
+        saveDB(); renderBooks(); 
+      } 
+      dragStartIndex = null; 
+    }
     
-    function openLightbox(dataUrl, type = 'image', fileName = 'attachment') {
+    function openLightbox(dataUrl, type = 'image', fileName = 'attachment') { /* Giữ nguyên hàm lightbox... */
       currentLightboxMedia = { url: dataUrl, name: fileName };
       const modal = document.getElementById('lightbox-modal');
       const imgEl = document.getElementById('lightbox-img');
@@ -373,8 +455,7 @@
             const byteCharacters = atob(b64Data);
             const byteNumbers = new Array(byteCharacters.length);
             for (let i = 0; i < byteCharacters.length; i++) { byteNumbers[i] = byteCharacters.charCodeAt(i); }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: 'application/pdf' });
+            const blob = new Blob([new Uint8Array(byteNumbers)], { type: 'application/pdf' });
             renderUrl = URL.createObjectURL(blob);
             pdfEl.dataset.blobUrl = renderUrl;
           } catch (e) { console.error("Lỗi Blob:", e); }
@@ -397,7 +478,6 @@
       const a = document.createElement('a'); a.href = currentLightboxMedia.url; a.download = currentLightboxMedia.name;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
-
     document.getElementById('lightbox-modal').addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
 
     function renderAttachments() {
@@ -413,44 +493,92 @@
 
       if (hasImages) {
         imgSection.style.display = 'block';
-        currentAttachments.images.forEach((imgSrc, idx) => {
-          imgContainer.innerHTML += `<div class="attachment-img-wrap"><img src="${imgSrc}" onclick="openLightbox('${imgSrc}', 'image', 'diary-image-${idx}.jpg')">${isEditMode ? `<div class="attachment-img-delete" onclick="removeAttachment('image', ${idx}, event)">✖</div>` : ''}</div>`;
-        });
+        currentAttachments.images.forEach((imgSrc, idx) => { imgContainer.innerHTML += `<div class="attachment-img-wrap"><img src="${imgSrc}" onclick="openLightbox('${imgSrc}', 'image', 'diary-image-${idx}.jpg')">${isEditMode ? `<div class="attachment-img-delete" onclick="removeAttachment('image', ${idx}, event)">✖</div>` : ''}</div>`; });
       } else { imgSection.style.display = 'none'; }
 
       if (hasFiles) {
         fileSection.style.display = 'block';
-        currentAttachments.files.forEach((file, idx) => {
-          fileContainer.innerHTML += `<div class="attachment-file-item" onclick="openLightbox('${file.data}', 'pdf', '${file.name}')"><a><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg> <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">${file.name}</span></a>${isEditMode ? `<div class="attachment-file-delete" onclick="removeAttachment('file', ${idx}, event)">✖</div>` : ''}</div>`;
-        });
+        currentAttachments.files.forEach((file, idx) => { fileContainer.innerHTML += `<div class="attachment-file-item" onclick="openLightbox('${file.data}', 'pdf', '${file.name}')"><a><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg> <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">${file.name}</span></a>${isEditMode ? `<div class="attachment-file-delete" onclick="removeAttachment('file', ${idx}, event)">✖</div>` : ''}</div>`; });
       } else { fileSection.style.display = 'none'; }
-
       board.style.display = (hasImages || hasFiles) ? 'flex' : 'none';
     }
 
     function removeAttachment(type, index, event) { event.stopPropagation(); if (!isEditMode) return; if (type === 'image') currentAttachments.images.splice(index, 1); else if (type === 'file') currentAttachments.files.splice(index, 1); renderAttachments(); saveDB(); }
     
-    function renderBooks() { const container = document.getElementById('books-container'); container.innerHTML = ''; db.books.forEach((book, index) => { const bgStyle = book.cover ? `background-image: url('${book.cover}'); border: 1px solid rgba(0,0,0,0.1); box-shadow: inset 0 0 5px rgba(0,0,0,0.2);` : `background-color: transparent; border: none; box-shadow: none;`; const bookEl = document.createElement('div'); bookEl.className = 'book'; bookEl.draggable = true; bookEl.addEventListener('dragstart', (e) => handleDragStart(e, index)); bookEl.addEventListener('dragend', handleDragEnd); bookEl.addEventListener('dragover', handleDragOver); bookEl.addEventListener('drop', (e) => handleDrop(e, index)); bookEl.addEventListener('click', (e) => { if (e.target.closest('.delete')) { e.stopPropagation(); deleteBook(book.id); } else if (e.target.closest('.edit')) { e.stopPropagation(); openEditBookModal(book.id); } else { openBook(book.id); } }); bookEl.innerHTML = `<div class="book-actions"><div class="book-action-btn edit"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></div><div class="book-action-btn delete"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div></div><div class="book-cover-img" style="${bgStyle}"></div><div class="book-title">${book.name}</div>`; container.appendChild(bookEl); }); }
-    function deleteBook(bookId) { requestPasscode("Xác Thực Xóa Sách", () => { db.books = db.books.filter(b => b.id !== bookId); db.pages = db.pages.filter(p => p.bookId !== bookId); saveDB(); renderBooks(); }); }
+    function renderBooks() { 
+      const container = document.getElementById('books-container'); container.innerHTML = ''; 
+      const visibleBooks = db.books.filter(b => !b.deletedAt);
+      visibleBooks.forEach((book, index) => { 
+        const bgStyle = book.cover ? `background-image: url('${book.cover}'); border: 1px solid rgba(0,0,0,0.1); box-shadow: inset 0 0 5px rgba(0,0,0,0.2);` : `background-color: transparent; border: none; box-shadow: none;`; 
+        const bookEl = document.createElement('div'); bookEl.className = 'book'; bookEl.draggable = true; 
+        bookEl.addEventListener('dragstart', (e) => handleDragStart(e, index)); bookEl.addEventListener('dragend', handleDragEnd); bookEl.addEventListener('dragover', handleDragOver); bookEl.addEventListener('drop', (e) => handleDrop(e, index)); 
+        bookEl.addEventListener('click', (e) => { if (e.target.closest('.delete')) { e.stopPropagation(); deleteBook(book.id); } else if (e.target.closest('.edit')) { e.stopPropagation(); openEditBookModal(book.id); } else { openBook(book.id); } }); 
+        bookEl.innerHTML = `<div class="book-actions"><div class="book-action-btn edit"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></div><div class="book-action-btn delete"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div></div><div class="book-cover-img" style="${bgStyle}"></div><div class="book-title">${book.name}</div>`; 
+        container.appendChild(bookEl); 
+      }); 
+    }
+    
+    function deleteBook(bookId) { 
+      requestPasscode("Đưa Sách vào Thùng Rác", () => { 
+        const book = db.books.find(b => b.id === bookId);
+        if(book) book.deletedAt = Date.now();
+        saveDB(); renderBooks(); 
+      }); 
+    }
+
     function openEditBookModal(bookId) { requestPasscode("Xác Thực Chỉnh Sửa", () => { editingBookId = bookId; const book = db.books.find(b => b.id === bookId); document.getElementById('edit-book-name').value = book.name; document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'flex'; }); }
     function removeBookCover() { const book = db.books.find(b => b.id === editingBookId); if(book) { book.cover = null; book.palette = fallbackColors; } document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; alert("Thông báo: Đã thiết lập trạng thái Bìa Trơn."); }
     function executeEditBook() { const book = db.books.find(b => b.id === editingBookId); const newName = document.getElementById('edit-book-name').value; const coverFile = document.getElementById('edit-cover-upload').files[0]; if (!newName) return alert("Yêu cầu nhập tên sách."); book.name = newName; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); book.cover = canvas.toDataURL('image/jpeg', 0.8); book.palette = generatePastelPalette(canvas, ctx, 5); saveDB(); closeModals(); renderBooks(); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { saveDB(); closeModals(); renderBooks(); } }
     
-    function handleGlobalSearch() { const query = document.getElementById('global-search-input').value.toLowerCase(); const booksContainer = document.getElementById('books-container'); const resultsContainer = document.getElementById('global-search-results'); if (!query) { booksContainer.style.display = 'flex'; resultsContainer.style.display = 'none'; return; } booksContainer.style.display = 'none'; resultsContainer.style.display = 'flex'; resultsContainer.innerHTML = ''; let results = db.pages.filter(p => { const dateObj = new Date(p.timestamp); const dateStr1 = dateObj.toLocaleDateString('vi-VN').toLowerCase(); const dateStr2 = dateObj.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase(); return (p.title && p.title.toLowerCase().includes(query)) || (p.content && p.content.toLowerCase().includes(query)) || dateStr1.includes(query) || dateStr2.includes(query); }); if (results.length === 0) { resultsContainer.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy dữ liệu.</p>'; return; } results.sort((a, b) => { const pinA = a.isPinned ? 1 : 0; const pinB = b.isPinned ? 1 : 0; if (pinA !== pinB) return pinB - pinA; return b.timestamp - a.timestamp; }); results.forEach((page, index) => { const book = db.books.find(b => b.id === page.bookId) || { name: 'Sách vô danh', palette: fallbackColors }; const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' }); const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors; const pageColor = palette[index % palette.length]; const pinIndicator = page.isPinned ? svgPinOutline : ''; const pageEl = document.createElement('div'); pageEl.className = 'global-page-card'; pageEl.style.backgroundColor = pageColor; pageEl.onclick = () => { preSelectedBookId = page.bookId; openEditor(page.id, true); }; pageEl.innerHTML = `<div class="global-book-label">Định dạng: <b>${book.name}</b></div><div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`; resultsContainer.appendChild(pageEl); }); }
+    function handleGlobalSearch() { 
+      const query = document.getElementById('global-search-input').value.toLowerCase(); 
+      const booksContainer = document.getElementById('books-container'); 
+      const resultsContainer = document.getElementById('global-search-results'); 
+      if (!query) { booksContainer.style.display = 'flex'; resultsContainer.style.display = 'none'; return; } 
+      booksContainer.style.display = 'none'; resultsContainer.style.display = 'flex'; resultsContainer.innerHTML = ''; 
+      
+      let results = db.pages.filter(p => !p.deletedAt).filter(p => { 
+        const dateObj = new Date(p.timestamp); const dateStr1 = dateObj.toLocaleDateString('vi-VN').toLowerCase(); const dateStr2 = dateObj.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase(); 
+        return (p.title && p.title.toLowerCase().includes(query)) || (p.content && p.content.toLowerCase().includes(query)) || dateStr1.includes(query) || dateStr2.includes(query); 
+      }); 
+      if (results.length === 0) { resultsContainer.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy dữ liệu.</p>'; return; } 
+      
+      results.sort((a, b) => { const pinA = a.isPinned ? 1 : 0; const pinB = b.isPinned ? 1 : 0; if (pinA !== pinB) return pinB - pinA; return b.timestamp - a.timestamp; }); 
+      results.forEach((page, index) => { 
+        const book = db.books.find(b => b.id === page.bookId) || { name: 'Sách vô danh', palette: fallbackColors }; 
+        if(book.deletedAt) return; // Bỏ qua trang thuộc sách đã xóa
+        const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' }); const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); 
+        const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors; const pageColor = palette[index % palette.length]; const pinIndicator = page.isPinned ? svgPinOutline : ''; 
+        const pageEl = document.createElement('div'); pageEl.className = 'global-page-card'; pageEl.style.backgroundColor = pageColor; pageEl.onclick = () => { preSelectedBookId = page.bookId; openEditor(page.id, true); }; 
+        pageEl.innerHTML = `<div class="global-book-label">Định dạng: <b>${book.name}</b></div><div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`; resultsContainer.appendChild(pageEl); 
+      }); 
+    }
+
     function openBook(bookId) { preSelectedBookId = bookId; const book = db.books.find(b => b.id === bookId); document.getElementById('current-book-title').innerText = book.name; document.getElementById('search-page-input').value = ''; renderPagesInBook(bookId, ''); switchScreen('book-view'); }
     function handleSearch() { const query = document.getElementById('search-page-input').value.toLowerCase(); renderPagesInBook(preSelectedBookId, query); }
-    function renderPagesInBook(bookId, searchQuery) { const book = db.books.find(b => b.id === bookId); const container = document.getElementById('pages-container'); container.innerHTML = ''; let pages = db.pages.filter(p => p.bookId === bookId); if (searchQuery) { pages = pages.filter(p => { const dateObj = new Date(p.timestamp); const dateStr1 = dateObj.toLocaleDateString('vi-VN').toLowerCase(); const dateStr2 = dateObj.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase(); return (p.title && p.title.toLowerCase().includes(searchQuery)) || (p.content && p.content.toLowerCase().includes(searchQuery)) || dateStr1.includes(searchQuery) || dateStr2.includes(searchQuery); }); } pages.sort((a, b) => { const pinA = a.isPinned ? 1 : 0; const pinB = b.isPinned ? 1 : 0; if (pinA !== pinB) return pinB - pinA; return b.timestamp - a.timestamp; }); if (pages.length === 0) { container.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không có dữ liệu.</p>'; return; } pages.forEach((page, index) => { const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' }); const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors; const pageColor = palette[index % palette.length]; const zIndex = pages.length - index; const pinIndicator = page.isPinned ? svgPinOutline : ''; const pageEl = document.createElement('div'); pageEl.className = 'page-sheet'; pageEl.style.backgroundColor = pageColor; pageEl.style.zIndex = zIndex; pageEl.onclick = () => openEditor(page.id); pageEl.innerHTML = `<div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`; container.appendChild(pageEl); }); }
+    
+    function renderPagesInBook(bookId, searchQuery) { 
+      const book = db.books.find(b => b.id === bookId); 
+      const container = document.getElementById('pages-container'); container.innerHTML = ''; 
+      let pages = db.pages.filter(p => p.bookId === bookId && !p.deletedAt); 
+      if (searchQuery) { pages = pages.filter(p => { const dateObj = new Date(p.timestamp); const dateStr1 = dateObj.toLocaleDateString('vi-VN').toLowerCase(); const dateStr2 = dateObj.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase(); return (p.title && p.title.toLowerCase().includes(searchQuery)) || (p.content && p.content.toLowerCase().includes(searchQuery)) || dateStr1.includes(searchQuery) || dateStr2.includes(searchQuery); }); } 
+      
+      pages.sort((a, b) => { const pinA = a.isPinned ? 1 : 0; const pinB = b.isPinned ? 1 : 0; if (pinA !== pinB) return pinB - pinA; return b.timestamp - a.timestamp; }); 
+      if (pages.length === 0) { container.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không có dữ liệu.</p>'; return; } 
+      
+      pages.forEach((page, index) => { 
+        const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' }); const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); 
+        const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors; const pageColor = palette[index % palette.length]; const zIndex = pages.length - index; const pinIndicator = page.isPinned ? svgPinOutline : ''; 
+        const pageEl = document.createElement('div'); pageEl.className = 'page-sheet'; pageEl.style.backgroundColor = pageColor; pageEl.style.zIndex = zIndex; pageEl.onclick = () => openEditor(page.id); 
+        pageEl.innerHTML = `<div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`; container.appendChild(pageEl); 
+      }); 
+    }
     
     function togglePinPage() { if (!currentPageId) return alert("Hệ thống yêu cầu xác thực lưu trữ."); const page = db.pages.find(p => p.id === currentPageId); page.isPinned = !page.isPinned; saveDB(); updatePinButtonState(page.isPinned); }
     function updatePinButtonState(isPinned) { 
       const pinBtn = document.getElementById('btn-pin-page'); 
-      if (isPinned) { 
-        pinBtn.innerHTML = svgUnpin + `<span class="hide-on-mobile">Bỏ Ghim</span>`; 
-        pinBtn.style.color = "var(--danger)"; 
-      } else { 
-        pinBtn.innerHTML = svgPinOutline + `<span class="hide-on-mobile">Ghim Trang</span>`; 
-        pinBtn.style.color = "var(--highlight)"; 
-      } 
+      if (isPinned) { pinBtn.innerHTML = svgUnpin + `<span class="hide-on-mobile">Bỏ Ghim</span>`; pinBtn.style.color = "var(--danger)"; } 
+      else { pinBtn.innerHTML = svgPinOutline + `<span class="hide-on-mobile">Ghim Trang</span>`; pinBtn.style.color = "var(--highlight)"; } 
     }
     
     function setEditorMode(editMode) { 
@@ -462,22 +590,14 @@
       const editorScreen = document.getElementById('editor-screen'); 
       
       if (isEditMode) { 
-        titleEl.readOnly = false; 
-        contentEl.setAttribute('contenteditable', 'true'); 
-        titleEl.style.display = 'block';
-        if (toolsGroup) toolsGroup.style.display = 'flex'; 
-        editorScreen.classList.remove('read-only-mode'); 
-        toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <span class="hide-on-mobile">Lưu Nội Dung</span>`; 
-        toggleBtn.className = 'btn btn-primary-filled icon-btn'; 
+        titleEl.readOnly = false; contentEl.setAttribute('contenteditable', 'true'); titleEl.style.display = 'block';
+        if (toolsGroup) toolsGroup.style.display = 'flex'; editorScreen.classList.remove('read-only-mode'); 
+        toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <span class="hide-on-mobile">Lưu Nội Dung</span>`; toggleBtn.className = 'btn btn-primary-filled icon-btn'; 
         contentEl.focus(); 
       } else { 
-        titleEl.readOnly = true; 
-        contentEl.setAttribute('contenteditable', 'false'); 
-        titleEl.style.display = (!titleEl.value.trim()) ? 'none' : 'block';
-        if (toolsGroup) toolsGroup.style.display = 'none'; 
-        editorScreen.classList.add('read-only-mode'); 
-        toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> <span class="hide-on-mobile">Chỉnh Sửa</span>`; 
-        toggleBtn.className = 'btn btn-text icon-btn'; 
+        titleEl.readOnly = true; contentEl.setAttribute('contenteditable', 'false'); titleEl.style.display = (!titleEl.value.trim()) ? 'none' : 'block';
+        if (toolsGroup) toolsGroup.style.display = 'none'; editorScreen.classList.add('read-only-mode'); 
+        toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> <span class="hide-on-mobile">Chỉnh Sửa</span>`; toggleBtn.className = 'btn btn-text icon-btn'; 
       } 
       renderAttachments(); 
     }
@@ -488,115 +608,139 @@
       currentPageId = pageId; 
       if (!fromBook && !pageId) preSelectedBookId = null; 
       document.getElementById('editor-secondary-actions').style.display = pageId ? 'flex' : 'none'; 
-      const titleEl = document.getElementById('editor-title'); 
-      const contentEl = document.getElementById('editor-content'); 
+      const titleEl = document.getElementById('editor-title'); const contentEl = document.getElementById('editor-content'); 
       
       if (pageId) { 
         const page = db.pages.find(p => p.id === pageId); 
-        titleEl.value = page.title || ''; 
-        contentEl.innerHTML = page.content || ''; 
+        titleEl.value = page.title || ''; contentEl.innerHTML = page.content || ''; 
         currentAttachments = page.attachments ? JSON.parse(JSON.stringify(page.attachments)) : { images: [], files: [] }; 
-        updatePinButtonState(page.isPinned); 
-        setEditorMode(false); 
+        updatePinButtonState(page.isPinned); setEditorMode(false); 
       } else { 
-        const draftTitle = localStorage.getItem('diary_draft_title');
-        const draftContent = localStorage.getItem('diary_draft_content');
-        titleEl.value = draftTitle || ''; 
-        contentEl.innerHTML = draftContent || ''; 
+        const draftTitle = localStorage.getItem('diary_draft_title'); const draftContent = localStorage.getItem('diary_draft_content');
+        titleEl.value = draftTitle || ''; contentEl.innerHTML = draftContent || ''; 
         currentAttachments = { images: [], files: [] }; 
         document.getElementById('save-status').innerText = (draftTitle || draftContent) ? 'Đã khôi phục nháp cục bộ' : ''; 
-        updatePinButtonState(false); 
-        setEditorMode(true); 
+        updatePinButtonState(false); setEditorMode(true); 
       } 
-      renderAttachments(); 
-      switchScreen('editor-screen'); 
+      renderAttachments(); switchScreen('editor-screen'); 
     }
     
     function goBackFromEditor() { if (preSelectedBookId) { renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); switchScreen('book-view'); } else { switchScreen('dashboard'); renderBooks(); } }
-    function deleteCurrentPage() { requestPasscode("Xác Thực Xóa Trang", () => { db.pages = db.pages.filter(p => p.id !== currentPageId); saveDB(); goBackFromEditor(); }); }
+    
+    // Gửi vào Thùng rác (Soft Delete)
+    function deleteCurrentPage() { 
+      requestPasscode("Đưa Trang vào Thùng Rác", () => { 
+        const page = db.pages.find(p => p.id === currentPageId);
+        if(page) page.deletedAt = Date.now();
+        saveDB(); goBackFromEditor(); 
+      }); 
+    }
     
     function savePageDirectly(goBack = false) { 
-      const title = document.getElementById('editor-title').value; 
-      const content = document.getElementById('editor-content').innerHTML; 
-      
+      const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; 
       if (currentPageId) { 
         const page = db.pages.find(p => p.id === currentPageId); 
         page.title = title; page.content = content; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); 
-        saveDB(); 
-        localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
-        setEditorMode(false); 
-        if (goBack) goBackFromEditor(); 
+        saveDB(); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
+        setEditorMode(false); if (goBack) goBackFromEditor(); 
       } else if (preSelectedBookId) { 
         const newPageId = 'page_' + Date.now(); 
         db.pages.push({ id: newPageId, bookId: preSelectedBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); 
-        saveDB(); 
-        localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
+        saveDB(); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
         currentPageId = newPageId; document.getElementById('editor-secondary-actions').style.display = 'flex'; 
-        setEditorMode(false); 
-        if (goBack) goBackFromEditor(); 
-      } else { 
-        showSaveModal(); 
-      } 
+        setEditorMode(false); if (goBack) goBackFromEditor(); 
+      } else { showSaveModal(); } 
     }
     
-    // Bắt sự kiện Autosave cục bộ
-    document.getElementById('editor-title').addEventListener('input', () => { 
-      if(!isEditMode) return; 
-      localStorage.setItem('diary_draft_title', document.getElementById('editor-title').value); 
-    });
-
+    document.getElementById('editor-title').addEventListener('input', () => { if(!isEditMode) return; localStorage.setItem('diary_draft_title', document.getElementById('editor-title').value); });
     document.getElementById('editor-content').addEventListener('input', () => { 
       if(!isEditMode) return; 
       document.getElementById('save-status').innerText = navigator.onLine ? 'Đang đồng bộ...' : 'Đang lưu nháp (Offline)...'; 
       localStorage.setItem('diary_draft_content', document.getElementById('editor-content').innerHTML);
-      clearTimeout(typingTimer); 
-      typingTimer = setTimeout(() => { saveDB(); }, 1500); 
+      clearTimeout(typingTimer); typingTimer = setTimeout(() => { saveDB(); }, 1500); 
     });
 
     document.addEventListener('paste', function(e) { 
-      const mSave = document.getElementById('modal-save').style.display === 'flex'; 
-      const mCreate = document.getElementById('modal-create-book').style.display === 'flex'; 
-      const mEdit = document.getElementById('modal-edit-book').style.display === 'flex'; 
+      const mSave = document.getElementById('modal-save').style.display === 'flex'; const mCreate = document.getElementById('modal-create-book').style.display === 'flex'; const mEdit = document.getElementById('modal-edit-book').style.display === 'flex'; 
       const isEditor = document.getElementById('editor-screen').classList.contains('active') && isEditMode;
-      
       if (!mSave && !mCreate && !mEdit && !isEditor) return; 
-      const items = (e.clipboardData || window.clipboardData)?.items; 
-      if (!items) return; 
-
+      const items = (e.clipboardData || window.clipboardData)?.items; if (!items) return; 
       for (let i = 0; i < items.length; i++) { 
         if (items[i].type.indexOf('image') !== -1) { 
-          const file = items[i].getAsFile();
-          e.preventDefault(); 
-          
+          const file = items[i].getAsFile(); e.preventDefault(); 
           if (mSave || mCreate || mEdit) {
             const dt = new DataTransfer(); dt.items.add(file); 
             if (mSave) { document.getElementById('cover-upload').files = dt.files; document.getElementById('save-paste-msg').style.display = 'block'; } 
             else if (mCreate) { document.getElementById('only-cover-upload').files = dt.files; document.getElementById('create-paste-msg').style.display = 'block'; } 
             else if (mEdit) { document.getElementById('edit-cover-upload').files = dt.files; document.getElementById('edit-paste-msg').style.display = 'block'; } 
           } else if (isEditor) {
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-              const img = new Image();
-              img.onload = function() {
-                const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width);
-                const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                if (!currentAttachments.images) currentAttachments.images = [];
-                currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8));
-                renderAttachments(); saveDB();
-              };
-              img.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
+            const reader = new FileReader(); reader.onload = function(ev) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); if (!currentAttachments.images) currentAttachments.images = []; currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); saveDB(); }; img.src = ev.target.result; }; reader.readAsDataURL(file);
           }
           break; 
         } 
       } 
     });
 
-    function closeModals() { document.getElementById('modal-save').style.display = 'none'; document.getElementById('modal-create-book').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'none'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('create-paste-msg').style.display = 'none'; document.getElementById('edit-paste-msg').style.display = 'none'; }
-    function openCreateBookModal() { document.getElementById('modal-create-book').style.display = 'flex'; document.getElementById('only-new-book-name').value = ''; document.getElementById('only-cover-upload').value = ''; document.getElementById('create-paste-msg').style.display = 'none'; }
-    function showSaveModal() { document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('modal-save-title').innerText = currentPageId ? "Đổi Vị Trí Lưu Trữ" : "Chọn Vị Trí Lưu Trữ"; const list = document.getElementById('modal-book-list'); list.innerHTML = ''; db.books.forEach(book => { list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; }); document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = ''; }
+    function closeModals() { 
+      document.getElementById('modal-save').style.display = 'none'; document.getElementById('modal-create-book').style.display = 'none'; 
+      document.getElementById('modal-edit-book').style.display = 'none'; document.getElementById('modal-passcode').style.display = 'none'; 
+      document.getElementById('modal-edit-time').style.display = 'none'; document.getElementById('modal-trash').style.display = 'none';
+      document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('create-paste-msg').style.display = 'none'; document.getElementById('edit-paste-msg').style.display = 'none'; 
+    }
     
+    function openCreateBookModal() { document.getElementById('modal-create-book').style.display = 'flex'; document.getElementById('only-new-book-name').value = ''; document.getElementById('only-cover-upload').value = ''; document.getElementById('create-paste-msg').style.display = 'none'; }
+    function showSaveModal() { document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('modal-save-title').innerText = currentPageId ? "Đổi Vị Trí Lưu Trữ" : "Chọn Vị Trí Lưu Trữ"; const list = document.getElementById('modal-book-list'); list.innerHTML = ''; db.books.forEach(book => { if(!book.deletedAt) list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; }); document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = ''; }
+    
+    // Giao thức Đổi Thời Gian
+    function openEditTimeModal() {
+      if(!currentPageId) return alert("Cần lưu trang trước khi sửa thời gian.");
+      const page = db.pages.find(p => p.id === currentPageId);
+      const dateObj = new Date(page.timestamp);
+      dateObj.setMinutes(dateObj.getMinutes() - dateObj.getTimezoneOffset());
+      document.getElementById('edit-time-input').value = dateObj.toISOString().slice(0, 16);
+      document.getElementById('modal-edit-time').style.display = 'flex';
+    }
+
+    function executeEditTime() {
+      const val = document.getElementById('edit-time-input').value;
+      if(!val) return alert("Vui lòng chọn thời gian hợp lệ.");
+      const page = db.pages.find(p => p.id === currentPageId);
+      page.timestamp = new Date(val).getTime();
+      saveDB(); closeModals(); 
+      alert("Đã sắp xếp lại dòng thời gian thành công.");
+      goBackFromEditor();
+    }
+
+    // Quản lý Thùng Rác
+    function openTrashModal() {
+      const list = document.getElementById('trash-list');
+      list.innerHTML = '';
+      let hasItems = false;
+      const now = Date.now();
+
+      db.books.forEach(b => {
+        if(b.deletedAt) {
+          hasItems = true;
+          const daysLeft = 25 - Math.floor((now - b.deletedAt) / (1000 * 60 * 60 * 24));
+          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Sách: ${b.name}</span><span class="trash-item-date">Tự hủy sau ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restoreBook('${b.id}')">Khôi Phục</button><button class="trash-btn destroy" onclick="destroyBook('${b.id}')">Xóa Sạch</button></div></div>`;
+        }
+      });
+      db.pages.forEach(p => {
+        if(p.deletedAt) {
+          hasItems = true;
+          const daysLeft = 25 - Math.floor((now - p.deletedAt) / (1000 * 60 * 60 * 24));
+          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Trang: ${p.title || 'Không có tiêu đề'}</span><span class="trash-item-date">Tự hủy sau ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restorePage('${p.id}')">Khôi Phục</button><button class="trash-btn destroy" onclick="destroyPage('${p.id}')">Xóa Sạch</button></div></div>`;
+        }
+      });
+      if(!hasItems) list.innerHTML = '<p style="text-align:center; font-style:italic; font-size:0.9rem;">Thùng rác trống.</p>';
+      document.getElementById('modal-trash').style.display = 'flex';
+    }
+
+    function restoreBook(id) { const book = db.books.find(b => b.id === id); if(book) delete book.deletedAt; saveDB(); openTrashModal(); renderBooks(); }
+    function destroyBook(id) { if(confirm("Xóa vĩnh viễn sách này?")) { db.books = db.books.filter(b => b.id !== id); db.pages = db.pages.filter(p => p.bookId !== id); saveDB(); openTrashModal(); renderBooks(); } }
+    function restorePage(id) { const page = db.pages.find(p => p.id === id); if(page) delete page.deletedAt; saveDB(); openTrashModal(); }
+    function destroyPage(id) { if(confirm("Xóa vĩnh viễn trang này?")) { db.pages = db.pages.filter(p => p.id !== id); saveDB(); openTrashModal(); } }
+
     function insertFile(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { if (file.type.startsWith('image/')) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); if (!currentAttachments.images) currentAttachments.images = []; currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); saveDB(); }; img.src = e.target.result; } else if (file.type === 'application/pdf') { if (!currentAttachments.files) currentAttachments.files = []; currentAttachments.files.push({ name: file.name, data: e.target.result }); renderAttachments(); saveDB(); } }; reader.readAsDataURL(file); }
     function generatePastelPalette(canvas, ctx, count) { let palette = []; for (let i = 0; i < count; i++) { let x = Math.floor(Math.random() * canvas.width); let y = Math.floor(Math.random() * canvas.height); let pixel = ctx.getImageData(x, y, 1, 1).data; let r = Math.floor((pixel[0] + 255 * 2) / 3); let g = Math.floor((pixel[1] + 255 * 2) / 3); let b = Math.floor((pixel[2] + 255 * 2) / 3); palette.push(`rgb(${r}, ${g}, ${b})`); } return palette; }
     
