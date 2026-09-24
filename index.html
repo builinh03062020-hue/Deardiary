@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aesthetic Vintage Diary - PWA Edition</title>
   
-  <!-- Cập nhật nhận diện Icon PWA -->
+  <!-- Cấu trúc Siêu dữ liệu PWA tối ưu cho iOS/Safari -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#8c7b6c">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Diary">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=2">
 
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -270,20 +270,20 @@
     <div id="editor-content" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
   </div>
 
-  <!-- Các Modal Nội bộ -->
+  <!-- Các phân hệ Modal tĩnh -->
   <div id="modal-save" class="modal"><div class="modal-content"><h3 id="modal-save-title">Chọn Vị trí Lưu trữ</h3><div class="book-list-modal" id="modal-book-list"></div><p style="margin: 10px 0; font-style: italic; font-size: 0.9rem; color: #777; width: 100%;">Hoặc đưa vào miền ký ức mới</p><input type="text" id="new-book-name" class="input-book-name" placeholder="Tên cuốn sách mới..."><label for="cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Chọn Tệp tin Bìa</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="save-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeSaveAction()">Xác nhận Vị trí</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
   <div id="modal-create-book" class="modal"><div class="modal-content"><h3>Khởi Tạo Sách Mới</h3><input type="text" id="only-new-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="only-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Tải lên Ảnh Bìa (Tùy chọn)</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="create-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="only-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeCreateBook()">Tạo Sách</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
   <div id="modal-edit-book" class="modal"><div class="modal-content"><h3>Chỉnh Sửa Sách</h3><input type="text" id="edit-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="edit-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Đổi Ảnh Bìa Khác</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh mới</p><div id="edit-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="edit-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-danger-text" style="width: 100%; margin-bottom: 15px; font-size: 0.9rem;" onclick="removeBookCover()">Xóa Ảnh Bìa</button><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeEditBook()">Lưu Thay Đổi</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
   <div id="modal-passcode" class="modal"><div class="modal-content"><h3 id="modal-passcode-title">Xác Thực Thao Tác</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p><input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác Nhận</button><button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy Thao Tác</button></div></div>
 
-  <!-- Modal Thay đổi Thời gian -->
-  <div id="modal-edit-time" class="modal"><div class="modal-content"><h3>Đồng Bộ Thời Gian</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Điều chỉnh dòng thời gian của ký ức này.</p><input type="datetime-local" id="edit-time-input" class="input-book-name"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="executeEditTime()">Lưu Dấu Thời Gian</button><button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Hủy Thao Tác</button></div></div>
+  <!-- Phân hệ Modal Tái sắp xếp Thời gian -->
+  <div id="modal-edit-time" class="modal"><div class="modal-content"><h3>Đồng Bộ Thời Gian</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Điều chỉnh dòng thời gian của tài liệu này.</p><input type="datetime-local" id="edit-time-input" class="input-book-name"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="executeEditTime()">Lưu Dấu Thời Gian</button><button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Hủy Thao Tác</button></div></div>
 
-  <!-- Modal Thùng Rác -->
+  <!-- Phân hệ Modal Quản trị Thùng Rác (Soft Delete) -->
   <div id="modal-trash" class="modal">
     <div class="modal-content" style="max-width: 500px;">
-      <h3 style="color: var(--danger);">Thùng Rác Ký Ức</h3>
-      <p style="font-size: 0.85rem; color: #777; margin-bottom: 15px; width: 100%;">Tài liệu sẽ bị xóa vĩnh viễn sau 25 ngày kể từ khi đưa vào đây.</p>
+      <h3 style="color: var(--danger);">Thùng Rác Tài Liệu</h3>
+      <p style="font-size: 0.85rem; color: #777; margin-bottom: 15px; width: 100%;">Tài liệu sẽ bị xóa vĩnh viễn sau 25 ngày kể từ thời điểm hủy bỏ.</p>
       <div id="trash-list" style="width: 100%; max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
       <button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Đóng Thùng Rác</button>
     </div>
@@ -325,12 +325,12 @@
 
     ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt => { document.addEventListener(evt, resetInactivityTimer, true); });
 
-    // Ép SW tải file mới chống dính Cache
+    // Cưỡng chế tải lại tệp Service Worker nhằm khắc phục lỗi Cache Stale
     if ('serviceWorker' in navigator) { 
       window.addEventListener('load', () => { 
         navigator.serviceWorker.register('sw.js').then(reg => { 
           reg.update(); 
-        }).catch(err => console.error('Lỗi SW:', err)); 
+        }).catch(err => console.error('Lỗi tích hợp SW:', err)); 
       }); 
     }
 
@@ -341,13 +341,13 @@
       } 
     });
 
-    window.addEventListener('online', () => { document.getElementById('network-alert').style.display = 'none'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã khôi phục mạng - Đang đồng bộ...'; saveDB(); });
-    window.addEventListener('offline', () => { document.getElementById('network-alert').style.display = 'block'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã lưu nháp (Chế độ Ngoại tuyến)'; });
+    window.addEventListener('online', () => { document.getElementById('network-alert').style.display = 'none'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã khôi phục kết nối mạng - Đang đồng bộ...'; saveDB(); });
+    window.addEventListener('offline', () => { document.getElementById('network-alert').style.display = 'block'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã lưu nháp bộ đệm (Chế độ Ngoại tuyến)'; });
 
     const firebaseConfig = { apiKey: "AIzaSyAlzn4AT4M4AOSMADjMnEn5OiL8_8-7hKs", authDomain: "dear-diary-28b19.firebaseapp.com", projectId: "dear-diary-28b19", storageBucket: "dear-diary-28b19.firebasestorage.app", messagingSenderId: "185780215702", appId: "1:185780215702:web:457437f9cd3f3b9bf887b7" };
     firebase.initializeApp(firebaseConfig);
     const firestore = firebase.firestore();
-    firestore.enablePersistence().catch((err) => { console.warn("Lỗi Offline.", err); });
+    firestore.enablePersistence().catch((err) => { console.warn("Lỗi tích hợp Offline Persistence.", err); });
     const docRef = firestore.collection("diaryData").doc("my_vintage_diary");
 
     let db = { books: [], pages: [], passcode: null };
@@ -368,9 +368,9 @@
           }
         } else {
           let localData = JSON.parse(localStorage.getItem('diary_db'));
-          if (localData && localData.passcode) { document.getElementById('loading-text').innerText = "Đang đồng bộ..."; db = localData; autoPurgeTrash(); docRef.set(db).then(() => initAppUI()); } else { initAppUI(); }
+          if (localData && localData.passcode) { document.getElementById('loading-text').innerText = "Đang đồng bộ cấu trúc dữ liệu..."; db = localData; autoPurgeTrash(); docRef.set(db).then(() => initAppUI()); } else { initAppUI(); }
         }
-      }, (error) => { console.error("Lỗi:", error); initAppUI(); });
+      }, (error) => { console.error("Lỗi giao tiếp máy chủ:", error); initAppUI(); });
     };
 
     function autoPurgeTrash() {
@@ -389,13 +389,13 @@
       if (changed) saveDB();
     }
 
-    function initAppUI() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('lock-screen').classList.add('active'); isAppLocked = true; if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã"; }
-    function saveDB() { docRef.set(db).then(() => { if (navigator.onLine) document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️'; }).catch((error) => { console.error("Lỗi:", error.message); }); return true; }
+    function initAppUI() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('lock-screen').classList.add('active'); isAppLocked = true; if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã hệ thống"; }
+    function saveDB() { docRef.set(db).then(() => { if (navigator.onLine) document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️'; }).catch((error) => { console.error("Lỗi ghi dữ liệu:", error.message); }); return true; }
     document.getElementById('pin-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
     
     function checkPin() { 
       const input = document.getElementById('pin-input').value; 
-      if (!input) return alert("Vui lòng cung cấp khóa định danh."); 
+      if (!input) return alert("Vui lòng cung cấp khóa định danh hệ thống."); 
       if (!db.passcode) { 
         db.passcode = input; saveDB(); isAppLocked = false; document.getElementById('pin-input').value = ''; document.getElementById('lock-screen').classList.remove('active'); switchScreen('dashboard'); renderBooks(); resetInactivityTimer();
       } else { 
@@ -410,7 +410,7 @@
     
     document.getElementById('action-pin-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') verifyActionPin(); });
     function requestPasscode(actionTitle, callback) { pendingSecureAction = callback; document.getElementById('modal-passcode-title').innerText = actionTitle; document.getElementById('action-pin-input').value = ''; document.getElementById('modal-passcode').style.display = 'flex'; setTimeout(() => document.getElementById('action-pin-input').focus(), 100); }
-    function verifyActionPin() { const input = document.getElementById('action-pin-input').value; if (input === db.passcode) { document.getElementById('modal-passcode').style.display = 'none'; if (pendingSecureAction) { pendingSecureAction(); pendingSecureAction = null; } } else { alert("Lỗi xác thực: Mật mã không hợp lệ."); } }
+    function verifyActionPin() { const input = document.getElementById('action-pin-input').value; if (input === db.passcode) { document.getElementById('modal-passcode').style.display = 'none'; if (pendingSecureAction) { pendingSecureAction(); pendingSecureAction = null; } } else { alert("Lỗi xác thực: Khóa định danh không hợp lệ."); } }
     
     function switchScreen(screenId) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(screenId).classList.add('active'); if(screenId === 'dashboard') { document.getElementById('global-search-input').value = ''; document.getElementById('books-container').style.display = 'flex'; document.getElementById('global-search-results').style.display = 'none'; } }
     function handleDragStart(e, index) { dragStartIndex = index; e.dataTransfer.effectAllowed = 'move'; setTimeout(() => e.target.classList.add('dragging'), 0); }
@@ -438,7 +438,7 @@
       dragStartIndex = null; 
     }
     
-    function openLightbox(dataUrl, type = 'image', fileName = 'attachment') { /* Giữ nguyên hàm lightbox... */
+    function openLightbox(dataUrl, type = 'image', fileName = 'attachment') {
       currentLightboxMedia = { url: dataUrl, name: fileName };
       const modal = document.getElementById('lightbox-modal');
       const imgEl = document.getElementById('lightbox-img');
@@ -458,7 +458,7 @@
             const blob = new Blob([new Uint8Array(byteNumbers)], { type: 'application/pdf' });
             renderUrl = URL.createObjectURL(blob);
             pdfEl.dataset.blobUrl = renderUrl;
-          } catch (e) { console.error("Lỗi Blob:", e); }
+          } catch (e) { console.error("Lỗi biên dịch Blob:", e); }
         }
         pdfEl.src = renderUrl;
       }
@@ -519,16 +519,16 @@
     }
     
     function deleteBook(bookId) { 
-      requestPasscode("Đưa Sách vào Thùng Rác", () => { 
+      requestPasscode("Xác thực quy trình đưa Sách vào Thùng Rác", () => { 
         const book = db.books.find(b => b.id === bookId);
         if(book) book.deletedAt = Date.now();
         saveDB(); renderBooks(); 
       }); 
     }
 
-    function openEditBookModal(bookId) { requestPasscode("Xác Thực Chỉnh Sửa", () => { editingBookId = bookId; const book = db.books.find(b => b.id === bookId); document.getElementById('edit-book-name').value = book.name; document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'flex'; }); }
-    function removeBookCover() { const book = db.books.find(b => b.id === editingBookId); if(book) { book.cover = null; book.palette = fallbackColors; } document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; alert("Thông báo: Đã thiết lập trạng thái Bìa Trơn."); }
-    function executeEditBook() { const book = db.books.find(b => b.id === editingBookId); const newName = document.getElementById('edit-book-name').value; const coverFile = document.getElementById('edit-cover-upload').files[0]; if (!newName) return alert("Yêu cầu nhập tên sách."); book.name = newName; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); book.cover = canvas.toDataURL('image/jpeg', 0.8); book.palette = generatePastelPalette(canvas, ctx, 5); saveDB(); closeModals(); renderBooks(); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { saveDB(); closeModals(); renderBooks(); } }
+    function openEditBookModal(bookId) { requestPasscode("Xác Thực Chỉnh Sửa Dữ liệu", () => { editingBookId = bookId; const book = db.books.find(b => b.id === bookId); document.getElementById('edit-book-name').value = book.name; document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'flex'; }); }
+    function removeBookCover() { const book = db.books.find(b => b.id === editingBookId); if(book) { book.cover = null; book.palette = fallbackColors; } document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; alert("Trạng thái tệp tin Bìa đã được chuyển đổi mặc định."); }
+    function executeEditBook() { const book = db.books.find(b => b.id === editingBookId); const newName = document.getElementById('edit-book-name').value; const coverFile = document.getElementById('edit-cover-upload').files[0]; if (!newName) return alert("Hệ thống yêu cầu xác nhận định danh phân loại sách."); book.name = newName; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); book.cover = canvas.toDataURL('image/jpeg', 0.8); book.palette = generatePastelPalette(canvas, ctx, 5); saveDB(); closeModals(); renderBooks(); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { saveDB(); closeModals(); renderBooks(); } }
     
     function handleGlobalSearch() { 
       const query = document.getElementById('global-search-input').value.toLowerCase(); 
@@ -541,12 +541,12 @@
         const dateObj = new Date(p.timestamp); const dateStr1 = dateObj.toLocaleDateString('vi-VN').toLowerCase(); const dateStr2 = dateObj.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase(); 
         return (p.title && p.title.toLowerCase().includes(query)) || (p.content && p.content.toLowerCase().includes(query)) || dateStr1.includes(query) || dateStr2.includes(query); 
       }); 
-      if (results.length === 0) { resultsContainer.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy dữ liệu.</p>'; return; } 
+      if (results.length === 0) { resultsContainer.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không tìm thấy dữ liệu truy vấn.</p>'; return; } 
       
       results.sort((a, b) => { const pinA = a.isPinned ? 1 : 0; const pinB = b.isPinned ? 1 : 0; if (pinA !== pinB) return pinB - pinA; return b.timestamp - a.timestamp; }); 
       results.forEach((page, index) => { 
-        const book = db.books.find(b => b.id === page.bookId) || { name: 'Sách vô danh', palette: fallbackColors }; 
-        if(book.deletedAt) return; // Bỏ qua trang thuộc sách đã xóa
+        const book = db.books.find(b => b.id === page.bookId) || { name: 'Dữ liệu vô danh', palette: fallbackColors }; 
+        if(book.deletedAt) return;
         const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' }); const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); 
         const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors; const pageColor = palette[index % palette.length]; const pinIndicator = page.isPinned ? svgPinOutline : ''; 
         const pageEl = document.createElement('div'); pageEl.className = 'global-page-card'; pageEl.style.backgroundColor = pageColor; pageEl.onclick = () => { preSelectedBookId = page.bookId; openEditor(page.id, true); }; 
@@ -564,7 +564,7 @@
       if (searchQuery) { pages = pages.filter(p => { const dateObj = new Date(p.timestamp); const dateStr1 = dateObj.toLocaleDateString('vi-VN').toLowerCase(); const dateStr2 = dateObj.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toLowerCase(); return (p.title && p.title.toLowerCase().includes(searchQuery)) || (p.content && p.content.toLowerCase().includes(searchQuery)) || dateStr1.includes(searchQuery) || dateStr2.includes(searchQuery); }); } 
       
       pages.sort((a, b) => { const pinA = a.isPinned ? 1 : 0; const pinB = b.isPinned ? 1 : 0; if (pinA !== pinB) return pinB - pinA; return b.timestamp - a.timestamp; }); 
-      if (pages.length === 0) { container.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Không có dữ liệu.</p>'; return; } 
+      if (pages.length === 0) { container.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Tài liệu trống.</p>'; return; } 
       
       pages.forEach((page, index) => { 
         const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' }); const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); 
@@ -574,7 +574,7 @@
       }); 
     }
     
-    function togglePinPage() { if (!currentPageId) return alert("Hệ thống yêu cầu xác thực lưu trữ."); const page = db.pages.find(p => p.id === currentPageId); page.isPinned = !page.isPinned; saveDB(); updatePinButtonState(page.isPinned); }
+    function togglePinPage() { if (!currentPageId) return alert("Giao thức yêu cầu quá trình xác thực lưu trữ."); const page = db.pages.find(p => p.id === currentPageId); page.isPinned = !page.isPinned; saveDB(); updatePinButtonState(page.isPinned); }
     function updatePinButtonState(isPinned) { 
       const pinBtn = document.getElementById('btn-pin-page'); 
       if (isPinned) { pinBtn.innerHTML = svgUnpin + `<span class="hide-on-mobile">Bỏ Ghim</span>`; pinBtn.style.color = "var(--danger)"; } 
@@ -619,7 +619,7 @@
         const draftTitle = localStorage.getItem('diary_draft_title'); const draftContent = localStorage.getItem('diary_draft_content');
         titleEl.value = draftTitle || ''; contentEl.innerHTML = draftContent || ''; 
         currentAttachments = { images: [], files: [] }; 
-        document.getElementById('save-status').innerText = (draftTitle || draftContent) ? 'Đã khôi phục nháp cục bộ' : ''; 
+        document.getElementById('save-status').innerText = (draftTitle || draftContent) ? 'Đã kích hoạt sao lưu bộ đệm tĩnh' : ''; 
         updatePinButtonState(false); setEditorMode(true); 
       } 
       renderAttachments(); switchScreen('editor-screen'); 
@@ -627,9 +627,8 @@
     
     function goBackFromEditor() { if (preSelectedBookId) { renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); switchScreen('book-view'); } else { switchScreen('dashboard'); renderBooks(); } }
     
-    // Gửi vào Thùng rác (Soft Delete)
     function deleteCurrentPage() { 
-      requestPasscode("Đưa Trang vào Thùng Rác", () => { 
+      requestPasscode("Xác thực quy trình đưa Trang vào Thùng Rác", () => { 
         const page = db.pages.find(p => p.id === currentPageId);
         if(page) page.deletedAt = Date.now();
         saveDB(); goBackFromEditor(); 
@@ -655,7 +654,7 @@
     document.getElementById('editor-title').addEventListener('input', () => { if(!isEditMode) return; localStorage.setItem('diary_draft_title', document.getElementById('editor-title').value); });
     document.getElementById('editor-content').addEventListener('input', () => { 
       if(!isEditMode) return; 
-      document.getElementById('save-status').innerText = navigator.onLine ? 'Đang đồng bộ...' : 'Đang lưu nháp (Offline)...'; 
+      document.getElementById('save-status').innerText = navigator.onLine ? 'Đang truyền dẫn dữ liệu...' : 'Đang xử lý phân vùng Offline...'; 
       localStorage.setItem('diary_draft_content', document.getElementById('editor-content').innerHTML);
       clearTimeout(typingTimer); typingTimer = setTimeout(() => { saveDB(); }, 1500); 
     });
@@ -689,11 +688,10 @@
     }
     
     function openCreateBookModal() { document.getElementById('modal-create-book').style.display = 'flex'; document.getElementById('only-new-book-name').value = ''; document.getElementById('only-cover-upload').value = ''; document.getElementById('create-paste-msg').style.display = 'none'; }
-    function showSaveModal() { document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('modal-save-title').innerText = currentPageId ? "Đổi Vị Trí Lưu Trữ" : "Chọn Vị Trí Lưu Trữ"; const list = document.getElementById('modal-book-list'); list.innerHTML = ''; db.books.forEach(book => { if(!book.deletedAt) list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; }); document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = ''; }
+    function showSaveModal() { document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('modal-save-title').innerText = currentPageId ? "Điều hướng Lưu trữ" : "Khởi tạo Vị trí Lưu trữ"; const list = document.getElementById('modal-book-list'); list.innerHTML = ''; db.books.forEach(book => { if(!book.deletedAt) list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; }); document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = ''; }
     
-    // Giao thức Đổi Thời Gian
     function openEditTimeModal() {
-      if(!currentPageId) return alert("Cần lưu trang trước khi sửa thời gian.");
+      if(!currentPageId) return alert("Thao tác yêu cầu tài liệu phải được thiết lập lưu trữ ban đầu.");
       const page = db.pages.find(p => p.id === currentPageId);
       const dateObj = new Date(page.timestamp);
       dateObj.setMinutes(dateObj.getMinutes() - dateObj.getTimezoneOffset());
@@ -703,15 +701,14 @@
 
     function executeEditTime() {
       const val = document.getElementById('edit-time-input').value;
-      if(!val) return alert("Vui lòng chọn thời gian hợp lệ.");
+      if(!val) return alert("Lỗi cấu trúc: Định dạng thời gian không hợp lệ.");
       const page = db.pages.find(p => p.id === currentPageId);
       page.timestamp = new Date(val).getTime();
       saveDB(); closeModals(); 
-      alert("Đã sắp xếp lại dòng thời gian thành công.");
+      alert("Hệ thống đã hoàn tất thao tác định tuyến chuỗi thời gian.");
       goBackFromEditor();
     }
 
-    // Quản lý Thùng Rác
     function openTrashModal() {
       const list = document.getElementById('trash-list');
       list.innerHTML = '';
@@ -722,30 +719,30 @@
         if(b.deletedAt) {
           hasItems = true;
           const daysLeft = 25 - Math.floor((now - b.deletedAt) / (1000 * 60 * 60 * 24));
-          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Sách: ${b.name}</span><span class="trash-item-date">Tự hủy sau ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restoreBook('${b.id}')">Khôi Phục</button><button class="trash-btn destroy" onclick="destroyBook('${b.id}')">Xóa Sạch</button></div></div>`;
+          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Sách: ${b.name}</span><span class="trash-item-date">Thời gian lưu trữ còn lại: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restoreBook('${b.id}')">Khôi Phục</button><button class="trash-btn destroy" onclick="destroyBook('${b.id}')">Hủy Chuẩn</button></div></div>`;
         }
       });
       db.pages.forEach(p => {
         if(p.deletedAt) {
           hasItems = true;
           const daysLeft = 25 - Math.floor((now - p.deletedAt) / (1000 * 60 * 60 * 24));
-          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Trang: ${p.title || 'Không có tiêu đề'}</span><span class="trash-item-date">Tự hủy sau ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restorePage('${p.id}')">Khôi Phục</button><button class="trash-btn destroy" onclick="destroyPage('${p.id}')">Xóa Sạch</button></div></div>`;
+          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Trang: ${p.title || 'Dữ liệu không có phân loại'}</span><span class="trash-item-date">Thời gian lưu trữ còn lại: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restorePage('${p.id}')">Khôi Phục</button><button class="trash-btn destroy" onclick="destroyPage('${p.id}')">Hủy Chuẩn</button></div></div>`;
         }
       });
-      if(!hasItems) list.innerHTML = '<p style="text-align:center; font-style:italic; font-size:0.9rem;">Thùng rác trống.</p>';
+      if(!hasItems) list.innerHTML = '<p style="text-align:center; font-style:italic; font-size:0.9rem;">Thùng rác hiện không có tài liệu lưu trữ.</p>';
       document.getElementById('modal-trash').style.display = 'flex';
     }
 
     function restoreBook(id) { const book = db.books.find(b => b.id === id); if(book) delete book.deletedAt; saveDB(); openTrashModal(); renderBooks(); }
-    function destroyBook(id) { if(confirm("Xóa vĩnh viễn sách này?")) { db.books = db.books.filter(b => b.id !== id); db.pages = db.pages.filter(p => p.bookId !== id); saveDB(); openTrashModal(); renderBooks(); } }
+    function destroyBook(id) { if(confirm("Xác nhận thao tác xóa vĩnh viễn tệp hệ thống? Hành động này không thể hoàn tác.")) { db.books = db.books.filter(b => b.id !== id); db.pages = db.pages.filter(p => p.bookId !== id); saveDB(); openTrashModal(); renderBooks(); } }
     function restorePage(id) { const page = db.pages.find(p => p.id === id); if(page) delete page.deletedAt; saveDB(); openTrashModal(); }
-    function destroyPage(id) { if(confirm("Xóa vĩnh viễn trang này?")) { db.pages = db.pages.filter(p => p.id !== id); saveDB(); openTrashModal(); } }
+    function destroyPage(id) { if(confirm("Xác nhận thao tác xóa vĩnh viễn tệp tài liệu? Hành động này không thể hoàn tác.")) { db.pages = db.pages.filter(p => p.id !== id); saveDB(); openTrashModal(); } }
 
     function insertFile(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { if (file.type.startsWith('image/')) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); if (!currentAttachments.images) currentAttachments.images = []; currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); saveDB(); }; img.src = e.target.result; } else if (file.type === 'application/pdf') { if (!currentAttachments.files) currentAttachments.files = []; currentAttachments.files.push({ name: file.name, data: e.target.result }); renderAttachments(); saveDB(); } }; reader.readAsDataURL(file); }
     function generatePastelPalette(canvas, ctx, count) { let palette = []; for (let i = 0; i < count; i++) { let x = Math.floor(Math.random() * canvas.width); let y = Math.floor(Math.random() * canvas.height); let pixel = ctx.getImageData(x, y, 1, 1).data; let r = Math.floor((pixel[0] + 255 * 2) / 3); let g = Math.floor((pixel[1] + 255 * 2) / 3); let b = Math.floor((pixel[2] + 255 * 2) / 3); palette.push(`rgb(${r}, ${g}, ${b})`); } return palette; }
     
-    function executeSaveAction() { const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; const bookInput = document.getElementById('new-book-name').value; const coverFile = document.getElementById('cover-upload').files[0]; if (!bookInput) return alert("Yêu cầu định danh phân loại sách."); let targetBookId = bookInput; const existingBook = db.books.find(b => b.id === bookInput); const finalizeAction = (coverDataUrl, dynamicPalette) => { if (!existingBook) { targetBookId = 'book_' + Date.now(); db.books.push({ id: targetBookId, name: bookInput, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); } if (currentPageId) { const page = db.pages.find(p => p.id === currentPageId); page.title = title; page.content = content; page.bookId = targetBookId; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); } else { currentPageId = 'page_' + Date.now(); db.pages.push({ id: currentPageId, bookId: targetBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); } saveDB(); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content'); closeModals(); document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); }; if (coverFile && !existingBook) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeAction(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeAction(null, null); } }
-    function executeCreateBook() { const bookName = document.getElementById('only-new-book-name').value; const coverFile = document.getElementById('only-cover-upload').files[0]; if (!bookName) return alert("Yêu cầu cung cấp định danh sách."); const finalizeCreate = (coverDataUrl, dynamicPalette) => { db.books.push({ id: 'book_' + Date.now(), name: bookName, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); saveDB(); closeModals(); renderBooks(); }; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeCreate(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeCreate(null, null); } }
+    function executeSaveAction() { const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; const bookInput = document.getElementById('new-book-name').value; const coverFile = document.getElementById('cover-upload').files[0]; if (!bookInput) return alert("Hệ thống yêu cầu định danh phân loại sách."); let targetBookId = bookInput; const existingBook = db.books.find(b => b.id === bookInput); const finalizeAction = (coverDataUrl, dynamicPalette) => { if (!existingBook) { targetBookId = 'book_' + Date.now(); db.books.push({ id: targetBookId, name: bookInput, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); } if (currentPageId) { const page = db.pages.find(p => p.id === currentPageId); page.title = title; page.content = content; page.bookId = targetBookId; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); } else { currentPageId = 'page_' + Date.now(); db.pages.push({ id: currentPageId, bookId: targetBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); } saveDB(); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content'); closeModals(); document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); }; if (coverFile && !existingBook) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeAction(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeAction(null, null); } }
+    function executeCreateBook() { const bookName = document.getElementById('only-new-book-name').value; const coverFile = document.getElementById('only-cover-upload').files[0]; if (!bookName) return alert("Hệ thống yêu cầu định danh phân loại sách."); const finalizeCreate = (coverDataUrl, dynamicPalette) => { db.books.push({ id: 'book_' + Date.now(), name: bookName, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); saveDB(); closeModals(); renderBooks(); }; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeCreate(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeCreate(null, null); } }
   </script>
 </body>
 </html>
