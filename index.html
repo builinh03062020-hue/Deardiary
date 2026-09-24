@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aesthetic Vintage Diary - PWA Edition</title>
   
-  <!-- Cấu trúc Siêu dữ liệu PWA tối ưu cho iOS/Safari -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#8c7b6c">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -162,27 +161,27 @@
 </head>
 <body>
 
-  <div id="network-alert">Đang hoạt động trong chế độ Ngoại tuyến (Offline Mode)</div>
+  <div id="network-alert">Đang hoạt động trong chế độ ngoại tuyến (Offline Mode)</div>
 
   <div id="loading-screen" class="screen active"><h2 id="loading-text">Đang kết nối mây...</h2></div>
-  <div id="lock-screen" class="screen"><h2 id="lock-title">Mật mã Nhật ký</h2><input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" onclick="checkPin()">Mở Khóa Không Gian</button></div>
+  <div id="lock-screen" class="screen"><h2 id="lock-title">Mật mã nhật ký</h2><input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" onclick="checkPin()">Mở khóa không gian</button></div>
 
   <div id="dashboard" class="screen">
     <div class="header">
       <h2>Thư Viện Ký Ức</h2>
       <div class="header-actions">
         <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm toàn hệ thống..." onkeyup="handleGlobalSearch()">
-        <button class="btn btn-warning-text icon-btn" onclick="openTrashModal()" title="Thùng Rác">
+        <button class="btn btn-warning-text icon-btn" onclick="openTrashModal()" title="Thùng rác">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          <span class="hide-on-mobile">Thùng Rác</span>
+          <span class="hide-on-mobile">Thùng rác</span>
         </button>
         <button class="btn icon-btn" onclick="openCreateBookModal()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="12" y1="8" x2="12" y2="14"></line><line x1="9" y1="11" x2="15" y2="11"></line></svg>
-          <span class="hide-on-mobile">Tạo Sách</span>
+          <span class="hide-on-mobile">Tạo sách</span>
         </button>
         <button class="btn btn-primary-filled icon-btn" onclick="openEditor(null)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-          Chắp Bút
+          Chắp bút
         </button>
       </div>
     </div>
@@ -201,7 +200,7 @@
         </button>
         <button class="btn btn-primary-filled icon-btn" onclick="openEditor(null, true)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-          Thêm Trang
+          Thêm trang
         </button>
       </div>
     </div>
@@ -218,13 +217,13 @@
       </div>
       <div class="editor-header-group" id="editor-secondary-actions">
         <button class="btn btn-text icon-btn" id="btn-pin-page" style="color: var(--highlight);" onclick="togglePinPage()"></button>
-        <button class="btn btn-text icon-btn" onclick="openEditTimeModal()" title="Sửa Thời Gian">
+        <button class="btn btn-text icon-btn" onclick="openEditTimeModal()" title="Đổi giờ">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <span class="hide-on-mobile">Đổi Giờ</span>
+          <span class="hide-on-mobile">Đổi giờ</span>
         </button>
         <button class="btn btn-text icon-btn" id="btn-change-location" onclick="showSaveModal()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-          <span class="hide-on-mobile">Đổi Vị Trí</span>
+          <span class="hide-on-mobile">Đổi vị trí</span>
         </button>
         <button class="btn btn-danger-text icon-btn" id="btn-delete-page" onclick="deleteCurrentPage()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
@@ -242,7 +241,7 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
         </button>
         <input type="file" id="file-upload" accept="image/*, application/pdf" style="display: none;" onchange="insertFile(event)">
-        <button class="btn btn-text icon-btn" onclick="document.getElementById('file-upload').click()" title="Đính kèm Tệp tin">
+        <button class="btn btn-text icon-btn" onclick="document.getElementById('file-upload').click()" title="Đính kèm tệp tin">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
           <span class="hide-on-mobile">Đính kèm</span>
         </button>
@@ -258,11 +257,11 @@
     
     <div id="attachment-board">
       <div id="attachment-img-section" class="attachment-col" style="display: none;">
-        <div class="attachment-section-title">Nhiếp Ảnh</div>
+        <div class="attachment-section-title">Nhiếp ảnh</div>
         <div id="attachment-images" class="attachment-images"></div>
       </div>
       <div id="attachment-file-section" class="attachment-col" style="display: none;">
-        <div class="attachment-section-title">Tài Liệu</div>
+        <div class="attachment-section-title">Tài liệu</div>
         <div id="attachment-files" class="attachment-files"></div>
       </div>
     </div>
@@ -271,21 +270,21 @@
   </div>
 
   <!-- Các phân hệ Modal tĩnh -->
-  <div id="modal-save" class="modal"><div class="modal-content"><h3 id="modal-save-title">Chọn Vị trí Lưu trữ</h3><div class="book-list-modal" id="modal-book-list"></div><p style="margin: 10px 0; font-style: italic; font-size: 0.9rem; color: #777; width: 100%;">Hoặc đưa vào miền ký ức mới</p><input type="text" id="new-book-name" class="input-book-name" placeholder="Tên cuốn sách mới..."><label for="cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Chọn Tệp tin Bìa</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="save-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeSaveAction()">Xác nhận Vị trí</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
-  <div id="modal-create-book" class="modal"><div class="modal-content"><h3>Khởi Tạo Sách Mới</h3><input type="text" id="only-new-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="only-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Tải lên Ảnh Bìa (Tùy chọn)</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="create-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="only-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeCreateBook()">Tạo Sách</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
-  <div id="modal-edit-book" class="modal"><div class="modal-content"><h3>Chỉnh Sửa Sách</h3><input type="text" id="edit-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="edit-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Đổi Ảnh Bìa Khác</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh mới</p><div id="edit-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="edit-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-danger-text" style="width: 100%; margin-bottom: 15px; font-size: 0.9rem;" onclick="removeBookCover()">Xóa Ảnh Bìa</button><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeEditBook()">Lưu Thay Đổi</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
-  <div id="modal-passcode" class="modal"><div class="modal-content"><h3 id="modal-passcode-title">Xác Thực Thao Tác</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p><input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác Nhận</button><button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy Thao Tác</button></div></div>
+  <div id="modal-save" class="modal"><div class="modal-content"><h3 id="modal-save-title">Chọn vị trí lưu trữ</h3><div class="book-list-modal" id="modal-book-list"></div><p style="margin: 10px 0; font-style: italic; font-size: 0.9rem; color: #777; width: 100%;">Hoặc đưa vào miền ký ức mới</p><input type="text" id="new-book-name" class="input-book-name" placeholder="Tên cuốn sách mới..."><label for="cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Chọn tệp tin bìa</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="save-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeSaveAction()">Xác nhận vị trí</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
+  <div id="modal-create-book" class="modal"><div class="modal-content"><h3>Khởi tạo sách mới</h3><input type="text" id="only-new-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="only-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Tải lên ảnh bìa (Tùy chọn)</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="create-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="only-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeCreateBook()">Tạo sách</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
+  <div id="modal-edit-book" class="modal"><div class="modal-content"><h3>Chỉnh sửa sách</h3><input type="text" id="edit-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="edit-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Đổi ảnh bìa khác</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh mới</p><div id="edit-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="edit-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-danger-text" style="width: 100%; margin-bottom: 15px; font-size: 0.9rem;" onclick="removeBookCover()">Xóa ảnh bìa</button><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeEditBook()">Lưu thay đổi</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
+  <div id="modal-passcode" class="modal"><div class="modal-content"><h3 id="modal-passcode-title">Xác thực thao tác</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p><input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác nhận</button><button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy thao tác</button></div></div>
 
   <!-- Phân hệ Modal Tái sắp xếp Thời gian -->
-  <div id="modal-edit-time" class="modal"><div class="modal-content"><h3>Đồng Bộ Thời Gian</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Điều chỉnh dòng thời gian của tài liệu này.</p><input type="datetime-local" id="edit-time-input" class="input-book-name"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="executeEditTime()">Lưu Dấu Thời Gian</button><button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Hủy Thao Tác</button></div></div>
+  <div id="modal-edit-time" class="modal"><div class="modal-content"><h3>Đồng bộ thời gian</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Điều chỉnh dòng thời gian của tài liệu này.</p><input type="datetime-local" id="edit-time-input" class="input-book-name"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="executeEditTime()">Lưu dấu thời gian</button><button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Hủy thao tác</button></div></div>
 
   <!-- Phân hệ Modal Quản trị Thùng Rác (Soft Delete) -->
   <div id="modal-trash" class="modal">
     <div class="modal-content" style="max-width: 500px;">
-      <h3 style="color: var(--danger);">Thùng Rác Tài Liệu</h3>
+      <h3 style="color: var(--danger);">Thùng rác tài liệu</h3>
       <p style="font-size: 0.85rem; color: #777; margin-bottom: 15px; width: 100%;">Tài liệu sẽ bị xóa vĩnh viễn sau 25 ngày kể từ thời điểm hủy bỏ.</p>
       <div id="trash-list" style="width: 100%; max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
-      <button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Đóng Thùng Rác</button>
+      <button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Đóng thùng rác</button>
     </div>
   </div>
 
@@ -293,7 +292,7 @@
     <div class="lightbox-toolbar">
       <div id="lightbox-download" class="lightbox-btn" onclick="executeLightboxDownload()" title="Tải xuống thiết bị">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        <span class="hide-on-mobile">Tải Xuống</span>
+        <span class="hide-on-mobile">Tải xuống</span>
       </div>
       <span class="lightbox-close" onclick="closeLightbox()">×</span>
     </div>
@@ -342,7 +341,7 @@
     });
 
     window.addEventListener('online', () => { document.getElementById('network-alert').style.display = 'none'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã khôi phục kết nối mạng - Đang đồng bộ...'; saveDB(); });
-    window.addEventListener('offline', () => { document.getElementById('network-alert').style.display = 'block'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã lưu nháp bộ đệm (Chế độ Ngoại tuyến)'; });
+    window.addEventListener('offline', () => { document.getElementById('network-alert').style.display = 'block'; if(isEditMode) document.getElementById('save-status').innerText = 'Đã lưu nháp bộ đệm (Chế độ ngoại tuyến)'; });
 
     const firebaseConfig = { apiKey: "AIzaSyAlzn4AT4M4AOSMADjMnEn5OiL8_8-7hKs", authDomain: "dear-diary-28b19.firebaseapp.com", projectId: "dear-diary-28b19", storageBucket: "dear-diary-28b19.firebasestorage.app", messagingSenderId: "185780215702", appId: "1:185780215702:web:457437f9cd3f3b9bf887b7" };
     firebase.initializeApp(firebaseConfig);
@@ -389,7 +388,7 @@
       if (changed) saveDB();
     }
 
-    function initAppUI() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('lock-screen').classList.add('active'); isAppLocked = true; if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập Mật mã hệ thống"; }
+    function initAppUI() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('lock-screen').classList.add('active'); isAppLocked = true; if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập mật mã hệ thống"; }
     function saveDB() { docRef.set(db).then(() => { if (navigator.onLine) document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️'; }).catch((error) => { console.error("Lỗi ghi dữ liệu:", error.message); }); return true; }
     document.getElementById('pin-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
     
@@ -411,6 +410,8 @@
     document.getElementById('action-pin-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') verifyActionPin(); });
     function requestPasscode(actionTitle, callback) { pendingSecureAction = callback; document.getElementById('modal-passcode-title').innerText = actionTitle; document.getElementById('action-pin-input').value = ''; document.getElementById('modal-passcode').style.display = 'flex'; setTimeout(() => document.getElementById('action-pin-input').focus(), 100); }
     function verifyActionPin() { const input = document.getElementById('action-pin-input').value; if (input === db.passcode) { document.getElementById('modal-passcode').style.display = 'none'; if (pendingSecureAction) { pendingSecureAction(); pendingSecureAction = null; } } else { alert("Lỗi xác thực: Khóa định danh không hợp lệ."); } }
+    
+    function closePasscodeModal() { document.getElementById('modal-passcode').style.display = 'none'; pendingSecureAction = null; }
     
     function switchScreen(screenId) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(screenId).classList.add('active'); if(screenId === 'dashboard') { document.getElementById('global-search-input').value = ''; document.getElementById('books-container').style.display = 'flex'; document.getElementById('global-search-results').style.display = 'none'; } }
     function handleDragStart(e, index) { dragStartIndex = index; e.dataTransfer.effectAllowed = 'move'; setTimeout(() => e.target.classList.add('dragging'), 0); }
@@ -519,15 +520,15 @@
     }
     
     function deleteBook(bookId) { 
-      requestPasscode("Xác thực quy trình đưa Sách vào Thùng Rác", () => { 
+      requestPasscode("Xác thực đưa sách vào thùng rác", () => { 
         const book = db.books.find(b => b.id === bookId);
         if(book) book.deletedAt = Date.now();
         saveDB(); renderBooks(); 
       }); 
     }
 
-    function openEditBookModal(bookId) { requestPasscode("Xác Thực Chỉnh Sửa Dữ liệu", () => { editingBookId = bookId; const book = db.books.find(b => b.id === bookId); document.getElementById('edit-book-name').value = book.name; document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'flex'; }); }
-    function removeBookCover() { const book = db.books.find(b => b.id === editingBookId); if(book) { book.cover = null; book.palette = fallbackColors; } document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; alert("Trạng thái tệp tin Bìa đã được chuyển đổi mặc định."); }
+    function openEditBookModal(bookId) { requestPasscode("Xác thực chỉnh sửa dữ liệu", () => { editingBookId = bookId; const book = db.books.find(b => b.id === bookId); document.getElementById('edit-book-name').value = book.name; document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'flex'; }); }
+    function removeBookCover() { const book = db.books.find(b => b.id === editingBookId); if(book) { book.cover = null; book.palette = fallbackColors; } document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; alert("Trạng thái tệp tin bìa đã được chuyển đổi mặc định."); }
     function executeEditBook() { const book = db.books.find(b => b.id === editingBookId); const newName = document.getElementById('edit-book-name').value; const coverFile = document.getElementById('edit-cover-upload').files[0]; if (!newName) return alert("Hệ thống yêu cầu xác nhận định danh phân loại sách."); book.name = newName; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); book.cover = canvas.toDataURL('image/jpeg', 0.8); book.palette = generatePastelPalette(canvas, ctx, 5); saveDB(); closeModals(); renderBooks(); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { saveDB(); closeModals(); renderBooks(); } }
     
     function handleGlobalSearch() { 
@@ -577,8 +578,8 @@
     function togglePinPage() { if (!currentPageId) return alert("Giao thức yêu cầu quá trình xác thực lưu trữ."); const page = db.pages.find(p => p.id === currentPageId); page.isPinned = !page.isPinned; saveDB(); updatePinButtonState(page.isPinned); }
     function updatePinButtonState(isPinned) { 
       const pinBtn = document.getElementById('btn-pin-page'); 
-      if (isPinned) { pinBtn.innerHTML = svgUnpin + `<span class="hide-on-mobile">Bỏ Ghim</span>`; pinBtn.style.color = "var(--danger)"; } 
-      else { pinBtn.innerHTML = svgPinOutline + `<span class="hide-on-mobile">Ghim Trang</span>`; pinBtn.style.color = "var(--highlight)"; } 
+      if (isPinned) { pinBtn.innerHTML = svgUnpin + `<span class="hide-on-mobile">Bỏ ghim</span>`; pinBtn.style.color = "var(--danger)"; } 
+      else { pinBtn.innerHTML = svgPinOutline + `<span class="hide-on-mobile">Ghim trang</span>`; pinBtn.style.color = "var(--highlight)"; } 
     }
     
     function setEditorMode(editMode) { 
@@ -592,12 +593,12 @@
       if (isEditMode) { 
         titleEl.readOnly = false; contentEl.setAttribute('contenteditable', 'true'); titleEl.style.display = 'block';
         if (toolsGroup) toolsGroup.style.display = 'flex'; editorScreen.classList.remove('read-only-mode'); 
-        toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <span class="hide-on-mobile">Lưu Nội Dung</span>`; toggleBtn.className = 'btn btn-primary-filled icon-btn'; 
+        toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <span class="hide-on-mobile">Lưu nội dung</span>`; toggleBtn.className = 'btn btn-primary-filled icon-btn'; 
         contentEl.focus(); 
       } else { 
         titleEl.readOnly = true; contentEl.setAttribute('contenteditable', 'false'); titleEl.style.display = (!titleEl.value.trim()) ? 'none' : 'block';
         if (toolsGroup) toolsGroup.style.display = 'none'; editorScreen.classList.add('read-only-mode'); 
-        toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> <span class="hide-on-mobile">Chỉnh Sửa</span>`; toggleBtn.className = 'btn btn-text icon-btn'; 
+        toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> <span class="hide-on-mobile">Chỉnh sửa</span>`; toggleBtn.className = 'btn btn-text icon-btn'; 
       } 
       renderAttachments(); 
     }
@@ -628,7 +629,7 @@
     function goBackFromEditor() { if (preSelectedBookId) { renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); switchScreen('book-view'); } else { switchScreen('dashboard'); renderBooks(); } }
     
     function deleteCurrentPage() { 
-      requestPasscode("Xác thực quy trình đưa Trang vào Thùng Rác", () => { 
+      requestPasscode("Xác thực đưa trang vào thùng rác", () => { 
         const page = db.pages.find(p => p.id === currentPageId);
         if(page) page.deletedAt = Date.now();
         saveDB(); goBackFromEditor(); 
@@ -688,7 +689,7 @@
     }
     
     function openCreateBookModal() { document.getElementById('modal-create-book').style.display = 'flex'; document.getElementById('only-new-book-name').value = ''; document.getElementById('only-cover-upload').value = ''; document.getElementById('create-paste-msg').style.display = 'none'; }
-    function showSaveModal() { document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('modal-save-title').innerText = currentPageId ? "Điều hướng Lưu trữ" : "Khởi tạo Vị trí Lưu trữ"; const list = document.getElementById('modal-book-list'); list.innerHTML = ''; db.books.forEach(book => { if(!book.deletedAt) list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; }); document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = ''; }
+    function showSaveModal() { document.getElementById('modal-save').style.display = 'flex'; document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('modal-save-title').innerText = currentPageId ? "Điều hướng lưu trữ" : "Khởi tạo vị trí lưu trữ"; const list = document.getElementById('modal-book-list'); list.innerHTML = ''; db.books.forEach(book => { if(!book.deletedAt) list.innerHTML += `<div class="book-option" onclick="document.getElementById('new-book-name').value = '${book.id}'">${book.name}</div>`; }); document.getElementById('new-book-name').value = ''; document.getElementById('cover-upload').value = ''; }
     
     function openEditTimeModal() {
       if(!currentPageId) return alert("Thao tác yêu cầu tài liệu phải được thiết lập lưu trữ ban đầu.");
@@ -719,14 +720,14 @@
         if(b.deletedAt) {
           hasItems = true;
           const daysLeft = 25 - Math.floor((now - b.deletedAt) / (1000 * 60 * 60 * 24));
-          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Sách: ${b.name}</span><span class="trash-item-date">Thời gian lưu trữ còn lại: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restoreBook('${b.id}')">Khôi Phục</button><button class="trash-btn destroy" onclick="destroyBook('${b.id}')">Hủy Chuẩn</button></div></div>`;
+          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Sách: ${b.name}</span><span class="trash-item-date">Thời gian lưu trữ còn lại: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restoreBook('${b.id}')">Khôi phục</button><button class="trash-btn destroy" onclick="destroyBook('${b.id}')">Xóa vĩnh viễn</button></div></div>`;
         }
       });
       db.pages.forEach(p => {
         if(p.deletedAt) {
           hasItems = true;
           const daysLeft = 25 - Math.floor((now - p.deletedAt) / (1000 * 60 * 60 * 24));
-          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Trang: ${p.title || 'Dữ liệu không có phân loại'}</span><span class="trash-item-date">Thời gian lưu trữ còn lại: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restorePage('${p.id}')">Khôi Phục</button><button class="trash-btn destroy" onclick="destroyPage('${p.id}')">Hủy Chuẩn</button></div></div>`;
+          list.innerHTML += `<div class="trash-item"><div class="trash-item-info"><span class="trash-item-title">Trang: ${p.title || 'Dữ liệu không có phân loại'}</span><span class="trash-item-date">Thời gian lưu trữ còn lại: ${daysLeft} ngày</span></div><div class="trash-actions"><button class="trash-btn restore" onclick="restorePage('${p.id}')">Khôi phục</button><button class="trash-btn destroy" onclick="destroyPage('${p.id}')">Xóa vĩnh viễn</button></div></div>`;
         }
       });
       if(!hasItems) list.innerHTML = '<p style="text-align:center; font-style:italic; font-size:0.9rem;">Thùng rác hiện không có tài liệu lưu trữ.</p>';
@@ -734,9 +735,24 @@
     }
 
     function restoreBook(id) { const book = db.books.find(b => b.id === id); if(book) delete book.deletedAt; saveDB(); openTrashModal(); renderBooks(); }
-    function destroyBook(id) { if(confirm("Xác nhận thao tác xóa vĩnh viễn tệp hệ thống? Hành động này không thể hoàn tác.")) { db.books = db.books.filter(b => b.id !== id); db.pages = db.pages.filter(p => p.bookId !== id); saveDB(); openTrashModal(); renderBooks(); } }
+    function destroyBook(id) { 
+      requestPasscode("Xác thực xóa vĩnh viễn tệp hệ thống", () => {
+        if(confirm("Xác nhận thao tác xóa vĩnh viễn tệp hệ thống? Hành động này không thể hoàn tác.")) { 
+          db.books = db.books.filter(b => b.id !== id); 
+          db.pages = db.pages.filter(p => p.bookId !== id); 
+          saveDB(); openTrashModal(); renderBooks(); 
+        }
+      });
+    }
     function restorePage(id) { const page = db.pages.find(p => p.id === id); if(page) delete page.deletedAt; saveDB(); openTrashModal(); }
-    function destroyPage(id) { if(confirm("Xác nhận thao tác xóa vĩnh viễn tệp tài liệu? Hành động này không thể hoàn tác.")) { db.pages = db.pages.filter(p => p.id !== id); saveDB(); openTrashModal(); } }
+    function destroyPage(id) { 
+      requestPasscode("Xác thực xóa vĩnh viễn tệp tài liệu", () => {
+        if(confirm("Xác nhận thao tác xóa vĩnh viễn tệp tài liệu? Hành động này không thể hoàn tác.")) { 
+          db.pages = db.pages.filter(p => p.id !== id); 
+          saveDB(); openTrashModal(); 
+        }
+      });
+    }
 
     function insertFile(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { if (file.type.startsWith('image/')) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); if (!currentAttachments.images) currentAttachments.images = []; currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); saveDB(); }; img.src = e.target.result; } else if (file.type === 'application/pdf') { if (!currentAttachments.files) currentAttachments.files = []; currentAttachments.files.push({ name: file.name, data: e.target.result }); renderAttachments(); saveDB(); } }; reader.readAsDataURL(file); }
     function generatePastelPalette(canvas, ctx, count) { let palette = []; for (let i = 0; i < count; i++) { let x = Math.floor(Math.random() * canvas.width); let y = Math.floor(Math.random() * canvas.height); let pixel = ctx.getImageData(x, y, 1, 1).data; let r = Math.floor((pixel[0] + 255 * 2) / 3); let g = Math.floor((pixel[1] + 255 * 2) / 3); let b = Math.floor((pixel[2] + 255 * 2) / 3); palette.push(`rgb(${r}, ${g}, ${b})`); } return palette; }
