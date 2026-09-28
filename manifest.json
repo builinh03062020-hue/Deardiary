@@ -2,13 +2,13 @@
   "name": "Dear Diary",
   "short_name": "DearDiary",
   "description": "Không gian lưu trữ ký ức cá nhân với giao diện cổ điển.",
-  "start_url": "./index.html",
+  "start_url": "https://builinh03062020-hue.github.io/Deardiary/index.html",
   "display": "standalone",
   "background_color": "#eae6db",
   "theme_color": "#8c7b6c",
   "icons": [
     {
-      "src": "icon-2.png",
+      "src": "https://builinh03062020-hue.github.io/Deardiary/icon-2.png",
       "sizes": "192x192",
       "type": "image/png"
     }
