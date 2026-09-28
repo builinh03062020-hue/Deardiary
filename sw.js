@@ -1,9 +1,10 @@
-const CACHE_NAME = 'vintage-diary-cache-v3';
+const CACHE_NAME = 'vintage-diary-cache-v4';
 
 const urlsToCache = [
-  './',
-  './index.html',
-  './manifest.json',
+  'https://builinh03062020-hue.github.io/Deardiary/',
+  'https://builinh03062020-hue.github.io/Deardiary/index.html',
+  'https://builinh03062020-hue.github.io/Deardiary/manifest.json',
+  'https://builinh03062020-hue.github.io/Deardiary/icon-2.png',
   'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap',
   'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
   'https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js'
