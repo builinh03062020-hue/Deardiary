@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="DearDiary">
-  <!-- CỐ ĐỊNH URL TUYỆT ĐỐI CHO PWA ICON -->
+  <!-- PWA ICON: ĐỊNH VỊ GPS TUYỆT ĐỐI -->
   <link rel="apple-touch-icon" sizes="180x180" href="https://builinh03062020-hue.github.io/Deardiary/icon-2.png">
   <link rel="icon" type="image/png" sizes="192x192" href="https://builinh03062020-hue.github.io/Deardiary/icon-2.png">
 
@@ -27,9 +27,9 @@
     .screen.active { display: block; }
     
     #network-alert { display: none; background: #c47b6a; color: white; text-align: center; padding: 5px; font-size: 0.85rem; position: fixed; top: 0; width: 100%; z-index: 10000; font-weight: 600; }
-    #loading-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
+    #loading-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; text-align: center; }
     #loading-screen.active { display: flex; }
-    #loading-screen h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--primary); animation: pulse 1.5s infinite; text-align: center; padding: 20px; }
+    #loading-screen h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--primary); animation: pulse 1.5s infinite; padding: 0 20px; line-height: 1.5; }
     @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
     #lock-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; }
     #lock-screen.active { display: flex; }
@@ -181,7 +181,6 @@
 </head>
 <body>
 
-  <!-- Đã lược bỏ cảnh báo offline cứng đầu -->
   <div id="network-alert">Đang hoạt động trong chế độ ngoại tuyến (Offline Mode)</div>
 
   <div id="loading-screen" class="screen active"><h2 id="loading-text">Đang kết nối mây...</h2></div>
@@ -390,7 +389,6 @@
       } 
     });
 
-    // NGĂN CHẶN CƯỠNG CHẾ GHI ĐÈ LÚC ONLINE
     window.addEventListener('online', () => { 
         document.getElementById('network-alert').style.display = 'none'; 
         if(isEditMode) document.getElementById('save-status').innerText = 'Đã khôi phục kết nối mạng - Đang tải mây...'; 
@@ -411,7 +409,6 @@
     const firestore = firebase.firestore();
     firestore.enablePersistence().catch((err) => { console.warn("Lỗi tích hợp Offline Persistence.", err); });
     
-    // MIGRATION: THIẾT LẬP CẤU TRÚC KHO LƯU TRỮ PHÂN TÁN V2
     const oldRef = firestore.collection("diaryData").doc("my_vintage_diary");
     const sysRef = firestore.collection("diarySystemV2").doc("core");
     const pagesRef = firestore.collection("diaryPagesV2");
@@ -426,24 +423,34 @@
       
       try {
           const sysSnap = await sysRef.get();
-          // NẾU LÀ LẦN ĐẦU UPDATE -> KÍCH HOẠT CHẾ ĐỘ CHUYỂN NHÀ
-          if (!sysSnap.exists) {
-              const oldSnap = await oldRef.get();
-              if (oldSnap.exists) {
-                  document.getElementById('loading-text').innerText = "Đang định tuyến và di dời dữ liệu (Không đóng trang)...";
-                  const oldData = oldSnap.data();
-                  
-                  await sysRef.set({ passcode: oldData.passcode || null, books: oldData.books || [] });
-                  
-                  if (oldData.pages && oldData.pages.length > 0) {
-                      const batch = firestore.batch();
-                      oldData.pages.forEach(p => { batch.set(pagesRef.doc(p.id), p); });
-                      await batch.commit();
+          
+          // THUỐC XỔ: ÉP BUỘC CHÉP ĐÈ TỪ MÂY ĐỂ CỨU NGÀY 25, 26
+          if (!sysSnap.exists || !sysSnap.data().migrationFixed) {
+              document.getElementById('loading-text').innerText = "Đang khôi phục dữ liệu gốc từ Mây (Bỏ qua bộ nhớ tạm)... Đừng đóng trang nha sếp!";
+              try {
+                  // Lệnh chí mạng: Ép lấy dữ liệu gốc chuẩn từ server, vứt bỏ toàn bộ cache
+                  const oldSnap = await oldRef.get({ source: 'server' }); 
+                  if (oldSnap.exists) {
+                      const oldData = oldSnap.data();
+                      
+                      // Khóa chốt an toàn: migrationFixed = true để lần sau không chạy lại
+                      await sysRef.set({ 
+                          passcode: oldData.passcode || null, 
+                          books: oldData.books || [],
+                          migrationFixed: true 
+                      });
+                      
+                      if (oldData.pages && oldData.pages.length > 0) {
+                          const batch = firestore.batch();
+                          oldData.pages.forEach(p => { batch.set(pagesRef.doc(p.id), p); });
+                          await batch.commit();
+                      }
                   }
+              } catch (error) {
+                  console.error("Lỗi khi ép tải Mây:", error);
               }
           }
 
-          // LẮNG NGHE SỰ THAY ĐỔI CỦA SÁCH VÀ PASSCODE
           sysRef.onSnapshot(doc => {
               if (doc.exists) {
                   const data = doc.data();
@@ -457,12 +464,10 @@
                   }
                   if (document.getElementById('modal-trash').style.display === 'flex') openTrashModal(false);
               } else {
-                  // Cài đặt app lần đầu tiên
                   initAppUI();
               }
           });
 
-          // LẮNG NGHE SỰ THAY ĐỔI CỦA TỪNG TRANG NHẬT KÝ ĐỘC LẬP
           pagesRef.onSnapshot(snapshot => {
               db.pages = [];
               snapshot.forEach(doc => db.pages.push(doc.data()));
@@ -474,7 +479,6 @@
               if (document.getElementById('global-search-results').style.display === 'flex') handleGlobalSearch();
               if (document.getElementById('modal-trash').style.display === 'flex') openTrashModal(false);
               
-              // Tự động cập nhật nội dung cho Editor nếu đang mở chế độ Read-only
               if (document.getElementById('editor-screen').classList.contains('active') && !isEditMode && currentPageId) {
                   const p = db.pages.find(x => x.id === currentPageId);
                   if (p) {
@@ -491,9 +495,8 @@
       }
     };
 
-    // GIAO THỨC LƯU TRỮ PHÂN TÁN (Ghi đè Độc lập, Không ảnh hưởng hàng xóm)
     function saveSystem() {
-        sysRef.set({ passcode: db.passcode, books: db.books }).then(() => {
+        sysRef.set({ passcode: db.passcode, books: db.books, migrationFixed: true }).then(() => {
             if (navigator.onLine && isEditMode) document.getElementById('save-status').innerText = 'Đã đồng bộ hệ thống ☁️';
         }).catch(e => console.error(e));
     }
@@ -785,7 +788,6 @@
       } else { showSaveModal(); } 
     }
     
-    // GIAO THỨC ĐỒNG BỘ THỜI GIAN THỰC ĐỘC LẬP
     function triggerRealtimeSave() {
       if(!isEditMode) return;
       const currentTitle = document.getElementById('editor-title').value;
