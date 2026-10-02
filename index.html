@@ -410,8 +410,8 @@
     firestore.enablePersistence().catch((err) => { console.warn("Lỗi tích hợp Offline Persistence.", err); });
     
     const oldRef = firestore.collection("diaryData").doc("my_vintage_diary");
-    const sysRef = firestore.collection("diarySystemV2").doc("core");
-    const pagesRef = firestore.collection("diaryPagesV2");
+    const sysRef = firestore.collection("diarySystemV3").doc("core");
+    const pagesRef = firestore.collection("diaryPagesV3");
 
     let db = { books: [], pages: [], passcode: null };
     let currentPageId = null, preSelectedBookId = null, editingBookId = null, typingTimer, isEditMode = true, dragStartIndex = null, pendingSecureAction = null, pendingConfirmAction = null;
