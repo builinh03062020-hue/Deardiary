@@ -10,8 +10,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="DearDiary">
-  <link rel="apple-touch-icon" sizes="180x180" href="icon-2.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-2.png">
+  <!-- CỐ ĐỊNH URL TUYỆT ĐỐI CHO PWA ICON -->
+  <link rel="apple-touch-icon" sizes="180x180" href="https://builinh03062020-hue.github.io/Deardiary/icon-2.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://builinh03062020-hue.github.io/Deardiary/icon-2.png">
 
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -28,7 +29,7 @@
     #network-alert { display: none; background: #c47b6a; color: white; text-align: center; padding: 5px; font-size: 0.85rem; position: fixed; top: 0; width: 100%; z-index: 10000; font-weight: 600; }
     #loading-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
     #loading-screen.active { display: flex; }
-    #loading-screen h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--primary); animation: pulse 1.5s infinite; }
+    #loading-screen h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--primary); animation: pulse 1.5s infinite; text-align: center; padding: 20px; }
     @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
     #lock-screen { flex-direction: column; align-items: center; justify-content: center; background: var(--bg-color); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; }
     #lock-screen.active { display: flex; }
@@ -128,7 +129,6 @@
     #lightbox-img { max-width: 90%; max-height: 85%; border: 4px solid #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain; display: none; }
     #lightbox-pdf { width: 90%; height: 85%; border: none; background: #fff; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
 
-    /* Fix Layer hiển thị & Footer bản quyền */
     #modal-passcode { z-index: 1005; }
     #modal-confirm { z-index: 1010; }
     #modal-preview { z-index: 1015; }
@@ -181,12 +181,12 @@
 </head>
 <body>
 
+  <!-- Đã lược bỏ cảnh báo offline cứng đầu -->
   <div id="network-alert">Đang hoạt động trong chế độ ngoại tuyến (Offline Mode)</div>
 
   <div id="loading-screen" class="screen active"><h2 id="loading-text">Đang kết nối mây...</h2></div>
   <div id="lock-screen" class="screen"><h2 id="lock-title">Mật mã nhật ký</h2><input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" onclick="checkPin()">Mở khóa không gian</button></div>
 
-  <!-- Đã loại bỏ hoàn toàn inline style flex gây lỗi đè giao diện -->
   <div id="dashboard" class="screen">
     <div class="header">
       <h2>Thư Viện Ký Ức</h2>
@@ -295,15 +295,12 @@
     <div id="editor-content" placeholder="Những dòng suy nghĩ tĩnh lặng..."></div>
   </div>
 
-  <!-- Phân hệ Modal Hỗ trợ -->
   <div id="modal-save" class="modal"><div class="modal-content"><h3 id="modal-save-title">Chọn vị trí lưu trữ</h3><div class="book-list-modal" id="modal-book-list"></div><p style="margin: 10px 0; font-style: italic; font-size: 0.9rem; color: #777; width: 100%;">Hoặc đưa vào miền ký ức mới</p><input type="text" id="new-book-name" class="input-book-name" placeholder="Tên cuốn sách mới..."><label for="cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Chọn tệp tin bìa</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="save-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeSaveAction()">Xác nhận vị trí</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
   <div id="modal-create-book" class="modal"><div class="modal-content"><h3>Khởi tạo sách mới</h3><input type="text" id="only-new-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="only-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Tải lên ảnh bìa (Tùy chọn)</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh</p><div id="create-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="only-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeCreateBook()">Tạo sách</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
   <div id="modal-edit-book" class="modal"><div class="modal-content"><h3>Chỉnh sửa sách</h3><input type="text" id="edit-book-name" class="input-book-name" placeholder="Tên cuốn sách..."><label for="edit-cover-upload" style="width: 100%; margin-bottom: 5px; font-weight: 600; cursor: pointer; color: var(--primary); font-size: 0.95rem;">[+] Đổi ảnh bìa khác</label><p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 10px; width: 100%;">Hoặc nhấn Ctrl+V (Cmd+V) để dán ảnh mới</p><div id="edit-paste-msg" class="paste-success-msg">✓ Đã nhận ảnh từ khay nhớ tạm!</div><input type="file" id="edit-cover-upload" accept="image/*" style="display: none;"><button class="btn btn-danger-text" style="width: 100%; margin-bottom: 15px; font-size: 0.9rem;" onclick="removeBookCover()">Xóa ảnh bìa</button><button class="btn btn-primary-filled" style="width: 100%;" onclick="executeEditBook()">Lưu thay đổi</button><button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy lệnh</button></div></div>
   
-  <!-- Phân hệ Modal Bảo mật -->
   <div id="modal-passcode" class="modal"><div class="modal-content"><h3 id="modal-passcode-title">Xác thực thao tác</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Vui lòng nhập mật mã hệ thống.</p><input type="password" id="action-pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="verifyActionPin()">Xác nhận</button><button class="btn btn-text" style="width: 100%;" onclick="closePasscodeModal()">Hủy thao tác</button></div></div>
 
-  <!-- Phân hệ Modal Cảnh báo Yes/No -->
   <div id="modal-confirm" class="modal">
     <div class="modal-content">
       <h3 style="color: var(--danger); margin-bottom: 10px;">Cảnh báo xóa vĩnh viễn</h3>
@@ -317,7 +314,6 @@
 
   <div id="modal-edit-time" class="modal"><div class="modal-content"><h3>Đồng bộ thời gian</h3><p style="font-size: 0.9rem; color: #777; margin-bottom: 20px; width: 100%;">Điều chỉnh dòng thời gian của tài liệu này.</p><input type="datetime-local" id="edit-time-input" class="input-book-name"><button class="btn btn-primary-filled" style="width: 100%; margin-bottom: 5px;" onclick="executeEditTime()">Lưu dấu thời gian</button><button class="btn btn-text" style="width: 100%;" onclick="closeModals()">Hủy thao tác</button></div></div>
 
-  <!-- Phân hệ Thùng Rác Đa Luồng -->
   <div id="modal-trash" class="modal">
     <div class="modal-content" style="max-width: 580px;">
       <h3 style="color: var(--danger); margin-bottom: 10px;">Thùng rác tài liệu</h3>
@@ -335,7 +331,6 @@
     </div>
   </div>
 
-  <!-- Hộp thoại Xem trước nội dung bị xóa -->
   <div id="modal-preview" class="modal">
     <div class="modal-content" style="max-width: 500px;">
       <h3 id="preview-title" style="color: var(--primary); margin-bottom: 15px; font-size: 1.4rem; width: 100%; text-align: center;">Tiêu đề</h3>
@@ -395,16 +390,16 @@
       } 
     });
 
+    // NGĂN CHẶN CƯỠNG CHẾ GHI ĐÈ LÚC ONLINE
     window.addEventListener('online', () => { 
         document.getElementById('network-alert').style.display = 'none'; 
-        if(isEditMode) document.getElementById('save-status').innerText = 'Đã khôi phục kết nối mạng - Đang đồng bộ...'; 
-        firestore.enableNetwork().then(() => saveDB());
+        if(isEditMode) document.getElementById('save-status').innerText = 'Đã khôi phục kết nối mạng - Đang tải mây...'; 
+        firestore.enableNetwork(); 
     });
     window.addEventListener('offline', () => { 
         document.getElementById('network-alert').style.display = 'block'; 
         if(isEditMode) document.getElementById('save-status').innerText = 'Đã lưu nháp bộ đệm (Chế độ ngoại tuyến)'; 
     });
-    
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible' && navigator.onLine) {
             firestore.enableNetwork(); 
@@ -415,71 +410,122 @@
     firebase.initializeApp(firebaseConfig);
     const firestore = firebase.firestore();
     firestore.enablePersistence().catch((err) => { console.warn("Lỗi tích hợp Offline Persistence.", err); });
-    const docRef = firestore.collection("diaryData").doc("my_vintage_diary");
+    
+    // MIGRATION: THIẾT LẬP CẤU TRÚC KHO LƯU TRỮ PHÂN TÁN V2
+    const oldRef = firestore.collection("diaryData").doc("my_vintage_diary");
+    const sysRef = firestore.collection("diarySystemV2").doc("core");
+    const pagesRef = firestore.collection("diaryPagesV2");
 
     let db = { books: [], pages: [], passcode: null };
     let currentPageId = null, preSelectedBookId = null, editingBookId = null, typingTimer, isEditMode = true, dragStartIndex = null, pendingSecureAction = null, pendingConfirmAction = null;
     let currentAttachments = { images: [], files: [] };
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
-    window.onload = () => {
+    window.onload = async () => {
       if (!navigator.onLine) document.getElementById('network-alert').style.display = 'block';
-      docRef.onSnapshot((doc) => {
-        if (doc.exists) {
-          const cloudData = doc.data();
-          if (cloudData.passcode) { 
-            db = cloudData; 
-            autoPurgeTrash();
-            
-            if (document.getElementById('loading-screen').classList.contains('active')) { 
-              initAppUI(); 
-            } else if (document.getElementById('dashboard').classList.contains('active')) { 
-              renderBooks(); 
-              if (document.getElementById('global-search-results').style.display === 'flex') {
-                handleGlobalSearch();
+      
+      try {
+          const sysSnap = await sysRef.get();
+          // NẾU LÀ LẦN ĐẦU UPDATE -> KÍCH HOẠT CHẾ ĐỘ CHUYỂN NHÀ
+          if (!sysSnap.exists) {
+              const oldSnap = await oldRef.get();
+              if (oldSnap.exists) {
+                  document.getElementById('loading-text').innerText = "Đang định tuyến và di dời dữ liệu (Không đóng trang)...";
+                  const oldData = oldSnap.data();
+                  
+                  await sysRef.set({ passcode: oldData.passcode || null, books: oldData.books || [] });
+                  
+                  if (oldData.pages && oldData.pages.length > 0) {
+                      const batch = firestore.batch();
+                      oldData.pages.forEach(p => { batch.set(pagesRef.doc(p.id), p); });
+                      await batch.commit();
+                  }
               }
-            } else if (document.getElementById('book-view').classList.contains('active')) {
-              if (preSelectedBookId) {
-                renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value);
-              }
-            }
-            
-            if (document.getElementById('modal-trash').style.display === 'flex') {
-              openTrashModal(false);
-            }
           }
-        } else {
-          let localData = JSON.parse(localStorage.getItem('diary_db'));
-          if (localData && localData.passcode) { document.getElementById('loading-text').innerText = "Đang đồng bộ cấu trúc dữ liệu..."; db = localData; autoPurgeTrash(); docRef.set(db).then(() => initAppUI()); } else { initAppUI(); }
-        }
-      }, (error) => { console.error("Lỗi giao tiếp máy chủ:", error); initAppUI(); });
+
+          // LẮNG NGHE SỰ THAY ĐỔI CỦA SÁCH VÀ PASSCODE
+          sysRef.onSnapshot(doc => {
+              if (doc.exists) {
+                  const data = doc.data();
+                  db.passcode = data.passcode;
+                  db.books = data.books || [];
+                  autoPurgeTrashBooks();
+                  if (document.getElementById('loading-screen').classList.contains('active')) {
+                      initAppUI();
+                  } else if (document.getElementById('dashboard').classList.contains('active')) {
+                      renderBooks();
+                  }
+                  if (document.getElementById('modal-trash').style.display === 'flex') openTrashModal(false);
+              } else {
+                  // Cài đặt app lần đầu tiên
+                  initAppUI();
+              }
+          });
+
+          // LẮNG NGHE SỰ THAY ĐỔI CỦA TỪNG TRANG NHẬT KÝ ĐỘC LẬP
+          pagesRef.onSnapshot(snapshot => {
+              db.pages = [];
+              snapshot.forEach(doc => db.pages.push(doc.data()));
+              autoPurgeTrashPages();
+              
+              if (document.getElementById('book-view').classList.contains('active') && preSelectedBookId) {
+                  renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value);
+              }
+              if (document.getElementById('global-search-results').style.display === 'flex') handleGlobalSearch();
+              if (document.getElementById('modal-trash').style.display === 'flex') openTrashModal(false);
+              
+              // Tự động cập nhật nội dung cho Editor nếu đang mở chế độ Read-only
+              if (document.getElementById('editor-screen').classList.contains('active') && !isEditMode && currentPageId) {
+                  const p = db.pages.find(x => x.id === currentPageId);
+                  if (p) {
+                      document.getElementById('editor-title').value = p.title || '';
+                      document.getElementById('editor-content').innerHTML = p.content || '';
+                      currentAttachments = p.attachments ? JSON.parse(JSON.stringify(p.attachments)) : { images: [], files: [] };
+                      renderAttachments();
+                  }
+              }
+          });
+      } catch(err) {
+          console.error("Lỗi khởi tạo hệ thống:", err);
+          initAppUI();
+      }
     };
 
-    function autoPurgeTrash() {
+    // GIAO THỨC LƯU TRỮ PHÂN TÁN (Ghi đè Độc lập, Không ảnh hưởng hàng xóm)
+    function saveSystem() {
+        sysRef.set({ passcode: db.passcode, books: db.books }).then(() => {
+            if (navigator.onLine && isEditMode) document.getElementById('save-status').innerText = 'Đã đồng bộ hệ thống ☁️';
+        }).catch(e => console.error(e));
+    }
+    
+    function savePageDb(page) {
+        pagesRef.doc(page.id).set(page).then(() => {
+            if (navigator.onLine && isEditMode) document.getElementById('save-status').innerText = 'Đã lưu trang ☁️';
+        }).catch(e => console.error(e));
+    }
+    
+    function destroyPageDb(pageId) { pagesRef.doc(pageId).delete(); }
+
+    function autoPurgeTrashBooks() {
+      const now = Date.now(); let changed = false;
+      db.books = db.books.filter(b => { if (b.deletedAt && (now - b.deletedAt >= TRASH_RETENTION_MS)) { changed = true; return false; } return true; });
+      if (changed) saveSystem();
+    }
+
+    function autoPurgeTrashPages() {
       const now = Date.now();
-      let changed = false;
-      if(db.books) {
-        const initialBooks = db.books.length;
-        db.books = db.books.filter(b => !b.deletedAt || (now - b.deletedAt < TRASH_RETENTION_MS));
-        if (db.books.length !== initialBooks) changed = true;
-      }
-      if(db.pages) {
-        const initialPages = db.pages.length;
-        db.pages = db.pages.filter(p => !p.deletedAt || (now - p.deletedAt < TRASH_RETENTION_MS));
-        if (db.pages.length !== initialPages) changed = true;
-      }
-      if (changed) saveDB();
+      db.pages.forEach(p => { if (p.deletedAt && (now - p.deletedAt >= TRASH_RETENTION_MS)) destroyPageDb(p.id); });
     }
 
     function initAppUI() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('lock-screen').classList.add('active'); isAppLocked = true; if (!db.passcode) document.getElementById('lock-title').innerText = "Thiết lập mật mã hệ thống"; }
-    function saveDB() { docRef.set(db).then(() => { if (navigator.onLine) document.getElementById('save-status').innerText = 'Đã đồng bộ mây ☁️'; }).catch((error) => { console.error("Lỗi ghi dữ liệu:", error.message); }); return true; }
+    
     document.getElementById('pin-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
     
     function checkPin() { 
       const input = document.getElementById('pin-input').value; 
       if (!input) return alert("Vui lòng cung cấp khóa định danh hệ thống."); 
       if (!db.passcode) { 
-        db.passcode = input; saveDB(); isAppLocked = false; document.getElementById('pin-input').value = ''; document.getElementById('lock-screen').classList.remove('active'); switchScreen('dashboard'); renderBooks(); resetInactivityTimer();
+        db.passcode = input; saveSystem(); isAppLocked = false; document.getElementById('pin-input').value = ''; document.getElementById('lock-screen').classList.remove('active'); switchScreen('dashboard'); renderBooks(); resetInactivityTimer();
       } else { 
         if (input === db.passcode) { 
           isAppLocked = false; document.getElementById('pin-input').value = ''; document.getElementById('lock-screen').classList.remove('active');
@@ -517,7 +563,7 @@
             insertIndex = i + 1;
         }
         db.books.splice(insertIndex, 0, movedBook);
-        saveDB(); renderBooks(); 
+        saveSystem(); renderBooks(); 
       } 
       dragStartIndex = null; 
     }
@@ -587,7 +633,13 @@
       board.style.display = (hasImages || hasFiles) ? 'flex' : 'none';
     }
 
-    function removeAttachment(type, index, event) { event.stopPropagation(); if (!isEditMode) return; if (type === 'image') currentAttachments.images.splice(index, 1); else if (type === 'file') currentAttachments.files.splice(index, 1); renderAttachments(); saveDB(); }
+    function removeAttachment(type, index, event) { 
+        event.stopPropagation(); if (!isEditMode) return; 
+        if (type === 'image') currentAttachments.images.splice(index, 1); 
+        else if (type === 'file') currentAttachments.files.splice(index, 1); 
+        renderAttachments(); 
+        triggerRealtimeSave(); 
+    }
     
     function renderBooks() { 
       const container = document.getElementById('books-container'); container.innerHTML = ''; 
@@ -605,14 +657,13 @@
     function deleteBook(bookId) { 
       requestPasscode("Xác thực đưa sách vào thùng rác", () => { 
         const book = db.books.find(b => b.id === bookId);
-        if(book) book.deletedAt = Date.now();
-        saveDB(); renderBooks(); 
+        if(book) { book.deletedAt = Date.now(); saveSystem(); renderBooks(); }
       }); 
     }
 
     function openEditBookModal(bookId) { requestPasscode("Xác thực chỉnh sửa dữ liệu", () => { editingBookId = bookId; const book = db.books.find(b => b.id === bookId); document.getElementById('edit-book-name').value = book.name; document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; document.getElementById('modal-edit-book').style.display = 'flex'; }); }
     function removeBookCover() { const book = db.books.find(b => b.id === editingBookId); if(book) { book.cover = null; book.palette = fallbackColors; } document.getElementById('edit-cover-upload').value = ''; document.getElementById('edit-paste-msg').style.display = 'none'; alert("Trạng thái tệp tin bìa đã được chuyển đổi mặc định."); }
-    function executeEditBook() { const book = db.books.find(b => b.id === editingBookId); const newName = document.getElementById('edit-book-name').value; const coverFile = document.getElementById('edit-cover-upload').files[0]; if (!newName) return alert("Hệ thống yêu cầu xác nhận định danh phân loại sách."); book.name = newName; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); book.cover = canvas.toDataURL('image/jpeg', 0.8); book.palette = generatePastelPalette(canvas, ctx, 5); saveDB(); closeModals(); renderBooks(); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { saveDB(); closeModals(); renderBooks(); } }
+    function executeEditBook() { const book = db.books.find(b => b.id === editingBookId); const newName = document.getElementById('edit-book-name').value; const coverFile = document.getElementById('edit-cover-upload').files[0]; if (!newName) return alert("Hệ thống yêu cầu xác nhận định danh phân loại sách."); book.name = newName; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); book.cover = canvas.toDataURL('image/jpeg', 0.8); book.palette = generatePastelPalette(canvas, ctx, 5); saveSystem(); closeModals(); renderBooks(); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { saveSystem(); closeModals(); renderBooks(); } }
     
     function handleGlobalSearch() { 
       const query = document.getElementById('global-search-input').value.toLowerCase(); 
@@ -658,7 +709,7 @@
       }); 
     }
     
-    function togglePinPage() { if (!currentPageId) return alert("Giao thức yêu cầu quá trình xác thực lưu trữ."); const page = db.pages.find(p => p.id === currentPageId); page.isPinned = !page.isPinned; saveDB(); updatePinButtonState(page.isPinned); }
+    function togglePinPage() { if (!currentPageId) return alert("Giao thức yêu cầu quá trình xác thực lưu trữ."); const page = db.pages.find(p => p.id === currentPageId); page.isPinned = !page.isPinned; savePageDb(page); updatePinButtonState(page.isPinned); }
     function updatePinButtonState(isPinned) { 
       const pinBtn = document.getElementById('btn-pin-page'); 
       if (isPinned) { pinBtn.innerHTML = svgUnpin + `<span class="hide-on-mobile">Bỏ ghim</span>`; pinBtn.style.color = "var(--danger)"; } 
@@ -714,8 +765,7 @@
     function deleteCurrentPage() { 
       requestPasscode("Xác thực đưa trang vào thùng rác", () => { 
         const page = db.pages.find(p => p.id === currentPageId);
-        if(page) page.deletedAt = Date.now();
-        saveDB(); goBackFromEditor(); 
+        if(page) { page.deletedAt = Date.now(); savePageDb(page); goBackFromEditor(); }
       }); 
     }
     
@@ -724,24 +774,43 @@
       if (currentPageId) { 
         const page = db.pages.find(p => p.id === currentPageId); 
         page.title = title; page.content = content; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); 
-        saveDB(); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
+        savePageDb(page); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
         setEditorMode(false); if (goBack) goBackFromEditor(); 
       } else if (preSelectedBookId) { 
         const newPageId = 'page_' + Date.now(); 
-        db.pages.push({ id: newPageId, bookId: preSelectedBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); 
-        saveDB(); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
+        const newPage = { id: newPageId, bookId: preSelectedBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) };
+        db.pages.push(newPage); savePageDb(newPage); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content');
         currentPageId = newPageId; document.getElementById('editor-secondary-actions').style.display = 'flex'; 
         setEditorMode(false); if (goBack) goBackFromEditor(); 
       } else { showSaveModal(); } 
     }
     
-    document.getElementById('editor-title').addEventListener('input', () => { if(!isEditMode) return; localStorage.setItem('diary_draft_title', document.getElementById('editor-title').value); });
-    document.getElementById('editor-content').addEventListener('input', () => { 
-      if(!isEditMode) return; 
+    // GIAO THỨC ĐỒNG BỘ THỜI GIAN THỰC ĐỘC LẬP
+    function triggerRealtimeSave() {
+      if(!isEditMode) return;
+      const currentTitle = document.getElementById('editor-title').value;
+      const currentContent = document.getElementById('editor-content').innerHTML;
+      
+      localStorage.setItem('diary_draft_title', currentTitle);
+      localStorage.setItem('diary_draft_content', currentContent);
       document.getElementById('save-status').innerText = navigator.onLine ? 'Đang truyền dẫn dữ liệu...' : 'Đang xử lý phân vùng ngoại tuyến...'; 
-      localStorage.setItem('diary_draft_content', document.getElementById('editor-content').innerHTML);
-      clearTimeout(typingTimer); typingTimer = setTimeout(() => { saveDB(); }, 1500); 
-    });
+      
+      clearTimeout(typingTimer); 
+      typingTimer = setTimeout(() => { 
+        if (currentPageId) {
+            const page = db.pages.find(p => p.id === currentPageId);
+            if (page) {
+                page.title = currentTitle;
+                page.content = currentContent;
+                page.attachments = JSON.parse(JSON.stringify(currentAttachments));
+                savePageDb(page);
+            }
+        }
+      }, 1500);
+    }
+
+    document.getElementById('editor-title').addEventListener('input', triggerRealtimeSave);
+    document.getElementById('editor-content').addEventListener('input', triggerRealtimeSave);
 
     document.addEventListener('paste', function(e) { 
       const mSave = document.getElementById('modal-save').style.display === 'flex'; const mCreate = document.getElementById('modal-create-book').style.display === 'flex'; const mEdit = document.getElementById('modal-edit-book').style.display === 'flex'; 
@@ -757,7 +826,7 @@
             else if (mCreate) { document.getElementById('only-cover-upload').files = dt.files; document.getElementById('create-paste-msg').style.display = 'block'; } 
             else if (mEdit) { document.getElementById('edit-cover-upload').files = dt.files; document.getElementById('edit-paste-msg').style.display = 'block'; } 
           } else if (isEditor) {
-            const reader = new FileReader(); reader.onload = function(ev) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); if (!currentAttachments.images) currentAttachments.images = []; currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); saveDB(); }; img.src = ev.target.result; }; reader.readAsDataURL(file);
+            const reader = new FileReader(); reader.onload = function(ev) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); if (!currentAttachments.images) currentAttachments.images = []; currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); triggerRealtimeSave(); }; img.src = ev.target.result; }; reader.readAsDataURL(file);
           }
           break; 
         } 
@@ -790,12 +859,11 @@
       if(!val) return alert("Lỗi cấu trúc: Định dạng thời gian không hợp lệ.");
       const page = db.pages.find(p => p.id === currentPageId);
       page.timestamp = new Date(val).getTime();
-      saveDB(); closeModals(); 
+      savePageDb(page); closeModals(); 
       alert("Hệ thống đã hoàn tất thao tác định tuyến chuỗi thời gian.");
       goBackFromEditor();
     }
 
-    // Giao thức Thùng rác phân tầng (Tab Navigation)
     function switchTrashTab(tabName) {
       document.getElementById('tab-btn-books').classList.remove('active');
       document.getElementById('tab-btn-pages').classList.remove('active');
@@ -811,12 +879,8 @@
       
       const listBooks = document.getElementById('trash-list-books');
       const listPages = document.getElementById('trash-list-pages');
-      listBooks.innerHTML = '';
-      listPages.innerHTML = '';
-      
-      let hasBooks = false;
-      let hasPages = false;
-      const now = Date.now();
+      listBooks.innerHTML = ''; listPages.innerHTML = '';
+      let hasBooks = false; let hasPages = false; const now = Date.now();
 
       db.books.forEach(b => {
         if(b.deletedAt) {
@@ -836,11 +900,9 @@
       
       if(!hasBooks) listBooks.innerHTML = '<p style="text-align:center; font-style:italic; font-size:0.9rem; padding: 20px;">Thùng rác phân hệ Sách hiện trống.</p>';
       if(!hasPages) listPages.innerHTML = '<p style="text-align:center; font-style:italic; font-size:0.9rem; padding: 20px;">Thùng rác phân hệ Trang hiện trống.</p>';
-      
       document.getElementById('modal-trash').style.display = 'flex';
     }
 
-    // Giao thức Xem trước Dữ liệu (Soft-delete Preview)
     function previewPage(pageId) {
       const page = db.pages.find(p => p.id === pageId);
       if(!page) return;
@@ -855,32 +917,94 @@
       pendingConfirmAction = null;
     }
 
-    function restoreBook(id) { const book = db.books.find(b => b.id === id); if(book) delete book.deletedAt; saveDB(); openTrashModal(false); renderBooks(); }
+    function restoreBook(id) { const book = db.books.find(b => b.id === id); if(book) { delete book.deletedAt; saveSystem(); openTrashModal(false); renderBooks(); } }
     
     function destroyBook(id) { 
       pendingConfirmAction = () => {
-        db.books = db.books.filter(b => b.id !== id); 
-        db.pages = db.pages.filter(p => p.bookId !== id); 
-        saveDB(); 
+        db.books = db.books.filter(b => b.id !== id); saveSystem();
+        db.pages.forEach(p => { if (p.bookId === id) destroyPageDb(p.id); }); 
       };
       document.getElementById('modal-confirm').style.display = 'flex';
     }
 
-    function restorePage(id) { const page = db.pages.find(p => p.id === id); if(page) delete page.deletedAt; saveDB(); openTrashModal(false); }
+    function restorePage(id) { const page = db.pages.find(p => p.id === id); if(page) { delete page.deletedAt; savePageDb(page); openTrashModal(false); } }
     
     function destroyPage(id) { 
-      pendingConfirmAction = () => {
-        db.pages = db.pages.filter(p => p.id !== id); 
-        saveDB(); 
-      };
+      pendingConfirmAction = () => { destroyPageDb(id); };
       document.getElementById('modal-confirm').style.display = 'flex';
     }
 
-    function insertFile(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { if (file.type.startsWith('image/')) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); if (!currentAttachments.images) currentAttachments.images = []; currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); renderAttachments(); saveDB(); }; img.src = e.target.result; } else if (file.type === 'application/pdf') { if (!currentAttachments.files) currentAttachments.files = []; currentAttachments.files.push({ name: file.name, data: e.target.result }); renderAttachments(); saveDB(); } }; reader.readAsDataURL(file); }
+    function insertFile(event) { 
+        const file = event.target.files[0]; if (!file) return; 
+        const reader = new FileReader(); 
+        reader.onload = function(e) { 
+            if (file.type.startsWith('image/')) { 
+                const img = new Image(); 
+                img.onload = function() { 
+                    const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = img.height * (800 / img.width); 
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); 
+                    if (!currentAttachments.images) currentAttachments.images = []; 
+                    currentAttachments.images.push(canvas.toDataURL('image/jpeg', 0.8)); 
+                    renderAttachments(); triggerRealtimeSave(); 
+                }; img.src = e.target.result; 
+            } else if (file.type === 'application/pdf') { 
+                if (!currentAttachments.files) currentAttachments.files = []; 
+                currentAttachments.files.push({ name: file.name, data: e.target.result }); 
+                renderAttachments(); triggerRealtimeSave(); 
+            } 
+        }; reader.readAsDataURL(file); 
+    }
+
     function generatePastelPalette(canvas, ctx, count) { let palette = []; for (let i = 0; i < count; i++) { let x = Math.floor(Math.random() * canvas.width); let y = Math.floor(Math.random() * canvas.height); let pixel = ctx.getImageData(x, y, 1, 1).data; let r = Math.floor((pixel[0] + 255 * 2) / 3); let g = Math.floor((pixel[1] + 255 * 2) / 3); let b = Math.floor((pixel[2] + 255 * 2) / 3); palette.push(`rgb(${r}, ${g}, ${b})`); } return palette; }
     
-    function executeSaveAction() { const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; const bookInput = document.getElementById('new-book-name').value; const coverFile = document.getElementById('cover-upload').files[0]; if (!bookInput) return alert("Hệ thống yêu cầu định danh phân loại sách."); let targetBookId = bookInput; const existingBook = db.books.find(b => b.id === bookInput); const finalizeAction = (coverDataUrl, dynamicPalette) => { if (!existingBook) { targetBookId = 'book_' + Date.now(); db.books.push({ id: targetBookId, name: bookInput, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); } if (currentPageId) { const page = db.pages.find(p => p.id === currentPageId); page.title = title; page.content = content; page.bookId = targetBookId; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); } else { currentPageId = 'page_' + Date.now(); db.pages.push({ id: currentPageId, bookId: targetBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) }); } saveDB(); localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content'); closeModals(); document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); }; if (coverFile && !existingBook) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeAction(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeAction(null, null); } }
-    function executeCreateBook() { const bookName = document.getElementById('only-new-book-name').value; const coverFile = document.getElementById('only-cover-upload').files[0]; if (!bookName) return alert("Hệ thống yêu cầu định danh phân loại sách."); const finalizeCreate = (coverDataUrl, dynamicPalette) => { db.books.push({ id: 'book_' + Date.now(), name: bookName, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); saveDB(); closeModals(); renderBooks(); }; if (coverFile) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); finalizeCreate(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); }; img.src = e.target.result; }; reader.readAsDataURL(coverFile); } else { finalizeCreate(null, null); } }
+    function executeSaveAction() { 
+        const title = document.getElementById('editor-title').value; const content = document.getElementById('editor-content').innerHTML; const bookInput = document.getElementById('new-book-name').value; const coverFile = document.getElementById('cover-upload').files[0]; 
+        if (!bookInput) return alert("Hệ thống yêu cầu định danh phân loại sách."); 
+        let targetBookId = bookInput; const existingBook = db.books.find(b => b.id === bookInput); 
+        
+        const finalizeAction = (coverDataUrl, dynamicPalette) => { 
+            if (!existingBook) { targetBookId = 'book_' + Date.now(); db.books.push({ id: targetBookId, name: bookInput, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); saveSystem(); } 
+            if (currentPageId) { 
+                const page = db.pages.find(p => p.id === currentPageId); 
+                page.title = title; page.content = content; page.bookId = targetBookId; page.attachments = JSON.parse(JSON.stringify(currentAttachments)); 
+                savePageDb(page); 
+            } else { 
+                currentPageId = 'page_' + Date.now(); 
+                const newPage = { id: currentPageId, bookId: targetBookId, title: title, content: content, timestamp: Date.now(), isPinned: false, attachments: JSON.parse(JSON.stringify(currentAttachments)) };
+                db.pages.push(newPage); savePageDb(newPage); 
+            } 
+            localStorage.removeItem('diary_draft_title'); localStorage.removeItem('diary_draft_content'); 
+            closeModals(); document.getElementById('editor-secondary-actions').style.display = 'flex'; setEditorMode(false); 
+        }; 
+        
+        if (coverFile && !existingBook) { 
+            const reader = new FileReader(); reader.onload = function(e) { 
+                const img = new Image(); img.onload = function() { 
+                    const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); 
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); 
+                    finalizeAction(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); 
+                }; img.src = e.target.result; 
+            }; reader.readAsDataURL(coverFile); 
+        } else { finalizeAction(null, null); } 
+    }
+
+    function executeCreateBook() { 
+        const bookName = document.getElementById('only-new-book-name').value; const coverFile = document.getElementById('only-cover-upload').files[0]; 
+        if (!bookName) return alert("Hệ thống yêu cầu định danh phân loại sách."); 
+        const finalizeCreate = (coverDataUrl, dynamicPalette) => { 
+            db.books.push({ id: 'book_' + Date.now(), name: bookName, cover: coverDataUrl || null, palette: dynamicPalette || fallbackColors }); 
+            saveSystem(); closeModals(); renderBooks(); 
+        }; 
+        if (coverFile) { 
+            const reader = new FileReader(); reader.onload = function(e) { 
+                const img = new Image(); img.onload = function() { 
+                    const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = img.height * (400 / img.width); 
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); 
+                    finalizeCreate(canvas.toDataURL('image/jpeg', 0.8), generatePastelPalette(canvas, ctx, 5)); 
+                }; img.src = e.target.result; 
+            }; reader.readAsDataURL(coverFile); 
+        } else { finalizeCreate(null, null); } 
+    }
   </script>
 </body>
 </html>
