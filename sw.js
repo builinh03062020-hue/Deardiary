@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vintage-diary-cache-v4';
+const CACHE_NAME = 'vintage-diary-cache-v5';
 
 const urlsToCache = [
   'https://builinh03062020-hue.github.io/Deardiary/',
