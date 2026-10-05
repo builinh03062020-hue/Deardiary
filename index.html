@@ -409,10 +409,9 @@
     const firestore = firebase.firestore();
     firestore.enablePersistence().catch((err) => { console.warn("Lỗi tích hợp Offline Persistence.", err); });
     
-    // TẠO NHÀ MỚI V3 - ĐẢM BẢO CHẠY QUY TRÌNH CHUYỂN NHÀ LẠI TỪ ĐẦU
     const oldRef = firestore.collection("diaryData").doc("my_vintage_diary");
-    const sysRef = firestore.collection("diarySystemV3").doc("core");
-    const pagesRef = firestore.collection("diaryPagesV3");
+    const sysRef = firestore.collection("diarySystemV2").doc("core");
+    const pagesRef = firestore.collection("diaryPagesV2");
 
     let db = { books: [], pages: [], passcode: null };
     let currentPageId = null, preSelectedBookId = null, editingBookId = null, typingTimer, isEditMode = true, dragStartIndex = null, pendingSecureAction = null, pendingConfirmAction = null;
@@ -425,13 +424,16 @@
       try {
           const sysSnap = await sysRef.get();
           
+          // THUỐC XỔ: ÉP BUỘC CHÉP ĐÈ TỪ MÂY ĐỂ CỨU NGÀY 25, 26
           if (!sysSnap.exists || !sysSnap.data().migrationFixed) {
               document.getElementById('loading-text').innerText = "Đang khôi phục dữ liệu gốc từ Mây (Bỏ qua bộ nhớ tạm)... Đừng đóng trang nha sếp!";
               try {
+                  // Lệnh chí mạng: Ép lấy dữ liệu gốc chuẩn từ server, vứt bỏ toàn bộ cache
                   const oldSnap = await oldRef.get({ source: 'server' }); 
                   if (oldSnap.exists) {
                       const oldData = oldSnap.data();
                       
+                      // Khóa chốt an toàn: migrationFixed = true để lần sau không chạy lại
                       await sysRef.set({ 
                           passcode: oldData.passcode || null, 
                           books: oldData.books || [],
