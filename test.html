@@ -138,6 +138,7 @@
     #modal-passcode { z-index: 1005; }
     #modal-confirm { z-index: 1010; }
     #modal-preview { z-index: 1015; }
+    #modal-draft-prompt { z-index: 1020; }
     
     .app-footer { text-align: center; font-size: 0.85rem; color: #888; padding: 30px 10px 20px; margin-top: 40px; border-top: 1px dashed #d4cdc1; width: 100%; font-style: italic; line-height: 1.6; }
     
@@ -192,10 +193,15 @@
   <div id="loading-screen" class="screen active"><h2 id="loading-text">Đang kết nối mây...</h2></div>
   <div id="lock-screen" class="screen"><h2 id="lock-title">Mật mã nhật ký</h2><input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••"><button class="btn btn-primary-filled" onclick="checkPin()">Mở khóa không gian</button></div>
 
+  <!-- DASHBOARD -->
   <div id="dashboard" class="screen">
     <div class="header">
       <h2>Thư Viện Ký Ức</h2>
       <div class="header-actions">
+        <!-- NÚT HOME THẦN THÁNH -->
+        <button class="btn btn-text icon-btn" onclick="goHome()" title="Trang chủ">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </button>
         <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm nhật ký, độ tuổi..." onkeyup="handleGlobalSearch()">
         <button class="btn btn-warning-text icon-btn" onclick="openTrashModal()" title="Thùng rác">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
@@ -205,8 +211,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="12" y1="8" x2="12" y2="14"></line><line x1="9" y1="11" x2="15" y2="11"></line></svg>
           <span class="hide-on-mobile">Tạo sách</span>
         </button>
-        <button class="btn btn-primary-filled icon-btn" id="btn-main-write" onclick="openEditor(null)">
-          <!-- Nút Chắp bút - Sẽ tự động sáng đèn nếu có Mây Nháp -->
+        <button class="btn btn-primary-filled icon-btn" id="btn-main-write" onclick="handleMainWriteClick()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
           Chắp bút
         </button>
@@ -221,12 +226,17 @@
     </div>
   </div>
 
+  <!-- BOOK VIEW -->
   <div id="book-view" class="screen">
     <div class="header">
       <h2 id="current-book-title">Đang kết xuất...</h2>
       <div class="header-actions">
+        <!-- NÚT HOME THẦN THÁNH -->
+        <button class="btn btn-text icon-btn" onclick="goHome()" title="Trang chủ">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </button>
         <input type="text" id="search-page-input" class="search-input" placeholder="Tìm theo độ tuổi, nội dung..." onkeyup="handleSearch()">
-        <button class="btn btn-text icon-btn" onclick="switchScreen('dashboard')">
+        <button class="btn btn-text icon-btn" onclick="goBackToDashboard()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           <span class="hide-on-mobile">Trở về</span>
         </button>
@@ -239,9 +249,14 @@
     <div id="pages-container" class="book-shelves-container"></div>
   </div>
 
+  <!-- EDITOR SCREEN -->
   <div id="editor-screen" class="screen">
     <div class="header" style="margin-bottom: 20px;">
       <div class="editor-header-group">
+        <!-- NÚT HOME THẦN THÁNH -->
+        <button class="btn btn-text icon-btn" onclick="goHome()" title="Trang chủ">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </button>
         <button class="btn btn-text icon-btn" onclick="goBackFromEditor()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           <span class="hide-on-mobile">Trở về</span>
@@ -357,6 +372,19 @@
     <iframe id="lightbox-pdf" src=""></iframe>
   </div>
 
+  <!-- BẢNG HỎI LỰA CHỌN BẢN NHÁP (NGÃ BA ĐƯỜNG) -->
+  <div id="modal-draft-prompt" class="modal">
+    <div class="modal-content">
+      <h3 style="color: var(--primary); margin-bottom: 10px;">Phát hiện Bản Nháp</h3>
+      <p style="font-size: 0.95rem; color: #777; margin-bottom: 20px; width: 100%; line-height: 1.5;">Hệ thống ghi nhận một bản nháp đang được viết dang dở. Sếp muốn xử lý thế nào?</p>
+      <div style="display: flex; gap: 10px; width: 100%; flex-direction: column;">
+        <button class="btn btn-primary-filled" style="width: 100%;" onclick="continueDraft()">Viết tiếp bản nháp cũ</button>
+        <button class="btn btn-danger-text" style="width: 100%;" onclick="discardDraftAndWriteNew()">Xóa nháp, viết trang mới</button>
+        <button class="btn btn-text" style="width: 100%; margin-top: 5px;" onclick="closeModals()">Hủy bỏ</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let isAppLocked = true;
     let inactivityTimer;
@@ -377,15 +405,14 @@
 
     // THUẬT TOÁN TÍNH TUỔI THEO MỐC 25/09/2010
     function calculateAge(timestamp) {
-        const dob = new Date(2010, 8, 25); // Tháng 8 là tháng 9 trong Date Object (0-indexed)
+        const dob = new Date(2010, 8, 25); 
         const date = new Date(timestamp);
         let age = date.getFullYear() - dob.getFullYear();
         const m = date.getMonth() - dob.getMonth();
-        // Nếu chưa tới tháng sinh, hoặc cùng tháng sinh nhưng chưa tới ngày sinh thì trừ đi 1 tuổi
         if (m < 0 || (m === 0 && date.getDate() < dob.getDate())) {
             age--;
         }
-        return Math.max(0, age); // Đề phòng tuổi âm
+        return Math.max(0, age); 
     }
 
     function resetInactivityTimer() {
@@ -440,10 +467,10 @@
     // AN TOÀN TUYỆT ĐỐI - KHÔNG ĐỤNG DATABASE V2
     const sysRef = firestore.collection("diarySystemV2").doc("core");
     const pagesRef = firestore.collection("diaryPagesV2");
-    const draftRef = firestore.collection("diarySystemV2").doc("cloud_draft"); // NGĂN KÉO NHÁP ĐÁM MÂY
+    const draftRef = firestore.collection("diarySystemV2").doc("cloud_draft"); 
 
     let db = { books: [], pages: [], passcode: null };
-    let cloudDraftData = null; // Chứa bản nháp đám mây
+    let cloudDraftData = null; 
     let currentPageId = null, preSelectedBookId = null, editingBookId = null, typingTimer, isEditMode = true, dragStartIndex = null, pendingSecureAction = null, pendingConfirmAction = null;
     let currentAttachments = { images: [], files: [] };
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
@@ -452,13 +479,9 @@
       if (!navigator.onLine) document.getElementById('network-alert').style.display = 'block';
       
       try {
-          // Khởi tạo Nháp Đám Mây
           draftRef.onSnapshot(doc => {
-              if (doc.exists) {
-                  cloudDraftData = doc.data();
-              } else {
-                  cloudDraftData = null;
-              }
+              if (doc.exists) { cloudDraftData = doc.data(); } 
+              else { cloudDraftData = null; }
               updateDashboardDraftBtn();
           });
 
@@ -511,19 +534,19 @@
       }
     };
     
-    // RADAR ĐỒNG BỘ: Cập nhật trạng thái góc màn hình Edit
+    // RADAR ĐỒNG BỘ - LUÔN HIỂN THỊ
     function updateSyncRadar(isSaving) {
         const radarEl = document.getElementById('sync-radar');
-        if(!radarEl || !isEditMode) { if(radarEl) radarEl.innerHTML = ''; return; }
+        if(!radarEl) return;
         
         let deviceIcon = navigator.onLine ? iconCloud : ( /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? iconMobile : iconPC );
         if (!currentPageId && isEditMode) { deviceIcon = iconDraft; } // Đang viết Nháp
         
         const statusIcon = isSaving ? iconDots : iconTick;
-        radarEl.innerHTML = `<div style="display:flex; align-items:center; gap:4px; color: #888; font-style:italic; font-size:0.85rem; margin-right: 5px;">${deviceIcon} ${statusIcon}</div>`;
+        radarEl.innerHTML = `<div style="display:flex; align-items:center; gap:4px; color: #888; font-style:italic; font-size:0.85rem; margin-right: 5px;" title="Trạng thái lưu trữ">${deviceIcon} ${statusIcon}</div>`;
     }
 
-    // CHẤM ĐỎ BÁO NHÁP Ở DASHBOARD
+    // XỬ LÝ CHẤM ĐỎ BÁO NHÁP VÀ MỞ MODAL NGÃ BA
     function updateDashboardDraftBtn() {
         const btn = document.getElementById('btn-main-write');
         if(!btn) return;
@@ -535,9 +558,31 @@
             btn.style.borderColor = "var(--danger)";
         } else {
             btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Chắp bút`;
-            btn.style.color = ""; // Trả về css mặc định
+            btn.style.color = ""; 
             btn.style.borderColor = "";
         }
+    }
+
+    function handleMainWriteClick() {
+        const hasDraft = cloudDraftData && (cloudDraftData.title || cloudDraftData.content || (cloudDraftData.attachments && (cloudDraftData.attachments.images.length > 0 || cloudDraftData.attachments.files.length > 0)));
+        if (hasDraft) {
+            document.getElementById('modal-draft-prompt').style.display = 'flex';
+        } else {
+            openEditor(null);
+        }
+    }
+
+    function continueDraft() {
+        closeModals();
+        openEditor(null); 
+    }
+
+    function discardDraftAndWriteNew() {
+        draftRef.set({title:'', content:'', attachments:{images:[], files:[]}}).then(() => {
+            cloudDraftData = null;
+            closeModals();
+            openEditor(null); // Mở trang trắng tinh
+        }).catch(e => console.error(e));
     }
 
     function saveSystem() {
@@ -573,12 +618,12 @@
       const input = document.getElementById('pin-input').value; 
       if (!input) return alert("Vui lòng cung cấp khóa định danh hệ thống."); 
       if (!db.passcode) { 
-        db.passcode = input; saveSystem(); isAppLocked = false; document.getElementById('pin-input').value = ''; document.getElementById('lock-screen').classList.remove('active'); switchScreen('dashboard'); renderBooks(); resetInactivityTimer();
+        db.passcode = input; saveSystem(); isAppLocked = false; document.getElementById('pin-input').value = ''; document.getElementById('lock-screen').classList.remove('active'); switchScreen('dashboard', false); renderBooks(); resetInactivityTimer();
       } else { 
         if (input === db.passcode) { 
           isAppLocked = false; document.getElementById('pin-input').value = ''; document.getElementById('lock-screen').classList.remove('active');
           const activeScreens = document.querySelectorAll('.screen.active');
-          if(activeScreens.length === 0) { switchScreen('dashboard'); renderBooks(); }
+          if(activeScreens.length === 0) { switchScreen('dashboard', false); renderBooks(); }
           resetInactivityTimer();
         } else { alert("Lỗi xác thực: Khóa định danh không hợp lệ."); } 
       } 
@@ -590,7 +635,36 @@
     
     function closePasscodeModal() { document.getElementById('modal-passcode').style.display = 'none'; pendingSecureAction = null; }
     
-    function switchScreen(screenId) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(screenId).classList.add('active'); if(screenId === 'dashboard') { document.getElementById('global-search-input').value = ''; document.getElementById('books-container').style.display = 'flex'; document.getElementById('global-search-results').style.display = 'none'; } }
+    // ĐIỀU HƯỚNG THÔNG MINH
+    function switchScreen(screenId, clearSearch = true) { 
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+      document.getElementById(screenId).classList.add('active'); 
+      if(screenId === 'dashboard') { 
+        if(clearSearch) {
+          document.getElementById('global-search-input').value = ''; 
+          document.getElementById('books-container').style.display = 'flex'; 
+          document.getElementById('global-search-results').style.display = 'none'; 
+          renderBooks();
+        } else {
+          const query = document.getElementById('global-search-input').value;
+          if(query) handleGlobalSearch();
+          else renderBooks();
+        }
+      } 
+    }
+    
+    function goHome() {
+        document.getElementById('global-search-input').value = '';
+        document.getElementById('search-page-input').value = '';
+        preSelectedBookId = null;
+        currentPageId = null;
+        switchScreen('dashboard', true);
+    }
+    
+    function goBackToDashboard() {
+        switchScreen('dashboard', false); // Không xóa bộ lọc
+    }
+
     function handleDragStart(e, index) { dragStartIndex = index; e.dataTransfer.effectAllowed = 'move'; setTimeout(() => e.target.classList.add('dragging'), 0); }
     function handleDragEnd(e) { e.target.classList.remove('dragging'); }
     function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
@@ -772,7 +846,7 @@
       document.getElementById('current-book-title').innerText = book.name; 
       document.getElementById('search-page-input').value = forceQuery; 
       renderPagesInBook(bookId, forceQuery); 
-      switchScreen('book-view'); 
+      switchScreen('book-view', false); 
     }
     
     function handleSearch() { const query = document.getElementById('search-page-input').value.toLowerCase(); renderPagesInBook(preSelectedBookId, query); }
@@ -889,7 +963,7 @@
         if (toolsGroup) toolsGroup.style.display = 'none'; editorScreen.classList.add('read-only-mode'); 
         toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> <span class="hide-on-mobile">Chỉnh sửa</span>`; toggleBtn.className = 'btn btn-text icon-btn'; 
       } 
-      updateSyncRadar(false);
+      updateSyncRadar(false); // Radar luôn túc trực, gọi lại để cập nhật trạng thái tick
       renderAttachments(); 
     }
     
@@ -913,10 +987,17 @@
         currentAttachments = cloudDraftData?.attachments ? JSON.parse(JSON.stringify(cloudDraftData.attachments)) : { images: [], files: [] }; 
         updatePinButtonState(false); setEditorMode(true); 
       } 
-      renderAttachments(); switchScreen('editor-screen'); 
+      renderAttachments(); switchScreen('editor-screen', false); 
     }
     
-    function goBackFromEditor() { if (preSelectedBookId) { renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); switchScreen('book-view'); } else { switchScreen('dashboard'); renderBooks(); } }
+    function goBackFromEditor() { 
+        if (preSelectedBookId) { 
+            renderPagesInBook(preSelectedBookId, document.getElementById('search-page-input').value); 
+            switchScreen('book-view', false); 
+        } else { 
+            goBackToDashboard(); 
+        } 
+    }
     
     function deleteCurrentPage() { 
       requestPasscode("Xác thực đưa trang vào thùng rác", () => { 
@@ -1019,6 +1100,7 @@
       document.getElementById('modal-edit-book').style.display = 'none'; document.getElementById('modal-passcode').style.display = 'none'; 
       document.getElementById('modal-edit-time').style.display = 'none'; document.getElementById('modal-trash').style.display = 'none';
       document.getElementById('modal-confirm').style.display = 'none'; document.getElementById('modal-preview').style.display = 'none';
+      document.getElementById('modal-draft-prompt').style.display = 'none';
       document.getElementById('save-paste-msg').style.display = 'none'; document.getElementById('create-paste-msg').style.display = 'none'; document.getElementById('edit-paste-msg').style.display = 'none'; 
       pendingConfirmAction = null;
     }
