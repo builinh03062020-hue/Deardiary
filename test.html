@@ -84,16 +84,41 @@
     
     .age-divider { display: flex; align-items: center; justify-content: center; margin-top: 10px; color: rgba(140, 123, 108, 0.7); font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.15rem; width: 90%; margin-left: auto; margin-right: auto; user-select: none; }
     .age-divider::before, .age-divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(140, 123, 108, 0.25); margin: 0 15px; }
+    
+    /* GIAO DIỆN KỆ VIP "REMEMBER ME" */
+    .remember-me-divider { color: #b59567; font-size: 1.45rem; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .remember-me-divider::before, .remember-me-divider::after { border-bottom: 1px dashed rgba(209, 184, 148, 0.6); }
 
     .page-sheet { position: relative; flex: 0 0 220px; height: 320px; margin-left: -120px; border-radius: 2px 8px 8px 2px; box-shadow: -5px 0 15px rgba(0,0,0,0.15); border-left: 2px solid rgba(0,0,0,0.05); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: perspective(1000px) rotateY(15deg); cursor: pointer; padding: 30px 15px; display: flex; flex-direction: column; align-items: center; }
     .page-sheet:first-child { margin-left: 0; }
     .page-sheet:hover { transform: perspective(1000px) rotateY(0deg) translateY(-25px) scale(1.05); z-index: 9999 !important; box-shadow: 0 15px 30px rgba(0,0,0,0.25); }
+    
+    /* HIỆU ỨNG HÀO QUANG CHO TRANG ĐƯỢC GHIM */
+    .page-sheet.pinned { box-shadow: 0 0 20px rgba(209, 184, 148, 0.6), -5px 0 15px rgba(0,0,0,0.1) !important; border: 1px solid rgba(209, 184, 148, 0.4); }
+    .page-sheet.pinned:hover { box-shadow: 0 0 30px rgba(209, 184, 148, 0.8), 0 15px 30px rgba(0,0,0,0.2) !important; }
+    
+    /* WASHI TAPE HOA NHÍ (ĐỔI MÀU THEO TRANG) */
+    .washi-tape {
+        position: absolute;
+        top: 15px; right: -10px;
+        width: 60px; height: 22px;
+        background-color: rgba(0, 0, 0, 0.12); 
+        mix-blend-mode: multiply; 
+        background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="2.5" fill="%23fff" opacity="0.6"/><circle cx="10" cy="5" r="1.5" fill="%23fff" opacity="0.4"/><circle cx="10" cy="15" r="1.5" fill="%23fff" opacity="0.4"/><circle cx="5" cy="10" r="1.5" fill="%23fff" opacity="0.4"/><circle cx="15" cy="10" r="1.5" fill="%23fff" opacity="0.4"/></svg>');
+        background-size: 15px 15px;
+        transform: rotate(45deg);
+        box-shadow: 1px 2px 4px rgba(0,0,0,0.1);
+        z-index: 10;
+        border-radius: 1px;
+        border-left: 1px dashed rgba(255,255,255,0.3);
+        border-right: 1px dashed rgba(255,255,255,0.3);
+    }
+
     .page-sheet-date { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #555; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 10px; width: 100%; text-align: center; background: rgba(255, 255, 255, 0.4); border-radius: 4px; padding: 5px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
     
-    /* ĐỊNH DẠNG FONT CHỮ BẮT BUỘC (CORMORANT GARAMOND) */
+    /* PHÔNG CHỮ ĐƯỢC THIẾT LẬP LẠI (SẠCH SẼ CHO NỘI DUNG) */
     #editor-title { font-family: 'Cormorant Garamond', serif !important; font-size: 2.2rem; border: none; outline: none; width: 100%; margin-bottom: 10px; background: transparent; font-weight: 600; color: #3e3a35; }
-    #editor-content { font-family: 'Cormorant Garamond', serif !important; min-height: 60vh; background: transparent; outline: none; font-size: 1.15rem; line-height: 1.8; color: #4a4238; }
-    #editor-content * { font-family: 'Cormorant Garamond', serif !important; }
+    #editor-content { font-family: 'Segoe UI', Tahoma, sans-serif; min-height: 60vh; background: transparent; outline: none; font-size: 1.15rem; line-height: 1.8; color: #4a4238; }
     
     .read-only-mode #editor-title { color: #5c554d; }
     .read-only-mode #editor-content { color: #5c554d; }
@@ -160,7 +185,7 @@
     .trash-btn.destroy { color: var(--danger); border-color: var(--danger); }
     .trash-btn.destroy:hover { background: var(--danger); color: #fff; }
 
-    #preview-content-box { font-size: 0.95rem; color: #4a4238; max-height: 40vh; overflow-y: auto; text-align: left; padding: 15px; background: rgba(255,255,255,0.5); border: 1px solid #d4cdc1; border-radius: 4px; margin-bottom: 15px; line-height: 1.6; font-family: 'Segoe UI', sans-serif !important; }
+    #preview-content-box { font-size: 0.95rem; color: #4a4238; max-height: 40vh; overflow-y: auto; text-align: left; padding: 15px; background: rgba(255,255,255,0.5); border: 1px solid #d4cdc1; border-radius: 4px; margin-bottom: 15px; line-height: 1.6; font-family: 'Segoe UI', Tahoma, sans-serif; }
 
     @media screen and (max-width: 768px) { 
       #attachment-board { flex-direction: column; gap: 15px; } 
@@ -292,7 +317,6 @@
       
       <div style="display: flex; align-items: center; gap: 10px;">
         <div id="sync-radar"></div>
-        <!-- BỔ SUNG NÚT HỦY THAO TÁC -->
         <button class="btn btn-danger-text icon-btn" id="btn-cancel-edit" onclick="handleCancelEdit()" style="display: none; white-space: nowrap;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           <span class="hide-on-mobile">Hủy</span>
@@ -451,7 +475,6 @@
 
     let db = { books: [], pages: [], passcode: null };
     
-    // HYBRID DRAFT SYSTEM VARIABLES
     let cloudDraftData = null; 
     let localDraftData = null;
     window.activeResolvedDraft = null;
@@ -463,7 +486,7 @@
 
     let currentPageId = null, preSelectedBookId = null, editingBookId = null, typingTimer, isEditMode = true, dragStartIndex = null;
     let pendingSecureAction = null, pendingConfirmAction = null;
-    let originalPageSnapshot = null; // Snapshot for Cancel Edit function
+    let originalPageSnapshot = null; 
     let currentAttachments = { images: [], files: [] };
     const fallbackColors = ['#f5e6e6', '#e6f0e6', '#e6eaf5', '#f5eee6', '#f2e6f5'];
 
@@ -516,7 +539,6 @@
       } catch(err) { console.error("Initialization Error:", err); initAppUI(); }
     };
     
-    // RESOLVE HYBRID DRAFTS (Local vs Cloud via Timestamp)
     function resolveDrafts() {
         let activeDraft = null;
         if (cloudDraftData && localDraftData) {
@@ -536,13 +558,11 @@
         updateDashboardDraftBtn();
     }
 
-    // UPDATE SYNC RADAR
     function updateSyncRadar(isSaving, target = 'cloud') {
         const radarEl = document.getElementById('sync-radar');
         if(!radarEl) return;
         
         let deviceIcon = navigator.onLine ? iconCloud : ( /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? iconMobile : iconPC );
-        
         if (target === 'local') {
             deviceIcon = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? iconMobile : iconPC;
         } else if (target === 'cloud') {
@@ -578,9 +598,7 @@
     function continueDraft() { closeModals(); openEditor(null); }
 
     function discardDraftAndWriteNew() {
-        clearAllDrafts();
-        closeModals();
-        openEditor(null); 
+        clearAllDrafts(); closeModals(); openEditor(null); 
     }
 
     function saveSystem() { sysRef.set({ passcode: db.passcode, books: db.books, migrationFixed: true }).then(() => { updateSyncRadar(false, 'cloud'); }).catch(e => console.error(e)); }
@@ -802,7 +820,7 @@
     
     function handleSearch() { const query = document.getElementById('search-page-input').value; renderPagesInBook(preSelectedBookId, query); }
     
-    // RENDER KỆ SÁCH (THUẬT TOÁN LỌC TUỔI TUYỆT ĐỐI)
+    // KIẾN TRÚC HIỂN THỊ KỆ SÁCH & KỆ VIP "REMEMBER ME"
     function renderPagesInBook(bookId, searchQuery) { 
       const book = db.books.find(b => b.id === bookId); 
       const container = document.getElementById('pages-container'); 
@@ -833,46 +851,65 @@
       
       if (pages.length === 0) { container.innerHTML = '<p style="text-align:center; font-style:italic; width: 100%;">Tài liệu trống hoặc không có thông tin phù hợp.</p>'; return; } 
       
+      let globalPageIndex = 0; 
+      
+      function createShelf(shelfPages, dividerText, isPinnedShelf) {
+          const shelfWrapper = document.createElement('div'); shelfWrapper.className = 'age-shelf-wrapper';
+          const shelfCarousel = document.createElement('div'); shelfCarousel.className = 'pages-carousel-shelf';
+          
+          shelfPages.forEach((page) => { 
+              const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' }); 
+              const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); 
+              const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors; 
+              const pageColor = palette[globalPageIndex % palette.length]; globalPageIndex++;
+              
+              const zIndex = shelfPages.length - shelfCarousel.children.length; 
+              
+              const pageEl = document.createElement('div'); 
+              pageEl.className = 'page-sheet' + (isPinnedShelf ? ' pinned' : ''); 
+              pageEl.style.backgroundColor = pageColor; 
+              pageEl.style.zIndex = zIndex; 
+              pageEl.onclick = () => openEditor(page.id); 
+              
+              const washiHtml = isPinnedShelf ? '<div class="washi-tape"></div>' : '';
+              
+              pageEl.innerHTML = `${washiHtml}<div class="page-sheet-date">${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`; 
+              shelfCarousel.appendChild(pageEl); 
+          });
+          
+          const divider = document.createElement('div'); 
+          divider.className = 'age-divider' + (isPinnedShelf ? ' remember-me-divider' : ''); 
+          divider.innerHTML = dividerText;
+          shelfWrapper.appendChild(shelfCarousel); shelfWrapper.appendChild(divider);
+          container.appendChild(shelfWrapper);
+      }
+
+      const pinnedPages = pages.filter(p => p.isPinned);
+      const unpinnedPages = pages.filter(p => !p.isPinned);
+
+      let filteredPinned = pinnedPages;
+      if (exactAgeFilter !== null) {
+          filteredPinned = pinnedPages.filter(p => calculateAge(p.timestamp) === exactAgeFilter);
+      }
+
+      if (filteredPinned.length > 0) {
+          filteredPinned.sort((a, b) => b.timestamp - a.timestamp);
+          createShelf(filteredPinned, '✧ Remember me ✧', true);
+      }
+
       const pagesByAge = {};
-      pages.forEach(p => {
+      unpinnedPages.forEach(p => {
           const age = calculateAge(p.timestamp);
           if (!pagesByAge[age]) pagesByAge[age] = [];
           pagesByAge[age].push(p);
       });
       
       const sortedAges = Object.keys(pagesByAge).map(Number).sort((a, b) => b - a);
-      let globalPageIndex = 0; 
-      
       sortedAges.forEach(age => {
-          if (exactAgeFilter !== null && age !== exactAgeFilter) return; // Loại trừ tuyệt đối các kệ không khớp yêu cầu tìm kiếm tuổi
-          
+          if (exactAgeFilter !== null && age !== exactAgeFilter) return; 
           const agePages = pagesByAge[age];
-          agePages.sort((a, b) => { 
-              const pinA = a.isPinned ? 1 : 0; const pinB = b.isPinned ? 1 : 0; 
-              if (pinA !== pinB) return pinB - pinA; return b.timestamp - a.timestamp; 
-          });
-          
-          const shelfWrapper = document.createElement('div'); shelfWrapper.className = 'age-shelf-wrapper';
-          const shelfCarousel = document.createElement('div'); shelfCarousel.className = 'pages-carousel-shelf';
-          
-          agePages.forEach((page) => { 
-              const dateStr = new Date(page.timestamp).toLocaleDateString('vi-VN', { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' }); 
-              const timeStr = new Date(page.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); 
-              const palette = (book.palette && book.palette.length > 0) ? book.palette : fallbackColors; 
-              const pageColor = palette[globalPageIndex % palette.length]; globalPageIndex++;
-              
-              const zIndex = agePages.length - shelfCarousel.children.length; 
-              const pinIndicator = page.isPinned ? svgPinOutline : ''; 
-              
-              const pageEl = document.createElement('div'); pageEl.className = 'page-sheet'; pageEl.style.backgroundColor = pageColor; pageEl.style.zIndex = zIndex; 
-              pageEl.onclick = () => openEditor(page.id); 
-              pageEl.innerHTML = `<div class="page-sheet-date">${pinIndicator}${dateStr}<br><span style="font-size: 0.95rem;">${timeStr}</span></div>`; 
-              shelfCarousel.appendChild(pageEl); 
-          });
-          
-          const divider = document.createElement('div'); divider.className = 'age-divider'; divider.innerHTML = `✧ ${age} tuổi ✧`;
-          shelfWrapper.appendChild(shelfCarousel); shelfWrapper.appendChild(divider);
-          container.appendChild(shelfWrapper);
+          agePages.sort((a, b) => b.timestamp - a.timestamp);
+          createShelf(agePages, `✧ ${age} tuổi ✧`, false);
       });
     }
     
@@ -883,7 +920,6 @@
       else { pinBtn.innerHTML = svgPinOutline + `<span class="hide-on-mobile">Ghim trang</span>`; pinBtn.style.color = "var(--highlight)"; } 
     }
     
-    // ĐIỀU CHỈNH GIAO DIỆN CHỈNH SỬA & HIỂN THỊ NÚT HỦY
     function setEditorMode(editMode) { 
       isEditMode = editMode; 
       const titleEl = document.getElementById('editor-title'); 
@@ -897,7 +933,7 @@
         titleEl.readOnly = false; contentEl.setAttribute('contenteditable', 'true'); titleEl.style.display = 'block';
         if (toolsGroup) toolsGroup.style.display = 'flex'; editorScreen.classList.remove('read-only-mode'); 
         toggleBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <span class="hide-on-mobile">Lưu nội dung</span>`; toggleBtn.className = 'btn btn-primary-filled icon-btn'; 
-        cancelBtn.style.display = currentPageId ? 'inline-flex' : 'none'; // Chỉ hiện nút Hủy khi sửa trang cũ
+        cancelBtn.style.display = currentPageId ? 'inline-flex' : 'none'; 
         contentEl.focus(); 
       } else { 
         titleEl.readOnly = true; contentEl.setAttribute('contenteditable', 'false'); titleEl.style.display = (!titleEl.value.trim()) ? 'none' : 'block';
@@ -937,7 +973,6 @@
       renderAttachments(); switchScreen('editor-screen', false); 
     }
 
-    // CHỨC NĂNG HỦY THAO TÁC (REVERT SNAPSHOT)
     function handleCancelEdit() {
         if (!currentPageId || !originalPageSnapshot) return;
         document.getElementById('editor-title').value = originalPageSnapshot.title;
@@ -983,7 +1018,6 @@
       } else { showSaveModal(); } 
     }
     
-    // HYBRID REAL-TIME SAVE TRIGGER
     function triggerRealtimeSave() {
       if(!isEditMode) return;
       const currentTitle = document.getElementById('editor-title').value;
@@ -992,7 +1026,6 @@
       clearTimeout(typingTimer); 
       
       if (!currentPageId) {
-          // Xử lý lưu nháp
           updateSyncRadar(true, 'local');
           const draftObj = { title: currentTitle, content: currentContent, attachments: JSON.parse(JSON.stringify(currentAttachments)), timestamp: Date.now() };
           localStorage.setItem('diary_local_draft', JSON.stringify(draftObj));
@@ -1004,7 +1037,6 @@
               draftRef.set(draftObj).then(() => { updateSyncRadar(false, 'cloud'); }).catch(e => updateSyncRadar(false, 'local'));
           }, 2000);
       } else {
-          // Xử lý trang hiện hữu
           updateSyncRadar(true, 'cloud');
           typingTimer = setTimeout(() => { 
               const page = db.pages.find(p => p.id === currentPageId);
